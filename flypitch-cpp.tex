@@ -59,7 +59,10 @@
                         %% http://ctan.org/pkg/booktabs
 \usepackage{subcaption} %% For complex figures with subfigures/subcaptions
                         %% http://ctan.org/pkg/subcaption
-
+\usepackage{listings}
+\def\lstlanguagefiles{lstlean.tex}
+\lstset{language=lean,breakatwhitespace,xleftmargin=\parindent}
+% \lstMakeShortInline" % maybe useful
 
 \begin{document}
 
@@ -110,7 +113,7 @@
                                         %% can be repeated if necessary
 \orcid{0000-0003-2899-8565}             %% \orcid is optional
 \affiliation{
-  \position{Position2a}
+  % \position{Position2a}
   \department{Department of Mathematics}              %% \department is recommended
   \institution{University of Pittsburgh}            %% \institution is required
   \streetaddress{4200 Fifth Ave}
@@ -168,28 +171,65 @@ Text of abstract \ldots. %TODO
 \section{Introduction}
 \label{section:intro}
 
+Introduce CH, forcing, boolean semantics, Lean~\cite{de2015lean}. Start can be similar to ITP paper.
+
+We continue the work of [cite ITP paper]. (for the purposes of lightweight double-blind reviewing we should not call it ``our'' paper, even though that is obvious)
+
+\subsection{Proof Outline}
+\label{subsection:intro:outline}
+Boolean-valued semantics, Forcing, Levy collapse, independence of CH
 
 \section{First-order logic}
 \label{section:fol}
 
+\subsection{Terms, Formulae and Proofs}
+\label{subsection:fol:terms}
+
+Our encoding of terms/formulas/proofs in FOL, similar to ITP paper.
+Maybe ordinary semantics and soundness/completeness.
+
+\subsection{ZFC}
+\label{subsection:fol:zfc}
+
+set theory as a first-order language and ZFC as a first-order theory. Statement of CH.
+
 \section{Boolean-valued semantics}
 \label{section:boolean-semantics}
 
+boolean-valued semantics, boolean-valued soundness,
+
+\subsection{Boolean valued sets}
+\label{subsection:fol:bset}
+
+boolean-valued model of ZFC
+
+\section{Levy collapse}
+\label{section:collapse}
+
+partial functions in Lean, introduce the collapsing boolean algebra, show omega-closedness.
+
 \section{Forcing}
 \label{section:forcing}
+Whatever is important in \lstinline{bvm}, \lstinline{bvm_extras}, \lstinline{bvm_extras2} for this argument.
 
-\section{Collapsing poset}
-\label{section:collapsing}
+\subsection{Construction of $\aleph_1$}
+\label{subsection:forcing:aleph-1}
 
-\section{The independence of CH}
-\label{section:independence-CH}
+Construction of $\aleph_1$.
+
+\subsection{The independence of CH}
+\label{subsection:forcing:independence}
+
+The final argument to show that this particular model satisfies CH.
+
+\section{Related Work}
+\label{section:related-work}
+Compare with other formalization on the consistency of CH.
+
 
 \section{Conclusions}
 \label{section:conclusions}
-
-
-Text of paper \ldots
-
+Future work: construction of L, ZFC without function symbols, parser and better printer for FOL
 
 %% Acknowledgments
 \begin{acks}                            %% acks environment is optional
@@ -205,7 +245,7 @@ Text of paper \ldots
 
 
 %% Bibliography
-%\bibliography{bibfile}
+\bibliography{flypitch-cpp}
 
 
 %% Appendix
