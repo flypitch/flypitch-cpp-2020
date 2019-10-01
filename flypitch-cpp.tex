@@ -1,5 +1,9 @@
 %% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
-\documentclass[sigplan,10pt,review]{acmart} % add: anonymous
+\documentclass[sigplan,10pt,review, anonymous]{acmart}
+
+% note(jesse, October 01 2019, 04:00 PM): I'm getting weird typesetting authors when the `anonymous' option is removed
+
+% add: anonymous
 \settopmatter{printfolios=true,printccs=false,printacmref=false}
 %% For double-blind review submission, w/ CCS and ACM Reference
 %\documentclass[sigplan,review,anonymous]{acmart}\settopmatter{printfolios=true}
@@ -58,11 +62,12 @@
 \usepackage{booktabs}   %% For formal tables:
                         %% http://ctan.org/pkg/booktabs
 \usepackage{subcaption} %% For complex figures with subfigures/subcaptions
-                        %% http://ctan.org/pkg/subcaption
+%% http://ctan.org/pkg/subcaption
+
 \usepackage{listings}
 \def\lstlanguagefiles{lstlean.tex}
 \lstset{language=lean,breakatwhitespace,xleftmargin=\parindent}
-% \lstMakeShortInline" % maybe useful
+\usepackage{stmaryrd}
 
 \begin{document}
 
