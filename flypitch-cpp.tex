@@ -74,7 +74,7 @@
 
 \usepackage{listings}
 \def\lstlanguagefiles{lstlean.tex}
-\lstset{language=lean,breakatwhitespace,xleftmargin=0pt}
+\lstset{language=lean,breakatwhitespace,xleftmargin=0pt, basicstyle=\ttfamily\small}
 \usepackage{stmaryrd}
 \newcommand{\B}{\mathbb{B}}
 \newcommand{\lil}{\lstinline}
@@ -428,7 +428,7 @@ The proof is a straightforward structural induction.
 \label{subsection:fol:bset}
 \paragraph{The Aczel encoding}
 Our starting point is the Aczel encoding of \(\mathsf{ZFC}\) (\cite{aczel1978type, aczel1986type, aczel1982type}) into dependent type theory, later implemented in Coq by Werner \cite{werner1997sets}, and in Lean's \lstinline{mathlib} by Carneiro \cite{mario1}. The idea is to take a type universe \lstinline{Type u} and imitate the cumulative hierarchy construction with an inductive type:
-\begin{lstlisting}[breaklines, basicstyle=\ttfamily\small]
+\begin{lstlisting}
 inductive pSet : Type (u+1)
 | mk (α : Type u) (A : α → pSet) : pSet
 \end{lstlisting}
@@ -445,14 +445,14 @@ It is easy to furthermore define membership from equivalence and check that modu
 
 First, note that we can construct a model of \(\mathsf{ZFC}\) roughly equivalent to \lstinline{pSet} as follows:
 
-\begin{lstlisting}[breaklines, basicstyle=\ttfamily\small]
+\begin{lstlisting}
 inductive bSet : Type (u+1)
 | mk (α : Type u) (A : α → bSet)
   (B : α → bool): bSet
 \end{lstlisting}
 
 At first glance, \lstinline{bSet} adds large amounts of unnecessary information---while with \lstinline{pSet}, anything pointed to by an indexing function \lstinline{A} is a member of a set, \lstinline{bSet} only counts what is also assigned \lstinline{tt : bool}---and we can reconstruct \lstinline{pSet} from \lstinline{bSet} by recursively discarding anything which is assigned \lstinline{ff : bool} anyways. However, if we remember that \lstinline{bool} is a complete Boolean algebra \lstinline{⟨bool, ⊤, ⊥, ⊓, ⊔, ⨅,⨆, ⟹⟩}, then an upshot of the definition of \lstinline{bSet} is that we can replace the obvious analogue of \lstinline{equiv}
-\begin{lstlisting}[breaklines, basicstyle=\ttfamily\small]
+\begin{lstlisting}
 def equiv : ∀ (x y : bSet), Prop
 | ⟨α,A,A'⟩ ⟨β,B,B'⟩ := (∀ a : α, A' a = tt → ∃ b : β, B' b = tt ∧ equiv₁ (A a) (B b)) ∧ (∀b : β, B' b = tt → ∃ a : α, A' a = tt ∧ equiv₁ (A a) (B b))
 \end{lstlisting}
@@ -462,7 +462,7 @@ def equiv₂ : ∀ (x y : bSet), bool
 | ⟨α,A,A'⟩ ⟨β,B,B'⟩ := ⨅ a : α, A' a ⟹ ⨆ b : β, B' b ⊓ equiv₂ (A a) (B b) ⊓  ⨅ b : β, B' b ⟹ ⨆ a : α, A' a ⊓ equiv₂ (A a) (B b)
 \end{lstlisting}
 Since this definition only interfaces with the typeclass of complete Boolean algebras, we can replace \lstinline{bool} by an arbitrary complete Boolean algebra \lstinline{𝔹} throughout, yielding: % note(jesse, October 03 2019, 05:06 PM): maybe should emphasize definition of membership instead of equality to make it clear that these things are Boolean-valued models of ZFC
-\begin{lstlisting}[breaklines, basicstyle=\ttfamily\small]
+\begin{lstlisting}
 inductive bSet (𝔹 : Type u) [complete_boolean_algebra 𝔹]: Type (u+1)
 | mk (α : Type u) (A : α → bSet)
   (B : α → bool): bSet
@@ -477,7 +477,7 @@ Second, we observe that the Aczel encoding is closely related to the recursive \
 
 In particular, if \(\mathbb{P}\) is the singleton poset, then a \(\mathbb{P}\)-name is a set of \(\mathbb{P}\)-names, in the same way that a term of type \lstinline{pSet} is a type-indexed collection of terms of type \lstinline{pSet}. Reversing this observation, we replace \(\mathbb{P}\) with a complete Boolean algebra \(\mathbb{B}\) and generalize the definition of \lstinline{pSet.mk} with a third field, so that as in the case of \(\mathbb{P}\)-names, every element of a set is assigned an element (a ``Boolean truth-value'') of \(\mathbb{B}\):
 
-\begin{lstlisting}[breaklines, basicstyle=\ttfamily\small]
+\begin{lstlisting}
 inductive bSet {𝔹 : Type u) : Type (u+1)
 | mk (α: Type u) (A: α → bSet) (B: α→ 𝔹) : bSet
 \end{lstlisting}
@@ -533,7 +533,7 @@ However, the cost of taking the \lstinline{𝔹}-names at face value is that we 
 \end{definition}
 
 In the formalization, the Cohen poset is represented as a \lstinline{structure} with three fields:
-\begin{lstlisting}[breaklines, basicstyle=\ttfamily\small]
+\begin{lstlisting}
 structure 𝒞 : Type :=
   (ins : finset (ℵ₂.type × ℕ))
   (out : finset (ℵ₂.type × ℕ))
@@ -584,7 +584,7 @@ This follows from the following property: for any \lstinline{y : pSet}, and for 
 
 As before, reflect a boolean-valued \(\forall \exists\) statement into the metatheory. The following lemma is always true:
 %TODO(jesse): make this bigger
-\begin{lstlisting}[breaklines, basicstyle=\ttfamily\footnotesize]
+\begin{lstlisting}
 lemma AE_of_check_func_check (x y : pSet.{u}) {f : bSet 𝔹} {Γ : 𝔹}
   (H : Γ ≤ is_func' (x̌) (y̌) f) (H_nonzero : ⊥ < Γ) :
   Π (i : x.type),
