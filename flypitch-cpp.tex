@@ -2,7 +2,7 @@
 \documentclass[sigplan,10pt,review, anonymous]{acmart}
 
 % note(jesse, October 01 2019, 04:00 PM): I'm getting weird typesetting authors when the `anonymous' option is removed
- 
+
 % add: anonymous
 \settopmatter{printfolios=true,printccs=false,printacmref=false}
 %% For double-blind review submission, w/ CCS and ACM Reference
@@ -74,8 +74,18 @@
 
 \usepackage{listings}
 \def\lstlanguagefiles{lstlean.tex}
-\lstset{language=lean,breakatwhitespace,xleftmargin=\parindent}
+\lstset{language=lean,breakatwhitespace,xleftmargin=0pt}
 \usepackage{stmaryrd}
+\newcommand{\B}{\mathbb{B}}
+\newcommand{\lil}{\lstinline}
+\newcommand{\N}{\mathbb{N}}
+
+\usepackage{amsthm}
+% \theoremstyle{theorem}
+\newtheorem{thm}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+\DeclareMathOperator{\cf}{cf}
 
 \begin{document}
 
@@ -141,7 +151,7 @@
 %% Note: \begin{abstract}...\end{abstract} environment must come
 %% before \maketitle command
 \begin{abstract}
-Text of abstract \ldots. %TODO
+  We use Boolean-valued models and forcing to give a formal proof of the independence of the continuum hypothesis ($\mathsf{CH}$) in the Lean theorem prover. We use a forcing argument for both directions, using Cohen forcing to show that $\mathsf{CH}$ is unprovable and using $\sigma$-closed forcing to show that $\mathsf{CH}$ is not disprovable.
 \end{abstract}
 
 
@@ -171,7 +181,7 @@ Text of abstract \ldots. %TODO
 %TODO
 %% Keywords
 %% comma separated list
-\keywords{forcing, formal proof, independence, continuum hypothesis}  %% \keywords are mandatory in final camera-ready submission
+\keywords{continuum hypothesis, forcing, Lean, set theory, ZFC} %% \keywords are mandatory in final camera-ready submission
 
 
 %% \maketitle
@@ -183,25 +193,175 @@ Text of abstract \ldots. %TODO
 
 \section{Introduction}
 \label{section:intro}
+The continuum hypothesis ($\mathsf{CH}$) states that there is no cardinality between $\omega$, the smallest infinite cardinal and $\mathfrak{c}$, the cardinality of the continuum.
+It was introduced by Cantor \cite{cantor1878beitrag} in 1878 and was the very first problem on Hilbert's list of twenty-three outstanding problems in mathematics.
+G\"odel \cite{godel1938consistency} proved in 1938 that $\mathsf{CH}$ was consistent with $\mathsf{ZFC}$, and later conjectured that $\mathsf{CH}$ is independent of $\mathsf{ZFC}$, i.e. neither provable nor disprovable from the $\mathsf{ZFC}$ axioms.
+In 1963, Paul Cohen developed \emph{forcing} \cite{cohen-the-independence-of-the-continuum-hypothesis-1,cohen1964independence2}, which allowed him to prove the consistency of $\neg \mathsf{CH}$, and therefore complete the independence proof.
+For this work, which marked the beginning of modern set theory, he was awarded a Fields medal---the only one to ever be awarded for a work in mathematical logic.
 
-Introduce CH, forcing, boolean semantics, Lean~\cite{de2015lean}. Start can be similar to ITP paper.
+In this paper we describe the successful completion of the Flypitch project\footnote{\url{https://flypitch.github.io}} (\textbf{F}ormal\textbf{ly} \textbf{p}roving the \textbf{i}ndependence of \textbf{t}he \textbf{c}ontinuum \textbf{h}ypothesis).
+For both parts of the independence of the continuum hypothesis, we use forcing to construct a Boolean-valued model of $\mathsf{ZFC}$.
+To show that $\mathsf{CH}$ is consistent, we use $\sigma$-closed forcing, to collapse the cardinality of the continuum to $\aleph_1$.
+To show that $\neg \mathsf{CH}$ is consistent, we use Cohen forcing, to add $\aleph_2$ many new real numbers, giving an injection from $\aleph_2$ into the continuum.
+This part of the proof already appeared in \cite{DBLP:conf/itp/HanD19}, but we will repeat a summary of the proof in this paper.
+This forcing argument to show that $\mathsf{CH}$ is consistent is not the proof that G\"odel gave in 1938, who instead used the constructible universe $L$, where $\mathsf{CH}$ holds. We decided to formalize this proof so that we used an forcing argument for both parts of the independence.
 
-Building on the work of Han and van Doorn \cite{DBLP:conf/itp/HanD19}, we complete a formal proof of the independence of the continuum hypothesis.
-%(for the purposes of lightweight double-blind reviewing we should not call it ``our'' paper, even though that is obvious)
+The method of forcing with Boolean-valued models was developed by Solovay and Scott in '65-'66 \cite{scott1967proof,scott-solovay} as a simplification of Cohen's method.
+Some of these simplifications were incorporated by Shoenfield \cite{shoenfield1971unramified} into a general theory of forcing using partial orders, and it is in this form that forcing is usually practiced.
+While both approaches have essentially the same mathematical content (see e.g. \cite{kunen2014set, jech2013set, moore2019method}), there are several reasons why we chose Boolean-valued models for our formalization:
+\begin{itemize}
+  \item \textbf{Modularity.}
+  The theory of forcing with Boolean-valued models cleanly splits into several components
+  (a general theory of Boolean-valued semantics for first-order logic, a library for calculations inside complete Boolean algebras, the construction of Boolean-valued models of set theory, and the specifics of the forcing argument itself)
+  which could be formalized in parallel and then recombined.
+
+  \item \textbf{Directness.}
+  For the purposes of an independence proof, the Boolean-valued soundness theorem eliminates the need to produce a two-valued model.
+  This approach also bypasses any requirement for the L\"owenheim-Skolem theorems, Mostowski collapse, countable transitive models, or genericity considerations for filters.
+
+  \item \textbf{Novelty and reusability.}
+  As far as we were able to tell, the Boolean-valued approach to forcing has never been formalized.
+  Furthermore, while for the purposes of an independence proof, forcing with Boolean-valued models and forcing with countable transitive models accomplish the same thing, a general library for Boolean-valued semantics of a deeply embedded logic could be used for formal verification applications outside of set theory,
+  e.g. to formalize the Boolean-valued semantics of stochastic $\lambda$-calculus \cite{scott2014stochastic, bacci2018boolean}.
+
+  \item \textbf{Amenability to structural induction.}
+  As with Coq, Lean is able to encode extremely complex objects and reason about their specifications using inductive types.
+  However, the user must be careful to choose the encoding so that properties they wish to reason about are accessible by structural induction, which is the most natural mode of reasoning in the proof assistant.
+  After observing (1) that the Aczel-Werner encoding of $\mathsf{ZFC}$ as an inductive type is essentially a special case of the recursive \emph{name} construction from forcing (c.f. Section \ref{section:boolean-semantics}),
+  and (2) that the automatically-generated induction principle for that inductive type \emph{is} $\in$-induction,
+  it is easy to see that this encoding can be modified to produce a Boolean-valued model of set theory where, again, $\in$-induction comes for free.
+\end{itemize}
+
+Our formalization is written in the Lean 3 theorem prover.
+Lean is an interactive proof assistant under active development at Microsoft Research \cite{de2015lean, sebastian1}.
+It implements the Calculus of Inductive Constructions and has a similar metatheory to Coq, adding definitional proof irrelevance, quotient types, and a noncomputable choice principle.
+Our formalization makes as much use of the expressiveness of Lean's dependent type theory as possible, using constructions which are impossible or unwieldy to encode in HOL, much less ZF. Lean's ordinals and cardinals, which are defined as equivalence classes of well-ordered types, live one universe level up and play a crucial role in the forcing argument.
+Also, the models of set theory we construct require as input an entire universe of types.
+Finally, our encoding of first-order logic uses parameterized inductive types which ensures that type-correctness implies well-formedness. This eliminates the need for separate well-formedness proofs.
+
+The results in this paper are not the most general possible results.
+Instead of showing the consistency of $\mathsf{CH}$ we could have shown the consistency of the generalized continuum hypothesis $\mathsf{GCH}$, which states that $2^{\aleph_\alpha}=\aleph_{\alpha+1}$ for all ordinals $\alpha$.
+The generalized continuum hypothesis is true in the constructible universe $L$, and its consistency can be shown by a forcing argument, but this forcing argument is significantly more involved than the forcing argument for $\mathsf{CH}$.
+We could generalize the consistency of $\neg \mathsf{CH}$ to the consistency of $\mathfrak{c}=\aleph_\alpha$, for any cardinal $\aleph_\alpha$ with uncountable cofinality.
+Or more generally, that on regular cardinals the function $\kappa\mapsto 2^\kappa$ can be any monotone function not contradicting K\"onig's Theorem ($\cf(2^\kappa)>\kappa$)~\cite{easton1970powers}.
 
 \subsection{Proof Outline}
 \label{subsection:intro:outline}
-Boolean-valued semantics, Forcing, cardinal collapse, independence of CH
+%TODO
+Boolean-valued semantics, Forcing, cardinal collapse, independence of CH.
 
+During the proof outline, also refer to the sections in the paper.
 \section{First-order logic}
 \label{section:fol}
 
+The starting point for first-order logic is a \emph{language} of relation and function symbols.
+We represent a language as a pair of $\N$-indexed families of types, each of which is to be thought of as the collection of relation (resp. function) symbols stratified by arity:
+\begin{lstlisting}
+structure Language : Type (u+1) :=
+(functions : ℕ → Type u)
+(relations : ℕ → Type u)
+\end{lstlisting}
+
 \subsection{Terms, Formulae and Proofs}
 \label{subsection:fol:terms}
+The main novelty of our implementation of first-order logic is the use of \emph{partially applied} terms and formulas, encoded in a parameterized inductive type where the $\N$ parameter measures the difference between the arity and the number of applications.
+The benefit of this is that it is impossible to produce an ill-formed term or formula, because type-correctness is equivalent to well-formedness.
+This eliminates the need for separate well-formedness proofs.
 
-Our encoding of terms/formulas/proofs in FOL, similar to ITP paper.
-Maybe ordinary semantics and soundness/completeness.
+Fix a language $L$. We define the type of \textbf{preterms} as follows:
+\begin{lstlisting}
+inductive preterm (L : Language.{u}) :
+    ℕ → Type u
+| var : ℕ → preterm 0 -- notation `&`
+| func {l : ℕ} : L.functions l → preterm l
+| app {l : ℕ} :
+    preterm (l + 1) → preterm 0 → preterm l
+\end{lstlisting}
+A member of \lil{preterm n} is a partially applied term.
+If applied to \lil{n} terms, it becomes a term.
+We define the type of well-formed terms \lil{term L} to be \lil{preterm L 0}.
 
+There are other methods to define well-typed terms, for example using a nested inductive type with a constructor (which replaces the second and third constructor in our definition)
+\begin{lstlisting}
+| app : ∀ {l : ℕ}, L.functions l →
+    vector term l → term
+\end{lstlisting}
+Here \lil{vector term l} is a $l$-tuple of terms.
+Lean has limited support for nested inductive types, but defining definitions by recursion on a nested inductive type is inconvenient.
+
+The type of \textbf{preformulas} is defined similarly:
+\begin{lstlisting}
+inductive preformula (L : Language.{u}) :
+    ℕ → Type u
+| falsum : preformula 0 -- notation ⊥
+| equal : term L → term L → preformula 0
+    -- notation ≃
+| rel {l : ℕ}, L.relations l → preformula l
+| apprel {l : ℕ}, preformula (l + 1) →
+    term L → preformula l
+| imp : preformula 0 → preformula 0 →
+    preformula 0 -- notation ⟹
+| all : preformula 0 → preformula 0
+    -- notation ∀'
+\end{lstlisting}
+A member of \lil{preformula n} is a partially applied formula.
+If applied to \lil{n} terms, it becomes a formula.
+The type of well-formed formulas \lil{formula L} is defined to be \lil{preterm L 0}.
+Implication is the only primitive binary connective and universal quantification is the only primitive quantifier. Since we use classical logic, we can define the other connectives and quantifiers from these.
+In particular, we define negation \lil{∼ f} to be \lil{f ⟹ ⊥} and existential quantification \lil{∃' f} to be \lil{∼ ∀' ∼ f}.
+Note that implication and the universal quantifier cannot be applied to performulas that are not fully applied.
+
+We choose this definition of \lil{preformula} to mimic \lil{preterm}.
+Of course, we could define an inductive type where the constructors \lil{rel} and \lil{apprel} were replaced by the single constructor
+\begin{lstlisting}
+| rel {l : ℕ} : L.relations l →
+    vector term l → formula
+\end{lstlisting}
+This would not even result in a nested inductive type.
+However, we found it more convenient to adapt operations and proofs from \lil{preterm} to \lil{preformula} using our definition.
+Using vectors results in some extra proof steps for reasoning about vectors.
+Our approach also results in some extra proof steps, but they are the same as the steps in the corresponding proofs for preterms.
+
+We use de Bruijn indices to avoid variable shadowing. This means that the variable \lil{&m} under \lil{k} is bound if $m<k$ and otherwise represents the $(m-k)$-th free variable.
+We define the usual operations of lifting and substitution for terms and formulas, needed when using de Bruijn variables.
+We use the notation \lil{t ↑' n # m} to mean the preterm of preformula \lil{t} where all variables which are at least \lil{m} are increased by \lil{n}.
+The lift \lil{t ↑' n # 0} is abbreviated to \lil{t ↑ n}.
+The substitution \lil{t[s // n]} is defined to be the term or formula \lil{t} where all variables that represent the \lil{n}-th free variable are replaced by \lil{s}.
+More specifically, if an occurrence of a variable \lil{&(n+k)} is under \lil{k} quantifiers, then it is replaced by \lil{s ↑ (n+k)}.
+Variables \lil{&m} for $m>n+k$ are replaced by \lil{&(m-1)}.
+
+Our proof system is a natural deduction calculus, and all rules are motivated to work well with backwards-reasoning. The type of proof trees is given by the following inductive family of types:
+\begin{lstlisting}
+inductive prf :
+    set (formula L) → formula L → Type u
+| axm Γ A : A ∈ Γ → prf Γ A
+| impI Γ A B : prf (insert A Γ) B →
+    prf Γ (A ⟹ B)
+| impE Γ A B : prf Γ (A ⟹ B) → prf Γ A →
+    prf Γ B
+| falsumE Γ A : prf (insert ∼A Γ) ⊥ → prf Γ A
+| allI Γ A : prf ((λ f, f ↑ 1) '' Γ) A →
+    prf Γ (∀' A)
+| allE₂ Γ A t : prf Γ (∀' A) →
+    prf Γ (A[t // 0])
+| ref Γ t : prf Γ (t ≃ t)
+| subst₂ Γ s t f : prf Γ (s ≃ t) →
+    prf Γ (f[s // 0]) → prf Γ (f[t // 0])
+\end{lstlisting}
+In \lil{allI} the notation \lil{(λ f, f ↑ 1) '' Γ} means lifting all free variables in \lil{Γ} by one.
+A term of type \lil{prf Γ A}, denoted \lil{Γ ⊢ A}, is a proof tree encoding a derivation of $A$ from $\Gamma$.
+We also define provability as the proposition stating that a proof tree exists.
+\begin{lstlisting}
+def provable (Γ : set (formula L)) (f : formula L) : Prop :=
+nonempty (prf Γ f)
+\end{lstlisting}
+Our current formalization does not use proof trees in an essential way, but we defined them so that we can define manipulations on proof trees (like detour elimination) in future projects.
+We prove various meta-theoretic properties about provability, like weakening and the substitution theorem.
+\begin{lstlisting}
+def weakening : Γ ⊆ Δ → Γ ⊢ A → Δ ⊢ A
+def substitution : Γ ⊢ A →
+    (λ f, f[s // n]) '' Γ ⊢ A[s // n]
+\end{lstlisting}
 \subsection{ZFC}
 \label{subsection:fol:zfc}
 
@@ -210,12 +370,60 @@ set theory as a first-order language and ZFC as a first-order theory. Statement 
 \section{Boolean-valued semantics}
 \label{section:boolean-semantics}
 
-boolean-valued semantics, boolean-valued soundness,
+A \textbf{complete Boolean algebra} is a type $\B$ equipped with the structure of a Boolean algebra and additionally operations $\operatorname{Inf}$ and $\operatorname{Sup}$ (which we write as $\bigsqcap$ and $\bigsqcup$) returning the infimum and supremum of an arbitrary collection of members of $\B$.
+We use $\sqcap, \sqcup, \implies, \top$, and $\bot$ to denote meet, join, material implication, and top/bottom elements.
+For more details on complete Boolean algebras, we refer the reader to the textbook of Halmos-Givant \cite{givant2008introduction}.
+
+\begin{defn}\label{def-boolean-valued-structure}
+  Fix a language $L$ and a complete Boolean algebra $\B$. A \textbf{$\B$-valued structure} is a type $M$ with realizations of all functions and relations in the language and a $\B$-valued congruence relation for equality. More precisely, it is an instance of the following structure:
+  \begin{lstlisting}
+structure bStructure (L : Language.{u}) :=
+(carrier : Type u)
+(fun_map {n} : L.functions n →
+    vector carrier n → carrier)
+(rel_map {n} : L.relations n →
+    vector carrier n → 𝔹)
+(eq : carrier → carrier → 𝔹)
+(eq_refl (x) : eq x x = ⊤)
+(eq_symm (x y) : eq x y = eq y x)
+(eq_trans (x y z) : eq x y ⊓ eq y z ≤ eq x z)
+(fun_congr {n} (f : L.functions n)
+    (x y : vector carrier n) :
+    ⨅(map2 eq x y) ≤
+    eq (fun_map f x) (fun_map f y))
+(rel_congr {n} (R : L.relations n)
+    (x y : vector carrier n) :
+    ⨅(map2 eq x y) ⊓ rel_map R x ≤
+    rel_map R y)
+\end{lstlisting}
+Above, ``\lstinline{⨅(map2 eq x y)}'' means ``the infimum of the list whose $i$th entry is \lil{eq} applied to \lil{x[i]} and \lil{y[i]}''.
+\end{defn}
+
+Given a preterm \lil{t} in the language, we can realize it in any $\B$-valued structure $M$.
+For this, we need to know the free variables in \lil{t}.
+To do this conveniently with de Bruijn variables, we say that a (pre)term \lil{t} is \emph{bounded by \lil{l}} if all free variables are less than \lil{l} (i.e. all variables under \lil{k} quantifiers are less than \lil{k+l}).
+Given \lil{t : preterm n} which is bounded by \lil{l}, and a realization \lil{v : vector M l} of the free variables, we define the realization $\llbracket t \rrbracket_M^v : M^n \to M$ by structural recursion on $t$.
+
+For a formula $\varphi$ we do the same: we define bounded (pre)formulae, and define an realization $\llbracket \varphi \rrbracket_M^v : M^n \to \B$ by structural recursion.
+If $\varphi$ is a sentence, the realization in a structure is just a element of the boolean algebra: $\llbracket \varphi \rrbracket_M : \B$.
+
+Since the truth values in a boolean-valued model live inside the boolean algebra $\B$ instead of just being true or false, we have to take a little care when stating the soundness theorem for boolean-valued models.
+Usually, a soundness theorem states something like ``if $\varphi$ is provable from hypotheses in $\Gamma$ then in every model where $\Gamma$ holds, $\varphi$ also holds.''
+With boolean truth-values, we need instead state it as an inequality of truth values. This motivates the following definition
+\begin{defn}
+We say that a set of sentences $\Gamma$ \emph{forces a sentence} $\varphi$, written $\Gamma \models_{\B}\varphi$, if for all non-empty $\B$-valued structures $M$ we have $\big(\bigsqcap_{\psi\in\Gamma}\big \llbracket \psi \rrbracket_M)\le\llbracket \varphi \rrbracket_M$.
+\end{defn}
+Using this definition, we can now state the boolean-valued soundness theorem:
+\begin{lstlisting}
+theorem boolean_soundness {Γ : set (sentence L)}
+    {ϕ : sentence L} : Γ ⊢ ϕ → Γ ⊨[𝔹] ϕ
+\end{lstlisting}
+The proof is a straightforward structural induction.
 
 \subsection{Boolean valued models of ZFC}
 \label{subsection:fol:bset}
 
-boolean-valued model of ZFC
+
 
 \section{Collapse forcing}
 % note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
