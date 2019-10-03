@@ -87,6 +87,13 @@
 \newtheorem{defn}{Definition}[section]
 \DeclareMathOperator{\cf}{cf}
 
+\usepackage{tikz-cd}
+
+\newcommand{\ZFC}{\mathsf{ZFC}}
+\newcommand{\CH}{\mathsf{CH}}
+\newcommand{\lil}{\lstinline}
+\newcommand{\B}{\mathbb{B}}
+
 \begin{document}
 
 %% Title information
@@ -420,33 +427,186 @@ theorem boolean_soundness {Γ : set (sentence L)}
 \end{lstlisting}
 The proof is a straightforward structural induction.
 
-\subsection{Boolean valued models of ZFC}
+\section{Boolean-valued models of set theory}
 \label{subsection:fol:bset}
-
-
-
-\section{Collapse forcing}
-% note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
-\label{section:collapse}
-
-partial functions in Lean, introduce the collapsing boolean algebra, show omega-closedness.
-
-\section{Forcing} \label{section:forcing}
-\subsection{Boolean-valued models of set theory in dependent type theory}
-
-Our starting point is the Aczel encoding of \(\mathsf{ZFC}\) (\cite{aczel1978type, aczel1986type, aczel1982type}) into dependent type theory, later implemented in Coq by Werner \cite{werner1997sets}, and in Lean's \lstinline{mathlib} by Carneiro \cite{mario1}. The idea is to take a type universe \lstinline{Type u} and imitate the cumulative hierarchy construction by an inductive type:
-\begin{lstlisting}
+\paragraph{The Aczel encoding}
+Our starting point is the Aczel encoding of \(\mathsf{ZFC}\) (\cite{aczel1978type, aczel1986type, aczel1982type}) into dependent type theory, later implemented in Coq by Werner \cite{werner1997sets}, and in Lean's \lstinline{mathlib} by Carneiro \cite{mario1}. The idea is to take a type universe \lstinline{Type u} and imitate the cumulative hierarchy construction with an inductive type:
+\begin{lstlisting}[breaklines, basicstyle=\ttfamily\small]
 inductive pSet : Type (u+1)
 | mk (α : Type u) (A : α → pSet) : pSet
 \end{lstlisting}
-Note that \lstinline{mk empty empty.elim} always exists, and plays the same role as \(\emptyset\) at the bottom of the cumulative hierarchy.
+Note that \lstinline{∅ := (pSet.mk empty empty.elim : pSet)} always exists, and plays the same role as the empty set at the bottom of the cumulative hierarchy. In order for the axiom of extensionality to hold, \lstinline{pSet} must be quotiented by \emph{extensional equivalence}, which is defined by structural recursion:
 
+\begin{lstlisting}[basicstyle=\ttfamily\small]
+def equiv : ∀ (x y : pSet), Prop
+| ⟨α,A⟩ ⟨β,B⟩ := (∀a : α, ∃b : β, equiv (A a) (B b)) ∧ (∀b : β, ∃a : α, equiv (A a) (B b))
+\end{lstlisting}
 
+It is easy to furthermore define membership from equivalence and check that modulo extensional equivalence, \lstinline{pSet} is a model of \(\mathsf{ZFC}\).
+
+\paragraph{Two roads to \lstinline{bSet}} We describe two ways by which one can start at the ordinary model of \(\mathsf{ZFC}\) \lstinline{pSet} and end with a Boolean-valued model \lstinline{bSet}.
+
+First, note that we can construct a model of \(\mathsf{ZFC}\) roughly equivalent to \lstinline{pSet} as follows:
+
+\begin{lstlisting}[breaklines, basicstyle=\ttfamily\small]
+inductive bSet : Type (u+1)
+| mk (α : Type u) (A : α → bSet)
+  (B : α → bool): bSet
+\end{lstlisting}
+
+At first glance, \lstinline{bSet} adds large amounts of unnecessary information---while with \lstinline{pSet}, anything pointed to by an indexing function \lstinline{A} is a member of a set, \lstinline{bSet} only counts what is also assigned \lstinline{tt : bool}---and we can reconstruct \lstinline{pSet} from \lstinline{bSet} by recursively discarding anything which is assigned \lstinline{ff : bool} anyways. However, if we remember that \lstinline{bool} is a complete Boolean algebra \lstinline{⟨bool, ⊤, ⊥, ⊓, ⊔, ⨅,⨆, ⟹⟩}, then an upshot of the definition of \lstinline{bSet} is that we can replace the obvious analogue of \lstinline{equiv}
+\begin{lstlisting}[breaklines, basicstyle=\ttfamily\small]
+def equiv : ∀ (x y : bSet), Prop
+| ⟨α,A,A'⟩ ⟨β,B,B'⟩ := (∀ a : α, A' a = tt → ∃ b : β, B' b = tt ∧ equiv₁ (A a) (B b)) ∧ (∀b : β, B' b = tt → ∃ a : α, A' a = tt ∧ equiv₁ (A a) (B b))
+\end{lstlisting}
+with a version which avoids propositional operations and only uses the operations of a complete Boolean algebra:\footnote{Assuming \lstinline{Prop ≃ bool}, which is provable using classical logic in Lean.}
+\begin{lstlisting}[basicstyle=\ttfamily\small]
+def equiv₂ : ∀ (x y : bSet), bool
+| ⟨α,A,A'⟩ ⟨β,B,B'⟩ := ⨅ a : α, A' a ⟹ ⨆ b : β, B' b ⊓ equiv₂ (A a) (B b) ⊓  ⨅ b : β, B' b ⟹ ⨆ a : α, A' a ⊓ equiv₂ (A a) (B b)
+\end{lstlisting}
+Since this definition only interfaces with the typeclass of complete Boolean algebras, we can replace \lstinline{bool} by an arbitrary complete Boolean algebra \lstinline{𝔹} throughout, yielding: % note(jesse, October 03 2019, 05:06 PM): maybe should emphasize definition of membership instead of equality to make it clear that these things are Boolean-valued models of ZFC
+\begin{lstlisting}[breaklines, basicstyle=\ttfamily\small]
+inductive bSet (𝔹 : Type u) [complete_boolean_algebra 𝔹]: Type (u+1)
+| mk (α : Type u) (A : α → bSet)
+  (B : α → bool): bSet
+\end{lstlisting}
+which we later verify is a \(\mathbb{B}\)-valued model of \(\ZFC\).
+
+Second, we observe that the Aczel encoding is closely related to the recursive \emph{name}-construction from forcing, a key ingredient to building forcing extensions. Let \(\mathbb{P}\) be a poset. From e.g. Kunen \cite{kunen2014set}, Definition IV.2.5:
+
+\begin{definition}
+  A set \(\tau\) is a \(\mathbb{P}\)-name iff \(\tau\) is a relation and \(\forall \langle  \sigma, p\rangle \in \tau, \sigma \text{ is a \(\mathbb{P}\)-name and } p \in \mathbb{P}\).
+\end{definition}
+
+In particular, if \(\mathbb{P}\) is the singleton poset, then a \(\mathbb{P}\)-name is a set of \(\mathbb{P}\)-names, in the same way that a term of type \lstinline{pSet} is a type-indexed collection of terms of type \lstinline{pSet}. Reversing this observation, we replace \(\mathbb{P}\) with a complete Boolean algebra \(\mathbb{B}\) and generalize the definition of \lstinline{pSet.mk} with a third field, so that as in the case of \(\mathbb{P}\)-names, every element of a set is assigned an element (a ``Boolean truth-value'') of \(\mathbb{B}\):
+
+\begin{lstlisting}[breaklines, basicstyle=\ttfamily\small]
+inductive bSet {𝔹 : Type u) : Type (u+1)
+| mk (α: Type u) (A: α → bSet) (B: α→ 𝔹) : bSet
+\end{lstlisting}
 % Whatever is important in \lstinline{bvm}, \lstinline{bvm_extras}, \lstinline{bvm_extras2} for this argument.
+
+Thus, \lstinline{bSet 𝔹} should be thought of as the type of \lstinline{𝔹}-names.
+
+[...]
+
+We summarize the relationship between the three ``large'' types currently in play:
+\[
+  \begin{tikzcd}
+    % & \text{\lstinline{Type u+1}} & & \\
+    \texttt{pSet} \arrow{rr}{\texttt{check}} & & \texttt{bSet } \mathbb{B} & \\
+    & & & \\
+    \texttt{ordinal.\{u\}} \arrow{uu}{\texttt{ordinal.mk}} \arrow{uurr} & & & % \\
+    % \hspace{0mm}  \arrow[dashed, no head]{rrr } & & & \hspace{0mm} \\
+    % & \mathbb{B} & & \\
+    % & \text{\lstinline{Type u}} & &
+  \end{tikzcd}
+\]
+
+We spell out the name of Lean ordinals and cardinals, and use (checked) Hebrew letters for their (Boolean-valued) set-theoretic counterparts, so that with respect to the above diagram, we have:
+\[
+  \begin{tikzcd}
+    % & \text{\lstinline{Type u+1}} & & \\
+    \aleph_1 \arrow[mapsto]{rr}{\text{\lstinline{check}}} & & \check{\aleph_1} & \\
+    & & & \\
+    \text{\lstinline{(aleph 1)}} \arrow[mapsto]{uu}{\texttt{ordinal.mk}} \arrow[mapsto]{uurr} & & & % \\
+    % \hspace{0mm}  \arrow[dashed, no head]{rrr } & & & \hspace{0mm} \\
+    % & \mathbb{B} & & \\
+    % & \text{\lstinline{Type u}} & &
+  \end{tikzcd}
+\]
+
+
+% TODO(jesse): add a note in the introduction on how Dana Scott was the first one to point out that the names could be taken at face value as a model of ZFC if one was willing to shift to a many-valued logic instead.
+
+
+\section{Forcing} \label{section:forcing}
+Our point of departure from conventional accounts of forcing with a poset \(\mathbb{P}\) over a countable transitive model \cite{kunen2014set, jech2013set}, which use a generic filter to ``evaluate'' the \lstinline{ℙ}-names and produce an ordinary model of \(\ZFC\), is to force with \emph{Boolean-valued models} of \(\ZFC\) instead. As initially observed by Scott and Solovay \cite{scott-solovay}, this obviates the need for countable transitive models, generic filters, or the truth and definability lemmas, and allows us to work only with the \lstinline{𝔹}-names.
+
+However, the cost of taking the \lstinline{𝔹}-names at face value is that we must work with them as a \(\mathbb{B}\)-valued model (c.f. \ref{def-bModel}) of \(\mathsf{ZFC}\).
+
+\subsection{Regular open algebras}
+\begin{definition}
+  Let $X$ be a topological space, and for any open set $U$, let $U^\perp$ denote the complement of the closure of $U$. The \textbf{regular open algebra} of a topological space $X$, written $\operatorname{RO}(X)$, is the collection of all open sets $U$ such that $U = (U^\perp)^\perp$, equipped with the structure of a complete Boolean algebra, with $x \sqcap y := x \cap y$, $x \sqcup y := ((x \cup y)^\perp)^\perp$, $\neg x := x^\perp$, and $\bigsqcup x_i := ((\bigcup x_i)^\perp)^\perp$.
+\end{definition}
+
+\subsection{Cohen forcing}
+\begin{definition}
+  The \textbf{Cohen poset} for adding $\aleph_2$-many Cohen reals is the collection of all finite partial functions $\aleph_2 \times \mathbb{N} \to \mathbf{2}$, ordered by reverse inclusion.
+\end{definition}
+
+In the formalization, the Cohen poset is represented as a \lstinline{structure} with three fields:
+\begin{lstlisting}[breaklines, basicstyle=\ttfamily\small]
+structure 𝒞 : Type :=
+  (ins : finset (ℵ₂.type × ℕ))
+  (out : finset (ℵ₂.type × ℕ))
+  (H : ins ∩ out = ∅)
+\end{lstlisting}
+
+%TODO(jesse): reword
+That is, we identify a finite partial function $f$ with the triple \lil{⟨f.ins, f.out, f.H⟩}, where \lil{f.ins} is the preimage of $\{1\}$, \lil{f.out} is the preimage of $\{0\}$, and \lil{f.H} ensures well-definedness. While $f$ is usually defined as a finite partial function, we found that in practice $f$ is really only needed to give a finite partial specification of a subset of $\aleph_2 \times \mathbb{N}$ (i.e. a finite set \lil{f.ins} which \emph{must} be in the subset, and a finite set \lil{f.out} which \emph{must not} be in the subset), and chose this representation to make that information immediately accessible.
+
+The Boolean algebra which we will use for forcing $\neg\mathsf{CH}$ is $\operatorname{RO}(2^{\aleph_2 \times \mathbb{N}})$. Unless stated otherwise, for the rest of this section, we put $\B := \operatorname{RO}(2^{\aleph_2 \times \mathbb{N}})$.
+
+\begin{definition}
+  We define the \textbf{canonical embedding} of the Cohen poset into $\B$ as follows:
+  \begin{lstlisting}
+def ι : 𝒞 → 𝔹 := λ p, {S | p.ins ⊆ S ∧ p.out ⊆ - S}
+\end{lstlisting}
+\end{definition}
+That is, we send each \lil{c : 𝒞} to all the subsets which satisfy the specification given by \lil{c}. This is a clopen set, hence regular. Crucially, this embedding is \emph{dense}:
+\begin{lstlisting}
+lemma 𝒞_dense {b : 𝔹} (H : ⊥ < b) : ∃ p : 𝒞, ι p ≤ b
+\end{lstlisting}
+Recalling that $\leq$ in $\B$ is subset-inclusion, we see that this is essentially because the image of $\iota : \mathcal{C} \to \B$ \emph{is} the standard basis for the product topology. Our chosen encoding of the Cohen poset also made it easier to perform this identification when formalizing this proof.
+
+\subsection{Collapse forcing} \label{subsection:collapse}
+% note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
+
+Whereas Cohen forcing creates a new injection \(\aleph_2 \hookrightarrow \mathcal{P}(\omega)\), we can use collapse forcing to create a new surjection \(\aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\).
+
+\begin{definition}\label{def-collapse-poset}
+  We define \lstinline{ℙ_collapse} to be the poset of countable partial functions \(\aleph_1 \to \mathcal{P}(\omega)\). The principal open sets \[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \hspace{2mm} | \hspace{2mm} g \text{ extends } p\} , \hspace{3mm} p \in \mathbb{P}_{\text{collapse}}\] form the basis of a topology \(\tau\) (finer than the product topology) on the function set \(\mathcal{P}(\omega)^{\aleph_1}\). Put \lstinline{𝔹_collapse :=} \(\operatorname{RO}\left(\mathcal{P}(\omega)^{\aleph_1}, \tau\right)\).
+\end{definition}
+
+\begin{itemize}
+ \item To specify the surjection \(\aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\), need to specify a subset of the powerset \(\mathcal{P}(\aleph_1 \times \mathcal{P}(\omega))\).
+
+ \item Let \(p(\nu, S)\) be the (singleton) countable partial function which sends \(\nu : \aleph_1\) to \(S : \mathcal{P}(\omega)\).
+
+ \item Then we can check that the indicator function
+\[ (\nu, S) \mapsto D_{p(\nu,S)}, \]
+induces a surjection in \lstinline{bSet 𝔹_collapse} from \(\check{\aleph_1}\) to \(\check{\mathcal{P}(\omega)}\).
+
+ \item Then it remains to check that \(\check{\aleph_1} = \aleph_1\) and \(\mathcal{P}(\omega) = \check{\mathcal{P}(\omega)}\)  
+\end{itemize}
+
+\paragraph{Function reflection}
+
+This follows from the following property: for any \lstinline{y : pSet}, and for any \lstinline{f : bSet 𝔹_collapse}, if \lstinline{bSet 𝔹_collapse} thinks that \(f : \check{\omega}  \to \check{y}\) is a function, then there exists a \(g : \omega \to y\) *in* \lstinline{pSet} such that \(\check{g} = \check{f}\).
+
+As before, reflect a boolean-valued \(\forall \exists\) statement into the metatheory. The following lemma is always true:
+%TODO(jesse): make this bigger
+\begin{lstlisting}[breaklines, basicstyle=\ttfamily\footnotesize]
+lemma AE_of_check_func_check (x y : pSet.{u}) {f : bSet 𝔹} {Γ : 𝔹}
+  (H : Γ ≤ is_func' (x̌) (y̌) f) (H_nonzero : ⊥ < Γ) :
+  Π (i : x.type),
+    ∃ (j : y.type ) (Γ' : 𝔹) (H_nonzero' : ⊥ < Γ') (H_le : Γ' ≤ Γ),
+      Γ' ≤ (is_func' (x̌) (y̌) f) ∧ Γ' ≤ (pair ((x.func i)̌ ) ((y.func j)̌ )) ∈ᴮ f :=
+\end{lstlisting}
+
+Recursively applying this lemma, obtain values \(g_0, \dots, g_n, \dots\) such that
+
+\[\bot < \dots < \left(\bigsqcap_{k \leq n} ((k, g_k) \in^{\mathbb{B}} g)\right) < \cdots < ((0 , g_0) \in^{\mathbb{B}} g)\]
+
+The intersection of this chain thinks that \(g\) is the required lift of \(f\). In general, this intersection might be empty, but it is nonempty for \lstinline{𝔹_collapse}, (essentially) because the union of a chain of countable partial functions is again a countable partial function. By a denseness argument, \(g\) has the required property.
+
+% partial functions in Lean, introduce the collapsing boolean algebra, show omega-closedness.
+
 
 \subsection{Construction of $\aleph_1$} \label{subsection:forcing:aleph-1}
 
-Construction of $\aleph_1$.
+% Construction of $\aleph_1$.
 
 \subsection{The independence of CH} \label{subsection:forcing:independence}
 
