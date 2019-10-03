@@ -2,7 +2,7 @@
 \documentclass[sigplan,10pt,review, anonymous]{acmart}
 
 % note(jesse, October 01 2019, 04:00 PM): I'm getting weird typesetting authors when the `anonymous' option is removed
-
+ 
 % add: anonymous
 \settopmatter{printfolios=true,printccs=false,printacmref=false}
 %% For double-blind review submission, w/ CCS and ACM Reference
@@ -63,6 +63,14 @@
                         %% http://ctan.org/pkg/booktabs
 \usepackage{subcaption} %% For complex figures with subfigures/subcaptions
 %% http://ctan.org/pkg/subcaption
+
+\usepackage{color}
+\definecolor{keywordcolor}{rgb}{0.7, 0.1, 0.1}   % red
+\definecolor{tacticcolor}{rgb}{0.1, 0.2, 0.6}    % blue
+\definecolor{commentcolor}{rgb}{0.4, 0.4, 0.4}   % grey
+\definecolor{symbolcolor}{rgb}{0.0, 0.1, 0.6}    % blue
+\definecolor{sortcolor}{rgb}{0.1, 0.5, 0.1}      % green
+\definecolor{attributecolor}{rgb}{0.7, 0.1, 0.1} % red
 
 \usepackage{listings}
 \def\lstlanguagefiles{lstlean.tex}
@@ -163,7 +171,7 @@ Text of abstract \ldots. %TODO
 %TODO
 %% Keywords
 %% comma separated list
-\keywords{keyword1, keyword2, keyword3}  %% \keywords are mandatory in final camera-ready submission
+\keywords{forcing, formal proof, independence, continuum hypothesis}  %% \keywords are mandatory in final camera-ready submission
 
 
 %% \maketitle
@@ -204,7 +212,7 @@ set theory as a first-order language and ZFC as a first-order theory. Statement 
 
 boolean-valued semantics, boolean-valued soundness,
 
-\subsection{Boolean valued sets}
+\subsection{Boolean valued models of ZFC}
 \label{subsection:fol:bset}
 
 boolean-valued model of ZFC
@@ -215,17 +223,24 @@ boolean-valued model of ZFC
 
 partial functions in Lean, introduce the collapsing boolean algebra, show omega-closedness.
 
-\section{Forcing}
-\label{section:forcing}
-Whatever is important in \lstinline{bvm}, \lstinline{bvm_extras}, \lstinline{bvm_extras2} for this argument.
+\section{Forcing} \label{section:forcing}
+\subsection{Boolean-valued models of set theory in dependent type theory}
 
-\subsection{Construction of $\aleph_1$}
-\label{subsection:forcing:aleph-1}
+Our starting point is the Aczel encoding of \(\mathsf{ZFC}\) (\cite{aczel1978type, aczel1986type, aczel1982type}) into dependent type theory, later implemented in Coq by Werner \cite{werner1997sets}, and in Lean's \lstinline{mathlib} by Carneiro \cite{mario1}. The idea is to take a type universe \lstinline{Type u} and imitate the cumulative hierarchy construction by an inductive type:
+\begin{lstlisting}
+inductive pSet : Type (u+1)
+| mk (α : Type u) (A : α → pSet) : pSet
+\end{lstlisting}
+Note that \lstinline{mk empty empty.elim} always exists, and plays the same role as \(\emptyset\) at the bottom of the cumulative hierarchy.
+
+
+% Whatever is important in \lstinline{bvm}, \lstinline{bvm_extras}, \lstinline{bvm_extras2} for this argument.
+
+\subsection{Construction of $\aleph_1$} \label{subsection:forcing:aleph-1}
 
 Construction of $\aleph_1$.
 
-\subsection{The independence of CH}
-\label{subsection:forcing:independence}
+\subsection{The independence of CH} \label{subsection:forcing:independence}
 
 The final argument to show that this particular model satisfies CH.
 
@@ -250,10 +265,8 @@ Future work: construction of L, ZFC without function symbols, parser and better 
   No.~\grantnum{GS100000001}{G-2018-10067}.
 \end{acks}
 
-
 %% Bibliography
 \bibliography{flypitch-cpp}
-
 
 %% Appendix
 \appendix
