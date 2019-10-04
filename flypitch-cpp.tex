@@ -607,7 +607,21 @@ The intersection of this chain thinks that \(g\) is the required lift of \(f\). 
 
 \subsection{The independence of CH} \label{subsection:forcing:independence}
 
-The final argument to show that this particular model satisfies CH.
+\begin{lstlisting}
+theorem CH_unprovable_from_ZFC : ¬ (ZFC' ⊢' CH_sentence) :=
+unprovable_of_model_neg (V 𝔹_cohen) fundamental_theorem_of_forcing
+  (nontrivial.bot_lt_top) V_𝔹_cohen_models_neg_CH
+
+theorem neg_CH_unprovable_from_ZFC : ¬ (ZFC' ⊢' ∼CH_sentence) :=
+unprovable_of_model_neg (V 𝔹_collapse) fundamental_theorem_of_forcing
+  (nontrivial.bot_lt_top) (by {rw forced_in_not, from V_𝔹_collapse_models_CH})
+
+def independent {L : Language} (T : Theory L) (f : sentence L) : Prop :=
+¬ (T ⊢' f ∨ T ⊢' ∼f)
+
+theorem independence_of_CH : independent ZFC' CH_sentence :=
+finish[independent, CH_unprovable_from_ZFC, neg_CH_unprovable_from_ZFC]
+\end{lstlisting}
 
 \section{Related Work}
 \label{section:related-work}
