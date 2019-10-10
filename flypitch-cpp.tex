@@ -76,7 +76,6 @@
 \def\lstlanguagefiles{lstlean.tex}
 \lstset{language=lean,breakatwhitespace,xleftmargin=0pt, basicstyle=\ttfamily\small}
 \usepackage{stmaryrd}
-% \usepackage{mathtools} % for \vcentcolon
 \newcommand{\B}{\mathbb{B}}
 \newcommand{\lil}{\lstinline}
 \newcommand{\N}{\mathbb{N}}
@@ -398,9 +397,9 @@ where \(\Ord(x)\) means ``\(x\) is an ordinal'' and \(x \le y\) means that there
 \section{Boolean-valued semantics}
 \label{section:boolean-semantics}
 
-A \textbf{complete Boolean algebra} is a type $\B$ equipped with the structure of a Boolean algebra and additionally operations $\operatorname{Inf}$ and $\operatorname{Sup}$ (which we write as $\bigsqcap$ and $\bigsqcup$) returning the infimum and supremum of an arbitrary collection of members of $\B$.
+A \textbf{complete Boolean algebra} is a boolean algebra $\B$ with as additional operations the infimum $\bigsqcap$ and supremum $\bigsqcup$ of any subset of $\B$.
 We use $\sqcap, \sqcup, \implies, \top$, and $\bot$ to denote meet, join, material implication, and top/bottom elements.
-For more details on complete Boolean algebras, we refer the reader to the textbook of Halmos-Givant \cite{givant2008introduction}.
+For more details on complete Boolean algebras, we refer the reader to the textbook of Halmos-Givant~\cite{givant2008introduction}.
 
 \begin{defn}\label{def-boolean-valued-structure}
   Fix a language $L$ and a complete Boolean algebra $\B$. A \textbf{$\B$-valued structure} is a type $M$ with realizations of all functions and relations in the language and a $\B$-valued congruence relation for equality. More precisely, it is an instance of the following structure:
@@ -424,7 +423,7 @@ structure bStructure (L : Language.{u}) :=
     ⨅(map2 eq x y) ⊓ rel_map R x ≤
     rel_map R y)
 \end{lstlisting}
-Above, ``\lstinline{⨅(map2 eq x y)}'' means ``the infimum of the list whose $i$th entry is \lil{eq} applied to \lil{x[i]} and \lil{y[i]}''.
+Here ``\lstinline{⨅(map2 eq x y)}'' means ``the infimum of the list whose $i$-th entry is \lil{eq (x[i]) (y[i])}''.
 \end{defn}
 
 Given a preterm \lil{t} in the language, we can realize it in any $\B$-valued structure $M$.
@@ -457,7 +456,6 @@ inductive pSet : Type (u+1)
 | mk (α : Type u) (A : α → pSet) : pSet
 \end{lstlisting}
 Note that \lstinline{∅ := (pSet.mk empty empty.elim : pSet)} always exists, and plays the same role as the empty set at the bottom of the cumulative hierarchy. In order for the axiom of extensionality to hold, \lstinline{pSet} must be quotiented by \emph{extensional equivalence}, which is defined by structural recursion:
-
 \begin{lstlisting}[basicstyle=\ttfamily\small]
 def equiv : ∀ (x y : pSet), Prop
 | ⟨α,A⟩ ⟨β,B⟩ := (∀a : α, ∃b : β, equiv (A a) (B b)) ∧ (∀b : β, ∃a : α, equiv (A a) (B b))
@@ -468,13 +466,11 @@ It is easy to furthermore define membership from equivalence and check that modu
 \paragraph{Two roads to \lstinline{bSet}} We describe two ways by which one can start at the ordinary model of \(\mathsf{ZFC}\) \lstinline{pSet} and end with a Boolean-valued model \lstinline{bSet}.
 
 First, note that we can construct a model of \(\mathsf{ZFC}\) roughly equivalent to \lstinline{pSet} as follows:
-
 \begin{lstlisting}
 inductive bSet : Type (u+1)
 | mk (α : Type u) (A : α → bSet)
   (B : α → bool): bSet
 \end{lstlisting}
-
 At first glance, \lstinline{bSet} adds large amounts of unnecessary information---while with \lstinline{pSet}, anything pointed to by an indexing function \lstinline{A} is a member of a set, \lstinline{bSet} only counts what is also assigned \lstinline{tt : bool}---and we can reconstruct \lstinline{pSet} from \lstinline{bSet} by recursively discarding anything which is assigned \lstinline{ff : bool} anyways. However, if we remember that \lstinline{bool} is a complete Boolean algebra \lstinline{⟨bool, ⊤, ⊥, ⊓, ⊔, ⨅,⨆, ⟹⟩}, then an upshot of the definition of \lstinline{bSet} is that we can replace the obvious analogue of \lstinline{equiv}
 \begin{lstlisting}
 def equiv : ∀ (x y : bSet), Prop
@@ -489,7 +485,7 @@ Since this definition only interfaces with the typeclass of complete Boolean alg
 \begin{lstlisting}
 inductive bSet (𝔹 : Type u) [complete_boolean_algebra 𝔹]: Type (u+1)
 | mk (α : Type u) (A : α → bSet)
-  (B : α → bool): bSet
+  (B : α → 𝔹): bSet
 \end{lstlisting}
 which we later verify is a \(\mathbb{B}\)-valued model of \(\ZFC\).
 
@@ -500,7 +496,6 @@ Second, we observe that the Aczel encoding is closely related to the recursive \
 \end{definition}
 
 In particular, if \(\mathbb{P}\) is the singleton poset, then a \(\mathbb{P}\)-name is a set of \(\mathbb{P}\)-names, in the same way that a term of type \lstinline{pSet} is a type-indexed collection of terms of type \lstinline{pSet}. Reversing this observation, we replace \(\mathbb{P}\) with a complete Boolean algebra \(\mathbb{B}\) and generalize the definition of \lstinline{pSet.mk} with a third field, so that as in the case of \(\mathbb{P}\)-names, every element of a set is assigned an element (a ``Boolean truth-value'') of \(\mathbb{B}\):
-
 \begin{lstlisting}
 inductive bSet {𝔹 : Type u) : Type (u+1)
 | mk (α: Type u) (A: α → bSet) (B: α→ 𝔹) : bSet
@@ -528,7 +523,7 @@ We spell out the name of Lean ordinals and cardinals, and use (checked) Hebrew l
 \[
   \begin{tikzcd}
     % & \text{\lstinline{Type u+1}} & & \\
-    \aleph_1 \arrow[mapsto]{rr}{\text{\lstinline{check}}} & & \check{\aleph_1} & \\
+    \aleph_1 \arrow[mapsto]{rr}{\text{\lstinline{check}}} & & \widecheck{\aleph_1} & \\
     & & & \\
     \text{\lstinline{(aleph 1)}} \arrow[mapsto]{uu}{\texttt{ordinal.mk}} \arrow[mapsto]{uurr} & & & % \\
     % \hspace{0mm}  \arrow[dashed, no head]{rrr } & & & \hspace{0mm} \\
