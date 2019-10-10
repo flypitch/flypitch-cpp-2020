@@ -603,6 +603,7 @@ This follows from the following property: for any \lstinline{y : pSet}, and for 
 
 As before, reflect a boolean-valued \(\forall \exists\) statement into the metatheory. The following lemma is always true:
 %TODO(jesse): make this bigger
+
 \begin{lstlisting}
 lemma AE_of_check_func_check (x y : pSet.{u}) {f : bSet 𝔹} {Γ : 𝔹}
   (H : Γ ≤ is_func' (x̌) (y̌) f) (H_nonzero : ⊥ < Γ) :
@@ -639,7 +640,7 @@ def independent {L : Language} (T : Theory L) (f : sentence L) : Prop :=
 ¬ (T ⊢' f ∨ T ⊢' ∼f)
 
 theorem independence_of_CH : independent ZFC' CH_sentence :=
-finish[independent, CH_unprovable_from_ZFC, neg_CH_unprovable_from_ZFC]
+by finish[independent, CH_unprovable_from_ZFC, neg_CH_unprovable_from_ZFC]
 \end{lstlisting}
 
 \section{Related Work}
