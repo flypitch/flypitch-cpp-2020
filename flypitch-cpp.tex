@@ -539,7 +539,9 @@ We spell out the name of Lean ordinals and cardinals, and use (checked) Hebrew l
 \section{Forcing} \label{section:forcing}
 Our point of departure from conventional accounts of forcing with a poset \(\mathbb{P}\) over a countable transitive model \cite{kunen2014set, jech2013set}, which use a generic filter to ``evaluate'' the \lstinline{ℙ}-names and produce an ordinary model of \(\ZFC\), is to force with \emph{Boolean-valued models} of \(\ZFC\) instead. As initially observed by Scott and Solovay \cite{scott-solovay}, this obviates the need for countable transitive models, generic filters, or the truth and definability lemmas, and allows us to work only with the \lstinline{𝔹}-names.
 
-However, the cost of taking the \lstinline{𝔹}-names at face value is that we must work with them as a \(\mathbb{B}\)-valued model (c.f. \ref{def-bModel}) of \(\mathsf{ZFC}\).
+However, the cost of taking the \lstinline{𝔹}-names at face value is that we must work with them as a \(\mathbb{B}\)-valued model (c.f. \ref{def-bModel}) of \(\mathsf{ZFC}\); equivalently, the calculus of the forcing relation \cite{shoenfield1971unramified}, a key technical tool in usual forcing arguments, is replaced with the calculation of Boolean truth-values in \lstinline{𝔹}.
+
+We always force over a type universe \lil{Type u}, and our Boolean-valued models of \(\mathsf{ZFC}\) are always of the form \lil{bSet 𝔹} for some \lil{𝔹 : Type u}. We have already seen that for every complete Boolean algebra \lil{𝔹}, \lil{bSet 𝔹} is a \lil{𝔹}-valued model of \(\mathsf{ZFC}\). However, concrete choices of \lil{𝔹} can affect the truth-values of particular sentences in \(\mathsf{ZFC}\).
 
 \subsection{Regular open algebras}
 \begin{definition}
@@ -646,7 +648,6 @@ by finish[independent, CH_unprovable_from_ZFC, neg_CH_unprovable_from_ZFC]
 \section{Related Work}
 \label{section:related-work}
 Compare with other formalization on the consistency of CH.
-
 
 \section{Conclusions}
 \label{section:conclusions}
