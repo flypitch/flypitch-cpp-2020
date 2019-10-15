@@ -87,6 +87,7 @@
 \newtheorem{thm}{Theorem}[section]
 \theoremstyle{definition}
 \newtheorem{defn}{Definition}[section]
+\newtheorem{remark}{Remark}[section]
 \DeclareMathOperator{\cf}{cf}
 \DeclareMathOperator{\Ord}{Ord}
 
@@ -500,9 +501,9 @@ which we later verify is a \(\mathbb{B}\)-valued model of \(\ZFC\).
 
 Second, we observe that the Aczel encoding is closely related to the recursive \emph{name}-construction from forcing, a key ingredient to building forcing extensions. Let \(\mathbb{P}\) be a poset. From e.g. Kunen \cite{kunen2014set}, Definition IV.2.5:
 
-\begin{definition}
+\begin{defn}
   A set \(\tau\) is a \(\mathbb{P}\)-name iff \(\tau\) is a relation and \(\forall \langle  \sigma, p\rangle \in \tau, \sigma \text{ is a \(\mathbb{P}\)-name and } p \in \mathbb{P}\).
-\end{definition}
+\end{defn}
 
 In particular, if \(\mathbb{P}\) is the singleton poset, then a \(\mathbb{P}\)-name is a set of \(\mathbb{P}\)-names, in the same way that a term of type \lstinline{pSet} is a type-indexed collection of terms of type \lstinline{pSet}. Reversing this observation, we replace \(\mathbb{P}\) with a complete Boolean algebra \(\mathbb{B}\) and generalize the definition of \lstinline{pSet.mk} with a third field, so that as in the case of \(\mathbb{P}\)-names, every element of a set is assigned an element (a ``Boolean truth-value'') of \(\mathbb{B}\):
 \begin{lstlisting}
@@ -546,21 +547,38 @@ We spell out the name of Lean ordinals and cardinals, and use (checked) Hebrew l
 
 
 \section{Forcing} \label{section:forcing}
-Our point of departure from conventional accounts of forcing with a poset \(\mathbb{P}\) over a countable transitive model \cite{kunen2014set, jech2013set}, which use a generic filter to ``evaluate'' the \lstinline{ℙ}-names and produce an ordinary model of \(\ZFC\), is to force with \emph{Boolean-valued models} of \(\ZFC\) instead. As initially observed by Scott and Solovay \cite{scott-solovay}, this obviates the need for countable transitive models, generic filters, or the truth and definability lemmas, and allows us to work only with the \lstinline{𝔹}-names.
+Our point of departure from conventional accounts of forcing with a poset \(\mathbb{P}\) over a countable transitive model \cite{kunen2014set, jech2013set}, which use a generic filter to ``evaluate'' the \lstinline{ℙ}-names and produce an ordinary model of \(\ZFC\), is to force with \emph{Boolean-valued models} of \(\ZFC\) instead. As first observed by Scott and Solovay \cite{scott-solovay}, this obviates the need for countable transitive models, generic filters, or the truth and definability lemmas, and allows us to work only with the \lstinline{𝔹}-names.
 
 The cost of taking the \lstinline{𝔹}-names at face value is that the calculus of the forcing relation \cite{shoenfield1971unramified}, a key technical tool in usual forcing arguments, is replaced by the calculation of Boolean truth-values in \lstinline{𝔹}. From the Boolean-valued perspective, forcing a sentence \(\Phi\) in the language of \(\mathsf{ZFC}\) means constructing some \lil{𝔹} and a \lil{𝔹}-valued model \(M\) of \(\ZFC\) such that the truth value \(\Phi^{M}\) of \(\Phi\) is \(\top\). We will always force over a type universe \lil{Type u}, and our Boolean-valued models of \(\mathsf{ZFC}\) are always of the form \lil{bSet 𝔹} for some \lil{𝔹 : Type u}. That \lil{𝔹} belongs to {Type u} is crucial for forcing, as specific choices of \lil{𝔹} will affect the structure of \lil{bSet 𝔹} (and hence the truth-value of \(\Phi\)). % However, the effects of a particular choice of \lil{𝔹} is often only easily determined on the check-names, and a deeper combinatorial analysis of \lil{𝔹} is required to complete the argument.
 
-In this section, we describe two forcing arguments, one for \(\neg \CH\) and another for \(\CH\). Both follow roughly the same pattern. In both cases, we require the existence of a function (for \(\neg \CH\), an injection \(\aleph_2 \hookrightarrow \mathcal{P}(\omega)\), and for \(\CH\), a surjection \(\aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\).) We will construct a \lil{𝔹} which encodes the construction (in \lil{Type u}) of such a function \(F\). Then \lil{𝔹} induces in \lil{bSet 𝔹} an approximation \(\widetilde{F}\) to such a function, which \emph{a priori} is only between check-names. To finish the forcing argument, we must show that it suffices to work with \(\widetilde{F}\). This requires a careful study of how truth-values are calculated in \lil{bSet 𝔹}, and ultimately reduces to an analysis of how truth-values in \lil{bSet 𝔹} can be reflected \emph{back} to \lil{Type u}, and verifying a combinatorial condition on \lil{𝔹}.
+In this section, we describe two forcing arguments, one for \(\neg \CH\) and another for \(\CH\). Both follow roughly the same pattern. In both cases, we require the existence of a function (for \(\neg \CH\), an injection \(\aleph_2 \hookrightarrow \mathcal{P}(\omega)\), and for \(\CH\), a surjection \(\aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\).) We will construct a \lil{𝔹}  which encodes the construction (in \lil{Type u}) of such a function \(F\). Then \lil{𝔹} induces in \lil{bSet 𝔹} an approximation \(\widetilde{F}\) to such a function, which \emph{a priori} is only between check-names. To finish the forcing argument, we must show that it suffices to work with \(\widetilde{F}\). This requires a careful study of how truth-values are calculated in \lil{bSet 𝔹}, and ultimately reduces to an analysis of how truth-values in \lil{bSet 𝔹} can be reflected \emph{back} to \lil{Type u}, and verifying a combinatorial condition on \lil{𝔹}.
 
 \subsection{Regular open algebras}
-\begin{definition}
+\begin{defn}\label{def-regular-open-algebra}
   Let $X$ be a topological space, and for any open set $U$, let $U^\perp$ denote the complement of the closure of $U$. The \textbf{regular open algebra} of a topological space $X$, written $\operatorname{RO}(X)$, is the collection of all open sets $U$ such that $U = (U^\perp)^\perp$, equipped with the structure of a complete Boolean algebra, with $x \sqcap y := x \cap y$, $x \sqcup y := ((x \cup y)^\perp)^\perp$, $\neg x := x^\perp$, and $\bigsqcup x_i := ((\bigcup x_i)^\perp)^\perp$.
-\end{definition}
+\end{defn}
+
+While forcing conditions usually present themselves as a poset instead of a complete Boolean algebra, any forcing poset can be represented as the dense suborder of a regular open algebra \cite{moore2019method}.
+
+\begin{defn}\label{def-dense-suborder}
+  A \textbf{dense suborder} of \(\B\) is a subset \(\mathbb{P} \subseteq \B\) satisfying the following conditions: (1) for all \(p \in \mathbb{P}\), \(\bot < p\); (2) for all \(\bot < b \in \B\), there exists a \(p \in \mathbb{P}\) such that \(p \leq b\).
+\end{defn}
+
+\begin{defn}\label{def-ccc}
+We say that $\B$ has the \textbf{countable chain condition} (CCC) if every antichain $\mathcal{A} : I \to \B$ (i.e. an indexed collection of elements $\mathcal{A} := \{a_i\}$ such that whenever $i \neq j, a_i \sqcap a_j = \bot$) has a countable image.
+\end{defn}
+
+\begin{defn}\label{def-sigma-closed}
+We say that \(\B\) is \textbf{\(\sigma\)-closed} if there exists a dense suborder \(\mathbb{P}\) of \(\B\) such that every \(\omega\)-indexed downwards chain \(p_0 \geq p_1 \geq \cdots \geq p_n \cdots\) in \(\mathbb{P}\) has a lower bound \(p_{\omega}\) in \(\mathbb{P}\).
+\end{defn}
 
 \subsection{Cohen forcing}
-\begin{definition}
+
+As we have already seen \ref{def-powerset}, we construct the powerset of a \lil{𝔹}-valued set \lstinline{u : bSet 𝔹} using \lil{𝔹}-valued indicator functions \lil{χ : u.type → 𝔹}. The basic strategy of Cohen forcing is to choose \lil{𝔹} such that for every \(\nu : \aleph_2\), there is a canonical indicator function (a ``Cohen real'') \(\chi_{\nu} : \omega \to \mathbb{B}\). This is an external function (a member of a function type of \lstinline{Type u}) which we check descends to an injective function \lil{ℵ₂̌  → 𝒫(ω)} in \lil{bSet 𝔹}. To show that this injection suffices to negate \(\CH\), we show that if \lil{𝔹} satisfies the CCC, then \(\omega \prec \check{\aleph_1} \prec \check{\aleph_2} \preceq \mathcal{P}(\omega)\), and ensure that our choice of \lil{𝔹} has this property.
+
+\begin{defn}
   The \textbf{Cohen poset} for adding $\aleph_2$-many Cohen reals is the collection of all finite partial functions $\aleph_2 \times \mathbb{N} \to \mathbf{2}$, ordered by reverse inclusion.
-\end{definition}
+\end{defn}
 
 In the formalization, the Cohen poset is represented as a \lstinline{structure} with three fields:
 \begin{lstlisting}
@@ -573,14 +591,14 @@ structure 𝒞 : Type :=
 %TODO(jesse): reword
 That is, we identify a finite partial function $f$ with the triple \lil{⟨f.ins, f.out, f.H⟩}, where \lil{f.ins} is the preimage of $\{1\}$, \lil{f.out} is the preimage of $\{0\}$, and \lil{f.H} ensures well-definedness. While $f$ is usually defined as a finite partial function, we found that in practice $f$ is really only needed to give a finite partial specification of a subset of $\aleph_2 \times \mathbb{N}$ (i.e. a finite set \lil{f.ins} which \emph{must} be in the subset, and a finite set \lil{f.out} which \emph{must not} be in the subset), and chose this representation to make that information immediately accessible.
 
-The Boolean algebra which we will use for forcing $\neg\mathsf{CH}$ is $\operatorname{RO}(2^{\aleph_2 \times \mathbb{N}})$. Unless stated otherwise, for the rest of this section, we put $\B := \operatorname{RO}(2^{\aleph_2 \times \mathbb{N}})$.
+The Boolean algebra which we will use for forcing $\neg\mathsf{CH}$ is $\operatorname{RO}(2^{\aleph_2 \times \mathbb{N}})$ (with the usual product space topology). Unless stated otherwise, for the rest of this section, we put $\B := \operatorname{RO}(2^{\aleph_2 \times \mathbb{N}})$.
 
-\begin{definition}
+\begin{defn}
   We define the \textbf{canonical embedding} of the Cohen poset into $\B$ as follows:
   \begin{lstlisting}
 def ι : 𝒞 → 𝔹 := λ p, {S | p.ins ⊆ S ∧ p.out ⊆ - S}
 \end{lstlisting}
-\end{definition}
+\end{defn}
 That is, we send each \lil{c : 𝒞} to all the subsets which satisfy the specification given by \lil{c}. This is a clopen set, hence regular. Crucially, this embedding is \emph{dense}:
 \begin{lstlisting}
 lemma 𝒞_dense {b : 𝔹} (H : ⊥ < b) : ∃ p : 𝒞, ι p ≤ b
@@ -590,11 +608,11 @@ Recalling that $\leq$ in $\B$ is subset-inclusion, we see that this is essential
 \subsection{Collapse forcing} \label{subsection:collapse}
 % note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
 
-Whereas Cohen forcing creates a new injection \(\aleph_2 \hookrightarrow \mathcal{P}(\omega)\), we can use collapse forcing to create a new surjection \(\aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\).
+Whereas Cohen forcing creates a new injection \(\aleph_2 \hookrightarrow \mathcal{P}(\omega)\), we can use \emph{collapse forcing} to create a new surjection \(F : \aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\). Similarly to Cohen forcing, the strategy is to pick \lil{𝔹} such that there is a canonical \lil{𝔹}-valued indicator function on \(\check{\aleph_1} \times \check{\mathcal{P}(\omega)}\) representing the graph of a surjection \(\widetilde{F}\). To show that \(\widetilde{F}\) suffices to force \(\CH\), we must show that \(\check{\aleph_1} = \aleph_1\), and that \(\check{\mathcal{P}(\omega)} = \mathcal{P}(\omega).\) Both equalities follow from being able to lift functions \(\omega \to \check{y}\) to functions \(\omega \to y\); this will follow by ensuring our choice of \(\mathbb{B}\) is \(\sigma\)-closed (\ref{def-sigma-closed}).
 
-\begin{definition}\label{def-collapse-poset}
+\begin{defn}\label{def-collapse-poset}
   We define \lstinline{ℙ_collapse} to be the poset of countable partial functions \(\aleph_1 \to \mathcal{P}(\omega)\). The principal open sets \[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \hspace{2mm} | \hspace{2mm} g \text{ extends } p\} , \hspace{3mm} p \in \mathbb{P}_{\text{collapse}}\] form the basis of a topology \(\tau\) (finer than the product topology) on the function set \(\mathcal{P}(\omega)^{\aleph_1}\). Put \lstinline{𝔹_collapse :=} \(\operatorname{RO}\left(\mathcal{P}(\omega)^{\aleph_1}, \tau\right)\).
-\end{definition}
+\end{defn}
 
 \begin{itemize}
  \item To specify the surjection \(\aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\), need to specify a subset of the powerset \(\mathcal{P}(\aleph_1 \times \mathcal{P}(\omega))\).
@@ -631,7 +649,6 @@ The intersection of this chain thinks that \(g\) is the required lift of \(f\). 
 
 % partial functions in Lean, introduce the collapsing boolean algebra, show omega-closedness.
 
-
 \subsection{Construction of $\aleph_1$} \label{subsection:forcing:aleph-1}
 
 % Construction of $\aleph_1$.
@@ -653,6 +670,10 @@ def independent {L : Language} (T : Theory L) (f : sentence L) : Prop :=
 theorem independence_of_CH : independent ZFC' CH_sentence :=
 by finish[independent, CH_unprovable_from_ZFC, neg_CH_unprovable_from_ZFC]
 \end{lstlisting}
+
+\section{Automation and metaprogramming}
+
+Mention same stuff as in slides + ITP paper; also mention \lstinline{bv_cc} and the usefulness of quotient types for boolean-valued equality reasoning.
 
 \section{Related Work}
 \label{section:related-work}
