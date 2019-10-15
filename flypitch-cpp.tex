@@ -156,7 +156,16 @@
 %% Note: \begin{abstract}...\end{abstract} environment must come
 %% before \maketitle command
 \begin{abstract}
-  We use Boolean-valued models and forcing to give a formal proof of the independence of the continuum hypothesis ($\mathsf{CH}$) in the Lean theorem prover. We use a forcing argument for both directions, using Cohen forcing to show that $\mathsf{CH}$ is unprovable and using $\sigma$-closed forcing to show that $\mathsf{CH}$ is not disprovable.
+  We describe a formal proof of the independence of the continuum hypothesis (\(\CH\)) in the Lean theorem prover. We use Boolean-valued models to give forcing arguments for both directions, using Cohen forcing for the consistency of \(\neg \mathsf{CH}\) and a \(\sigma\)-closed forcing for the consistency of \(\mathsf{CH}\).
+
+  % reasons for changes:
+
+  % `Cohen forcing' means a very particular type of forcing which has a unique implementation on either the ctm or bvm side, but 'sigma-closed' is merely a combinatorial condition on a forcing poset/boolean algebra the same way that 'kappa-cc' is
+
+  % avoid double negation e.g. 'not disprovable' by formulating in terms of consistency instead
+  % i doubt anyone will be confused by this and we'll have to explain somewhere why the soundness theorem lets us use consistency results to prove unprovability results anyways
+  
+% We use Boolean-valued models and forcing to give a formal proof of the independence of the continuum hypothesis ($\mathsf{CH}$) in the Lean theorem prover. We use a forcing argument for both directions, using Cohen forcing to show that $\mathsf{CH}$ is unprovable and using $\sigma$-closed forcing to show that $\mathsf{CH}$ is not disprovable.
 \end{abstract}
 
 
