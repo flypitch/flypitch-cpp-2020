@@ -602,7 +602,7 @@ As we have already seen \ref{def-powerset}, we construct the powerset of a \lil{
 
 In the formalization, the Cohen poset is represented as a \lstinline{structure} with three fields:
 \begin{lstlisting}
-structure 𝒞 : Type :=
+structure ℙ_cohen : Type :=
   (ins : finset (ℵ₂.type × ℕ))
   (out : finset (ℵ₂.type × ℕ))
   (H : ins ∩ out = ∅)
@@ -611,7 +611,7 @@ structure 𝒞 : Type :=
 %TODO(jesse): reword
 That is, we identify a finite partial function $f$ with the triple \lil{⟨f.ins, f.out, f.H⟩}, where \lil{f.ins} is the preimage of $\{1\}$, \lil{f.out} is the preimage of $\{0\}$, and \lil{f.H} ensures well-definedness. While $f$ is usually defined as a finite partial function, we found that in practice $f$ is really only needed to give a finite partial specification of a subset of $\aleph_2 \times \mathbb{N}$ (i.e. a finite set \lil{f.ins} which \emph{must} be in the subset, and a finite set \lil{f.out} which \emph{must not} be in the subset), and chose this representation to make that information immediately accessible.
 
-The Boolean algebra which we will use for forcing $\neg\mathsf{CH}$ is $\operatorname{RO}(2^{\aleph_2 \times \mathbb{N}})$ (with the usual product space topology). Unless stated otherwise, for the rest of this section, we put $\B := \operatorname{RO}(2^{\aleph_2 \times \mathbb{N}})$.
+The Boolean algebra which we will use for forcing $\neg\mathsf{CH}$ is \lil{𝔹_cohen := } $\operatorname{RO}(2^{\aleph_2 \times \mathbb{N}})$, where we equip $2^{\aleph_2 \times \mathbb{N}}$ with the usual product space topology.
 
 \begin{defn}
   We define the \textbf{canonical embedding} of the Cohen poset into $\B$ as follows:
@@ -628,11 +628,32 @@ Recalling that $\leq$ in $\B$ is subset-inclusion, we see that this is essential
 \subsection{Collapse forcing} \label{subsection:collapse}
 % note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
 
-Whereas Cohen forcing creates a new injection \(\aleph_2 \hookrightarrow \mathcal{P}(\omega)\), we can use \emph{collapse forcing} to create a new surjection \(F : \aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\). Similarly to Cohen forcing, the strategy is to pick \lil{𝔹} such that there is a canonical \lil{𝔹}-valued indicator function on \(\check{\aleph_1} \times \check{\mathcal{P}(\omega)}\) representing the graph of a surjection \(\widetilde{F}\). To show that \(\widetilde{F}\) suffices to force \(\CH\), we must show that \(\check{\aleph_1} = \aleph_1\), and that \(\check{\mathcal{P}(\omega)} = \mathcal{P}(\omega).\) Both equalities follow from being able to lift functions \(\omega \to \check{y}\) to functions \(\omega \to y\); this will follow by ensuring our choice of \(\mathbb{B}\) is \(\sigma\)-closed (\ref{def-sigma-closed}).
+Whereas Cohen forcing creates a new injection \(\check{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\), we can use \emph{collapse forcing} to create a new surjection \(F : \aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\). Similarly to Cohen forcing, the strategy is to pick \lil{𝔹} such that there is a canonical \lil{𝔹}-valued indicator function on \(\check{\aleph_1} \times \check{\mathcal{P}(\omega)}\) representing the graph of a surjection \(\widetilde{F}\). To show that \(\widetilde{F}\) suffices to force \(\CH\), we must show that \(\check{\aleph_1} = \aleph_1\), and that \(\check{\mathcal{P}(\omega)} = \mathcal{P}(\omega).\) Both equalities follow from being able to lift functions \(\omega \to \check{y}\) to functions \(\omega \to y\); this will follow from ensuring our choice of \(\mathbb{B}\) is \(\sigma\)-closed (\ref{def-sigma-closed}).
 
 \begin{defn}\label{def-collapse-poset}
-  We define \lstinline{ℙ_collapse} to be the poset of countable partial functions \(\aleph_1 \to \mathcal{P}(\omega)\). The principal open sets \[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \hspace{2mm} | \hspace{2mm} g \text{ extends } p\} , \hspace{3mm} p \in \mathbb{P}_{\text{collapse}}\] form the basis of a topology \(\tau\) (finer than the product topology) on the function set \(\mathcal{P}(\omega)^{\aleph_1}\). Put \lstinline{𝔹_collapse :=} \(\operatorname{RO}\left(\mathcal{P}(\omega)^{\aleph_1}, \tau\right)\).
+  We define \lstinline{ℙ_collapse} to be the poset of countable partial functions \(\aleph_1 \to \mathcal{P}(\omega)\). The principal open sets \[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \hspace{2mm} | \hspace{2mm} g \text{ extends } p\} , \hspace{3mm} p \in \mathbb{P}_{\text{collapse}}\] form the basis of a topology \(\tau\) (finer than the product topology) on the function set \(\mathcal{P}(\omega)^{\aleph_1}\). We put
+  \begin{center}
+  \lstinline{𝔹_collapse :=} \(\operatorname{RO}\left(\mathcal{P}(\omega)^{\aleph_1}, \tau\right)\). 
+  \end{center}
 \end{defn}
+
+\begin{remark}
+  As an implementation detail, in the formalization we \emph{define} \lil{ℙ_collapse} to be the countable partial functions (in \lil{Type u}) between \lil{(ordinal.mk (aleph one) : pSet).type} and \lil{(powerset omega : pSet).type}, so that \\\lil{𝔹_collapse}-valued indicator functions on \lil{ordinal.mk (aleph one) : pSet).type × (powerset omega : pSet).type} are definitionally equal to \lil{𝔹_collapse}-valued indicator functions on the underlying types of \lil{check (ordinal.mk (aleph one))} and \lil{check (powerset omega)}.
+\end{remark}
+
+In \lil{bSet 𝔹_collapse}, we can specify the indicator function \(\chi_{\pi}\) of the graph of a function \lil{π : ℵ₁̌  → 𝒫(ω)̌ } as follows: to an \(\eta < \aleph_1\) and a subset \(S \subseteq \mathcal{P}(\omega)\) (in \lil{pSet}), we attach the \emph{principal open} (comprising functions extending the singleton countable partial function \(\{(\eta, S)\}\)):
+\[
+  \chi_\pi (\eta, S) := D_{\{(\eta, S)\}} = \{g : \aleph_1 \to \mathcal{P}(\omega) \operatorname{|} g (\eta) = S\}.
+\]
+
+More generally, we formalize conditions over generic \lil{x, y : pSet} and \lil{𝔹} for when a function \lil{af : x.type → y.type → 𝔹} induces a surjection \lil{x̌ → y̌} in \lil{bSet 𝔹}. By definition, such a function always induces a relation. Surjectivity is equivalent to \lil{⨅ j, (⨆ i, af i j) = ⊤}, totality is equivalent to \lil{⨅ i, (⨆ j, af i j) = ⊤}, and well-definedness follow from the following two conditions:
+\begin{lstlisting}
+∀ i, ∀ j₁ j₂, j₁ ≠ j₂ → af i j₁ ⊓ af i j₂ ≤ ⊥
+  ∀ i₁ i₂, ⊥ < (func x i₁) =ᴮ (func x i₂) → i₁ = i₂
+\end{lstlisting}
+
+Both surjectivity and totality of \(\chi_{\pi}\) require \emph{denseness arguments}, where the definition of indexed supremum (\(\bigsqcup x_i\)) in the regular open algebra as the regularization \(((\bigcup x_i)^\perp)^\perp\) of the set-theoretic union plays a key role: the union of the truth values is not the entire space, but is only a dense open whose regularization is the entire space. In particular, the denseness argument for surjectivity crucially uses that \(\aleph_1\) is uncountable while \(\omega\) is countable.
+
 
 \begin{itemize}
  \item To specify the surjection \(\aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\), need to specify a subset of the powerset \(\mathcal{P}(\aleph_1 \times \mathcal{P}(\omega))\).
