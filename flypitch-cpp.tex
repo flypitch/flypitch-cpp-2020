@@ -236,7 +236,7 @@ This forcing argument to show that $\mathsf{CH}$ is consistent is not the proof 
 The method of forcing with Boolean-valued models was developed by Solovay and Scott in '65-'66 \cite{scott1967proof,scott-solovay} as a simplification of Cohen's method.
 Some of these simplifications were incorporated by Shoenfield \cite{shoenfield1971unramified} into a general theory of forcing using partial orders, and it is in this form that forcing is usually practiced.
 While both approaches have essentially the same mathematical content (see e.g.\ \cite{kunen2014set, jech2013set, moore2019method}), there are several reasons why we chose Boolean-valued models for our formalization.
-The main reason is the directness of forcing with boolean-valued models.
+The main reason is the directness of forcing with Boolean-valued models.
 Our formalization doesn't require us to prove the L\"owenheim-Skolem theorems, Mostowski collapse, countable transitive models, or genericity considerations for filters.
 Instead, we had to set up a library for Boolean-valued models, including a soundness theorem for Boolean-valued models, but this was similar to the library for ordinary two-valued models.
 
@@ -290,7 +290,7 @@ An element of \lil{x : bSet 𝔹} has three components:
 \item A function \lil{A : α → bSet 𝔹} pointing to the (possible) elements of \lil{x};
 \item A \lil{𝔹}-valued predicate \lil{B : α → 𝔹} which expresses that \lil{A a ∈ x} has truth value (at least) \lil{B a}.
 \end{itemize}
-Now the fundamental theorem of forcing states that \lil{bSet 𝔹} forms a boolean-valued model of $\ZFC$.
+Now the fundamental theorem of forcing states that \lil{bSet 𝔹} forms a Boolean-valued model of $\ZFC$.
 \lil{bSet 𝔹} is a generalization of Aczel encoding of set theory, which is called \lil{pSet} in Lean.
 In this encoding, the third component is missing.
 We can also interpret \lil{pSet} as \lil{bSet unit}, where \lil{unit} is the trivial Boolean algebra (with $\top=\bot$).
@@ -492,7 +492,7 @@ Here the substitution ensures that the inequality \lil{leq_f} is applied to the 
 \section{Boolean-valued semantics}
 \label{section:boolean-semantics}
 
-A \textbf{complete Boolean algebra} is a boolean algebra $\B$ with as additional operations the infimum $\bigsqcap$ and supremum $\bigsqcup$ of any subset of $\B$.
+A \textbf{complete Boolean algebra} is a Boolean algebra $\B$ with as additional operations the infimum $\bigsqcap$ and supremum $\bigsqcup$ of any subset of $\B$.
 We use $\sqcap, \sqcup, \implies, \top$, and $\bot$ to denote meet, join, material implication, and top/bottom elements.
 For more details on complete Boolean algebras, we refer the reader to the textbook of Halmos-Givant~\cite{givant2008introduction}.
 
@@ -527,15 +527,15 @@ To do this conveniently with de Bruijn variables, we say that a (pre)term \lil{t
 Given \lil{t : preterm n} which is bounded by \lil{l}, and a realization \lil{v : vector M l} of the free variables, we define the realization $\llbracket t \rrbracket_M^v : M^n \to M$ by structural recursion on $t$.
 
 For a formula $\varphi$ we do the same: we define bounded (pre)formulae, and define an realization $\llbracket \varphi \rrbracket_M^v : M^n \to \B$ by structural recursion.
-If $\varphi$ is a sentence, the realization in a structure is just a element of the boolean algebra: $\llbracket \varphi \rrbracket_M : \B$.
+If $\varphi$ is a sentence, the realization in a structure is just a element of the Boolean algebra: $\llbracket \varphi \rrbracket_M : \B$.
 
-Since the truth values in a boolean-valued model live inside the boolean algebra $\B$ instead of just being true or false, we have to take a little care when stating the soundness theorem for boolean-valued models.
+Since the truth values in a Boolean-valued model live inside the Boolean algebra $\B$ instead of just being true or false, we have to take a little care when stating the soundness theorem for Boolean-valued models.
 Usually, a soundness theorem states something like ``if $\varphi$ is provable from hypotheses in $\Gamma$ then in every model where $\Gamma$ holds, $\varphi$ also holds.''
-With boolean truth-values, we need instead state it as an inequality of truth values. This motivates the following definition
+With Boolean truth-values, we need instead state it as an inequality of truth values. This motivates the following definition
 \begin{defn}
 We say that a set of sentences $\Gamma$ \emph{forces a sentence} $\varphi$, written $\Gamma \models_{\B}\varphi$, if for all non-empty $\B$-valued structures $M$ we have $\big(\bigsqcap_{\psi\in\Gamma}\big \llbracket \psi \rrbracket_M)\le\llbracket \varphi \rrbracket_M$.
 \end{defn}
-Using this definition, we can now state the boolean-valued soundness theorem:
+Using this definition, we can now state the Boolean-valued soundness theorem:
 \begin{lstlisting}
 theorem boolean_soundness {Γ : set (sentence L)}
     {ϕ : sentence L} : Γ ⊢ ϕ → Γ ⊨[𝔹] ϕ
@@ -970,7 +970,7 @@ by finish[independent, CH_unprovable_from_ZFC, neg_CH_unprovable_from_ZFC]
 \section{Automation and metaprogramming}
 \label{section:metaprogramming}
 
-Mention same stuff as in slides + ITP paper; also mention \lstinline{bv_cc} and the usefulness of quotient types for boolean-valued equality reasoning.
+Mention same stuff as in slides + ITP paper; also mention \lstinline{bv_cc} and the usefulness of quotient types for Boolean-valued equality reasoning.
 
 \section{Related Work}
 \label{section:related-work}
