@@ -269,7 +269,7 @@ We crucially use the types of cardinals and ordinals defined in \textsf{mathlib}
 Moreover, the models of set theory \lstinline{pSet} and \lstinline{bSet} we use, require as input an entire universe of types.
 Finally, our encoding of first-order logic uses parameterized inductive types which ensures that type-correctness implies well-formedness. This eliminates the need for separate well-formedness proofs.
 
-%TODO: maybe move or rewrite
+%TODO: maybe rephrase or move into future work
 The results in this paper are not the most general possible results.
 Instead of showing the consistency of $\mathsf{CH}$ we could have shown the consistency of the generalized continuum hypothesis $\mathsf{GCH}$, which states that $2^{\aleph_\alpha}=\aleph_{\alpha+1}$ for all ordinals $\alpha$.
 The generalized continuum hypothesis is true in the constructible universe $L$, and its consistency can be shown by a forcing argument, but this forcing argument is significantly more involved than the forcing argument for $\mathsf{CH}$.
@@ -855,7 +855,16 @@ Recursively applying this lemma, obtain values \(g_0, \dots, g_n, \dots\) such t
 
 \[\bot < \dots < \left(\bigsqcap_{k \leq n} ((k, g_k) \in^{\mathbb{B}} g)\right) < \cdots < ((0 , g_0) \in^{\mathbb{B}} g)\]
 
-The intersection of this chain thinks that \(g\) is the required lift of \(f\). In general, this intersection might be empty, but it is nonempty for \lstinline{𝔹_collapse}, (essentially) because the union of a chain of countable partial functions is again a countable partial function. By a denseness argument, \(g\) has the required property.
+The intersection of this chain thinks that \(g\) is the required lift of \(f\). In general, this intersection might be empty, but it is nonempty for \lstinline{𝔹_collapse}, (essentially) because the union of a chain of countable partial functions is again a countable partial function. By another denseness argument, \(g\) has the required property.
+
+\paragraph{Concluding remarks} %TODO(jesse) remove this header
+
+% TODO(jesse): reorganize and put into other sections
+% To prove that the regular open algebra RO (2^(aleph_2 x omega)) for Cohen forcing has the CCC, a much more direct argument suffices. Given an antichain of regular opens, shrink them to basic clopens, which can then be identified with finite partial functions (p_i : aleph_2 x omega -> 2). Disjointness is equivalent to the finite partial functions all disagreeing with each other at some point. It suffices to show that for every n : N that there are only finitely many p_i of cardinality n. It's easy to see this for n = 1, and at the induction step, fix some p* and towards a contradiction if there are infinitely many, then we can use the pigeonhole principle to get an infinite subfamily (q_i) which disagree with p* at the same point. Then the (q_i) agree at that point, so that point can be removed, contradicting the induction hypothesis.
+
+% This is indeed more delicate than proving the corresponding combinatorial property on the forcing CH side, where we just observe that a countable union of countable partial functions is again a countable partial function, but after this point the rest of the Cohen forcing argument is very easy (I just checked and we actually don't use a denseness argument at all), while collapse forcing uses denseness in an essential way in multiple places.
+
+
 
 % partial functions in Lean, introduce the collapsing boolean algebra, show omega-closedness.
 
