@@ -72,7 +72,7 @@
 \definecolor{sortcolor}{rgb}{0.1, 0.5, 0.1}      % green
 \definecolor{attributecolor}{rgb}{0.7, 0.1, 0.1} % red
 
-% TODO: replace \check by \widecheck
+% TODO: replace \check and ̌  by \widecheck
 %% code from mathabx.sty and mathabx.dcl
 %% This code is here to define the \widecheck control sequence without importing mathabx
 \DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
@@ -296,8 +296,8 @@ For any complete Boolean algebra $\mathbb{B}$ we can construct the type of $\mat
 An element of \lil{x : bSet 𝔹} has three components:
 \begin{itemize}
 \item An indexing type \lil{α : Type};
-\item A function \lil{f : α → bSet 𝔹} pointing to the (possible) elements of \lil{x};
-\item A \lil{𝔹}-valued predicate \lil{bval : α → 𝔹} which expresses that \lil{f(i) ∈ x} has truth value (at least) \lil{bval i}.
+\item A function \lil{A : α → bSet 𝔹} pointing to the (possible) elements of \lil{x};
+\item A \lil{𝔹}-valued predicate \lil{B : α → 𝔹} which expresses that \lil{A a ∈ x} has truth value (at least) \lil{B a}.
 \end{itemize}
 Now the fundamental theorem of forcing states that \lil{bSet 𝔹} forms a boolean-valued model of $\ZFC$.
 \lil{bSet 𝔹} is a generalization of Aczel encoding of set theory, which is called \lil{pSet} in Lean.
@@ -341,8 +341,12 @@ Our formalization clarifies some of these questions.
 In our formalization, we used many instances of domain-specific tactics and automation (see Section~\ref{section:metaprogramming}).
 Lean's powerful metaprogramming language is very convenient to define and run automation, which the user can write in Lean without the need to learn a new language.
 
-\subparagraph*{Sources} Our strategy for constructing a Boolean-valued model in which $\mathsf{CH}$ fails is a synthesis of the proofs in the textbooks of Bell (\cite{bell2011set}, Chapter 2) and Manin (\cite{manin2009course}, Chapter 8). For the $\Delta$-system lemma, we follow Kunen (\cite{kunen2014set}, Chapters 1 and 5).
-For the argument using collapse forcing, we use (CITE TODO).
+\subparagraph*{Sources} % TODO: fully incorporate this section into related work(?)
+Our strategy for constructing a Boolean-valued model in which $\mathsf{CH}$ fails is a synthesis of the proofs in the textbooks of Bell (\cite{bell2011set}, Chapter 2) and Manin (\cite{manin2009course}, Chapter 8).
+For the $\Delta$-system lemma, we follow Kunen (\cite{kunen2014set}, Chapters 1 and 5).
+There is no good reference for the Boolean-valued model where $\CH$ holds.
+A conventional argument using filters is given in Weaver \cite{weaver2014forcing}, which we adapted to Boolean-valued models.
+See also the Related Work (Section~\ref{section:related-work}).
 
 % \subparagraph*{Viewing the formalization}
 % The code blocks in this paper were taken directly from our formalization, but for the sake of readability, we sometimes omit or modify universe levels, type ascriptions, and casts. We refer the interested reader to our repository (see Supplemental Material on page 1) which contains a guide on compiling and navigating the source files of the project.
@@ -464,14 +468,16 @@ def substitution : Γ ⊢ A →
 
 Usually, the language of set theory has one binary relation symbol and no function symbols.
 In order to make the language a bit easier to work with, and to formulate the continuum hypothesis in a manageable way, we additionally add five function symbols to our language.
-The five symbols we add are for the empty set \(\emptyset\), pairing \(\{{-},{-}\}\), natural numbers \(\omega\), the power set \(\mathcal{P}({-})\) and the union \(\bigcup({-})\).
+The five symbols we add are for the empty set \(\varnothing\), ordered pairs \(({-},{-})\), natural numbers \(\omega\), the power set \(\mathcal{P}({-})\) and the union \(\bigcup({-})\).
 This gives a conservative extension of the regular theory of ZFC, because they are all definable.
 As part of our future work, we want to formalize these facts, so that we actually prove the independence of the continuum hypothesis in a language with only one non-logical symbol.
 
 The theory \(\ZFC\) we use consists of eight axioms and a strong version of the axiom schema of collection.
 Five of the axioms characterize the function symbols we added.
-The axioms of emptyset, pairing and powerset are similar to the usual formulation, except that we use the function symbols explicitly.
-For pairing, we only axiomatize the property that two pairs are equal iff their components are equal.
+The axioms of empty set, and powerset are similar to the usual formulation, except that we use the function symbols explicitly.
+We don't uniquely characterize ordered pairs, but specify the equality on ordered pairs:
+\[(x,y)=(z,w) \iff x = z \wedge y = w.\]
+We don't have the usual axiom of pairing, but this axiom is derivable from the other axioms.
 Our version of the axiom of infinity is a bit different to the usual axiom of infinity, which only specifies that there is an infinite set. Instead, we specify $\omega$ as the least limit ordinal.
 
 In addition to the axioms characterizing the function symbols, we have the axioms of extensionality and regularity and Zorn's lemma.
@@ -547,63 +553,157 @@ The proof is a straightforward structural induction.
 
 \section{Boolean-valued models of set theory}
 \label{section:bset}
-\paragraph{The Aczel encoding}
-Our starting point is the Aczel encoding of \(\mathsf{ZFC}\) (\cite{aczel1978type, aczel1986type, aczel1982type}) into dependent type theory, later implemented in Coq by Werner \cite{werner1997sets}, and in Lean's \lstinline{mathlib} by Carneiro \cite{mario1}. The idea is to take a type universe \lstinline{Type u} and imitate the cumulative hierarchy construction with an inductive type:
+\subsection{The Aczel encoding}
+Our starting point is the Aczel encoding of \(\mathsf{ZFC}\) (\cite{aczel1978type, aczel1986type, aczel1982type}) into dependent type theory.
+This was implemented in Coq by Werner \cite{werner1997sets}, and in Lean's \textsf{mathlib} by Carneiro \cite{mario1}.
+The idea is to take a type universe \lstinline{Type u} and imitate the cumulative hierarchy construction with an inductive type:
 \begin{lstlisting}
 inductive pSet : Type (u+1)
 | mk (α : Type u) (A : α → pSet) : pSet
 \end{lstlisting}
-Note that \lstinline{∅ := (pSet.mk empty empty.elim : pSet)} always exists, and plays the same role as the empty set at the bottom of the cumulative hierarchy. In order for the axiom of extensionality to hold, \lstinline{pSet} must be quotiented by \emph{extensional equivalence}, which is defined by structural recursion:
-\begin{lstlisting}[basicstyle=\ttfamily\small]
-def equiv : ∀ (x y : pSet), Prop
-| ⟨α,A⟩ ⟨β,B⟩ := (∀a : α, ∃b : β, equiv (A a) (B b)) ∧ (∀b : β, ∃a : α, equiv (A a) (B b))
+For an element \lil{x = ⟨α, A⟩ : pSet}, the function \lil{A} points to the elements of \lil{x}.
+We can define the empty set as \lstinline{∅ := ⟨empty, empty.elim⟩ : pSet}.
+Note that \lil{pSet} does not satisfy the axiom of extensionality.
+In order to obtain a model where the axiom of extensionality holds, we must quotient \lstinline{pSet} by \emph{extensional equivalence} \lil{≈}.
+We have to be a bit careful with defining extensional equivalence.
+Although extensional equivalence and membership are easily defined in terms of each other,
+one has to be careful to make sure the definition is well-founded.
+\begin{lstlisting}
+x ≈ y ↔ ∀w, w ∈ x ↔ w ∈ y
+x ∈ ⟨α, A⟩ ↔ ∃a, x ≈ A a
+\end{lstlisting}
+In order to make this well-founded, equivalence is defined by structural recursion:
+\begin{lstlisting}
+def equiv : pSet → pSet → Prop
+| ⟨α,A⟩ ⟨β,B⟩ := (∀a, ∃b, equiv (A a) (B b)) ∧
+  (∀b, ∃a, equiv (A a) (B b))
 \end{lstlisting}
 
-It is easy to furthermore define membership from equivalence and check that modulo extensional equivalence, \lstinline{pSet} is a model of \(\mathsf{ZFC}\).
+We can now membership from equivalence and check that modulo extensional equivalence, \lstinline{pSet} is a model of \(\mathsf{ZFC}\).
 
-% TODO: remove argument using bool.
-\paragraph{Two roads to \lstinline{bSet}} We describe two ways by which one can start at the ordinary model of \(\mathsf{ZFC}\) \lstinline{pSet} and end with a Boolean-valued model \lstinline{bSet}.
+% \paragraph{Two roads to \lstinline{bSet}}
+% We describe two ways by which one can start at the ordinary model of \(\mathsf{ZFC}\) \lstinline{pSet} and end with a Boolean-valued model \lstinline{bSet}.
 
-First, note that we can construct a model of \(\mathsf{ZFC}\) roughly equivalent to \lstinline{pSet} as follows:
+% First, note that we can construct a model of \(\mathsf{ZFC}\) roughly equivalent to \lstinline{pSet} as follows:
+% \begin{lstlisting}
+% inductive bSet : Type (u+1)
+% | mk (α : Type u) (A : α → bSet)
+%   (B : α → bool): bSet
+% \end{lstlisting}
+% At first glance, \lstinline{bSet} adds large amounts of unnecessary information---while with \lstinline{pSet}, anything pointed to by an indexing function \lstinline{A} is a member of a set, \lstinline{bSet} only counts what is also assigned \lstinline{tt : bool}---and we can reconstruct \lstinline{pSet} from \lstinline{bSet} by recursively discarding anything which is assigned \lstinline{ff : bool} anyways. However, if we remember that \lstinline{bool} is a complete Boolean algebra \lstinline{⟨bool, ⊤, ⊥, ⊓, ⊔, ⨅,⨆, ⟹⟩}, then an upshot of the definition of \lstinline{bSet} is that we can replace the obvious analogue of \lstinline{equiv}
+% \begin{lstlisting}
+% def equiv : ∀ (x y : bSet), Prop
+% | ⟨α,A,A'⟩ ⟨β,B,B'⟩ := (∀ a : α, A' a = tt → ∃ b : β, B' b = tt ∧ equiv₁ (A a) (B b)) ∧ (∀b : β, B' b = tt → ∃ a : α, A' a = tt ∧ equiv₁ (A a) (B b))
+% \end{lstlisting}
+% with a version which avoids propositional operations and only uses the operations of a complete Boolean algebra:\footnote{Assuming \lstinline{Prop ≃ bool}, which is provable using classical logic in Lean.}
+% \begin{lstlisting}
+% def equiv₂ : ∀ (x y : bSet), bool
+% | ⟨α,A,A'⟩ ⟨β,B,B'⟩ := ⨅ a : α, A' a ⟹ ⨆ b : β, B' b ⊓ equiv₂ (A a) (B b) ⊓  ⨅ b : β, B' b ⟹ ⨆ a : α, A' a ⊓ equiv₂ (A a) (B b)
+% \end{lstlisting}
+% Since this definition only interfaces with the typeclass of complete Boolean algebras, we can replace \lstinline{bool} by an arbitrary complete Boolean algebra \lstinline{𝔹} throughout, yielding: % note(jesse, October 03 2019, 05:06 PM): maybe should emphasize definition of membership instead of equality to make it clear that these things are Boolean-valued models of ZFC
+% \begin{lstlisting}
+% inductive bSet (𝔹 : Type u) [complete_boolean_algebra 𝔹]: Type (u+1)
+% | mk (α : Type u) (A : α → bSet)
+%   (B : α → 𝔹): bSet
+% \end{lstlisting}
+% which we later verify is a \(\mathbb{B}\)-valued model of \(\ZFC\).
+
+\subsection{Boolean-valued sets}
+We now want to generalize \lil{pSet} to a Boolean-valued model of \(\ZFC\). In order to do this, we need to give a
+\(\B\)-valued relation that corresponds to membership \lil{∈}. We encode this information, by adding an extra field to elements of \lil{pSet}, which is a \(\B\)-valued predicate.
 \begin{lstlisting}
-inductive bSet : Type (u+1)
+inductive bSet (𝔹 : Type u)
+    [complete_boolean_algebra 𝔹] : Type (u+1)
 | mk (α : Type u) (A : α → bSet)
-  (B : α → bool): bSet
+    (B : α → 𝔹) : bSet
 \end{lstlisting}
-At first glance, \lstinline{bSet} adds large amounts of unnecessary information---while with \lstinline{pSet}, anything pointed to by an indexing function \lstinline{A} is a member of a set, \lstinline{bSet} only counts what is also assigned \lstinline{tt : bool}---and we can reconstruct \lstinline{pSet} from \lstinline{bSet} by recursively discarding anything which is assigned \lstinline{ff : bool} anyways. However, if we remember that \lstinline{bool} is a complete Boolean algebra \lstinline{⟨bool, ⊤, ⊥, ⊓, ⊔, ⨅,⨆, ⟹⟩}, then an upshot of the definition of \lstinline{bSet} is that we can replace the obvious analogue of \lstinline{equiv}
-\begin{lstlisting}
-def equiv : ∀ (x y : bSet), Prop
-| ⟨α,A,A'⟩ ⟨β,B,B'⟩ := (∀ a : α, A' a = tt → ∃ b : β, B' b = tt ∧ equiv₁ (A a) (B b)) ∧ (∀b : β, B' b = tt → ∃ a : α, A' a = tt ∧ equiv₁ (A a) (B b))
-\end{lstlisting}
-with a version which avoids propositional operations and only uses the operations of a complete Boolean algebra:\footnote{Assuming \lstinline{Prop ≃ bool}, which is provable using classical logic in Lean.}
-\begin{lstlisting}[basicstyle=\ttfamily\small]
-def equiv₂ : ∀ (x y : bSet), bool
-| ⟨α,A,A'⟩ ⟨β,B,B'⟩ := ⨅ a : α, A' a ⟹ ⨆ b : β, B' b ⊓ equiv₂ (A a) (B b) ⊓  ⨅ b : β, B' b ⟹ ⨆ a : α, A' a ⊓ equiv₂ (A a) (B b)
-\end{lstlisting}
-Since this definition only interfaces with the typeclass of complete Boolean algebras, we can replace \lstinline{bool} by an arbitrary complete Boolean algebra \lstinline{𝔹} throughout, yielding: % note(jesse, October 03 2019, 05:06 PM): maybe should emphasize definition of membership instead of equality to make it clear that these things are Boolean-valued models of ZFC
-\begin{lstlisting}
-inductive bSet (𝔹 : Type u) [complete_boolean_algebra 𝔹]: Type (u+1)
-| mk (α : Type u) (A : α → bSet)
-  (B : α → 𝔹): bSet
-\end{lstlisting}
-which we later verify is a \(\mathbb{B}\)-valued model of \(\ZFC\).
+The predicate \lil{B} expresses that \lil{A a ∈ ⟨α, A, B⟩} has truth value (at least) \lil{B i}.
 
-Second, we observe that the Aczel encoding is closely related to the recursive \emph{name}-construction from forcing, a key ingredient to building forcing extensions. Let \(\mathbb{P}\) be a poset. From e.g.\ Kunen \cite{kunen2014set}, Definition IV.2.5:
-
+This is closely related to the recursive \emph{name}-construction from forcing, a key ingredient to building forcing extensions. Let \(\mathbb{P}\) be a poset. From e.g.\ Kunen \cite{kunen2014set}, Definition IV.2.5:
 \begin{defn}
-  A set \(\tau\) is a \(\mathbb{P}\)-name iff \(\tau\) is a relation and \(\forall \langle  \sigma, p\rangle \in \tau, \sigma \text{ is a \(\mathbb{P}\)-name and } p \in \mathbb{P}\).
+  A set \(\tau\) is a \(\mathbb{P}\)-name iff \(\tau\) is a relation and for all \(\langle  \sigma, p\rangle \in \tau\) we have that \(\sigma\) is a \(\mathbb{P}\)-name and \(p \in \mathbb{P}\).
 \end{defn}
+\lstinline{bSet 𝔹} should be thought of as the type of \lstinline{𝔹}-names, where the relation of \lil{⟨α, A, B⟩} is given by \lstinline"{ ⟨A i, B i⟩ | i ∈ α }".
+The definitions are not exactly the same, as \lil{A} need not be injective, but we can define the same operations on \lil{bSet 𝔹} as on \lil{𝔹}-names.
 
-In particular, if \(\mathbb{P}\) is the singleton poset, then a \(\mathbb{P}\)-name is a set of \(\mathbb{P}\)-names, in the same way that a term of type \lstinline{pSet} is a type-indexed collection of terms of type \lstinline{pSet}. Reversing this observation, we replace \(\mathbb{P}\) with a complete Boolean algebra \(\mathbb{B}\) and generalize the definition of \lstinline{pSet.mk} with a third field, so that as in the case of \(\mathbb{P}\)-names, every element of a set is assigned an element (a ``Boolean truth-value'') of \(\mathbb{B}\):
-\begin{lstlisting}
-inductive bSet {𝔹 : Type u) : Type (u+1)
-| mk (α: Type u) (A: α → bSet) (B: α→ 𝔹) : bSet
-\end{lstlisting}
+% In particular, if \(\mathbb{P}\) is the singleton poset, then a \(\mathbb{P}\)-name is a set of \(\mathbb{P}\)-names, in the same way that a term of type \lstinline{pSet} is a type-indexed collection of terms of type \lstinline{pSet}.
+% Reversing this observation, we replace \(\mathbb{P}\) with a complete Boolean algebra \(\mathbb{B}\) and generalize the definition of \lstinline{pSet.mk} with a third field, so that as in the case of \(\mathbb{P}\)-names, every element of a set is assigned an element (a ``Boolean truth-value'') of \(\mathbb{B}\):
+% \begin{lstlisting}
+% inductive bSet {𝔹 : Type u) : Type (u+1)
+% | mk (α: Type u) (A: α → bSet) (B: α → 𝔹) : bSet
+% \end{lstlisting}
 % Whatever is important in \lstinline{bvm}, \lstinline{bvm_extras}, \lstinline{bvm_extras2} for this argument.
 
-Thus, \lstinline{bSet 𝔹} should be thought of as the type of \lstinline{𝔹}-names.
+% \subsection{Boolean-valued equality and membership}
+We can define Boolean-valued equality and membership analogously to the definitions in \lil{pSet}.
+To do this, we have to translating quantifiers and connectives into operations on $\B$:
+\begin{lstlisting}
+def bv_eq : bSet 𝔹 → bSet 𝔹 → 𝔹
+| ⟨α, A, B⟩ ⟨α', A', B'⟩ :=
+  (⨅a, B a ⟹ ⨆a', B' a' ⊓ bv_eq (A a) (A' a')) ⊓
+  (⨅a', B' a' ⟹ ⨆a, B a ⊓ bv_eq (A a) (A' a'))
+\end{lstlisting}
 
-[...]
+We abbreviate \lil{bv_eq} with the infix operator \lil{=ᴮ}.
+It is now easy to define $\B$-valued membership, which we denote by \lil{∈ᴮ}.
+\begin{lstlisting}
+def mem : bSet 𝔹 → bSet 𝔹 → 𝔹
+| x ⟨α, A, B⟩ := ⨆a, B a ⊓ x =ᴮ A a
+\end{lstlisting}
+
+\subsection{The fundamental theorem of forcing}
+
+The fundamental theorem of forcing for Boolean-valued models~\cite{hamkins2012well} states that for any complete Boolean algebra \lil{𝔹}, the type \lil{bSet 𝔹} forms a Boolean-valued model of $\mathsf{ZFC}$.
+
+Bell~\cite{bell2011set} gives an extremely detailed account of the verification of the $\mathsf{ZFC}$ axioms,
+and we faithfully followed his presentation for this part of the formalization.
+Although most of the argument is routine, we describe some aspects of \lil{bSet 𝔹} which are revealed by this verification.
+
+We can define subsets of a set $x$ by just modifying the last component of $x$.
+This gives a nice definition of powerset:
+\begin{defn} \label{def-powerset}
+  Fix a $\B$-valued set \lil{x = ⟨α, A, b⟩} and \lil{χ : α → 𝔹} be a function.
+  We can define the $\B$-valued set $\tilde{\chi}$ as \lil{⟨α, A, χ⟩}.
+  The \textbf{powerset} $\mathcal{P}(x)$ of $x$ is defined to be the \lil{𝔹}-valued set,
+  \[\langle \alpha \to \B,\ \widetilde{({-})},\ (\lambda\;\chi, \tilde{\chi} \subseteq^B x)\rangle.\]
+\end{defn}
+
+% \subparagraph*{The axiom of infinity}
+% \lil{ω : pSet} is defined to be the collection of all finite von Neumann ordinals (via induction on $\mathbb{N}$), and we define \lil{ω : bSet 𝔹} as \(\check{\omega}\).
+% Now \lil{ω} is the $\subseteq$-least set that contains $\varnothing$ and is closed under the successor operation $x \mapsto x \cup \{x\}$.
+% More generally, we define a map \lil{ordinal.mk : ordinal → pSet} by transfinite recursion.
+
+% \subparagraph*{The axiom of powerset}
+
+% \subparagraph*{The axiom of choice}
+Following Bell, we verified Zorn's lemma in \lil{bSet 𝔹}.
+As is the case with \lil{pSet}, establishing Zorn's lemma requires the use of a choice principle from the metatheory.
+This was the most involved part of our verification of the fundamental theorem of forcing, and relies on the technical tool of \emph{mixtures}, which allow sequences of $\B$-valued sets to be ``averaged'' into new ones.
+It also uses the \emph{maximum principle}, which allows existentially quantified statements to be instantiated without changing their truth-value. % TODO: expand
+
+% \subparagraph*{The smallness of \ $\B$}
+% We end this section by remarking that the ``smallness'' of $\B$ (or more precisely, the fact that $\B$ lives in the same universe of types out of which \lil{bSet 𝔹} is being built) is essential in making \lstinline{bSet 𝔹} a model of $\mathsf{ZFC}$.
+% It is required for extracting the witness needed for the maximum principle, and is also required to even define the powerset operation, because the underlying type of the powerset is the function type of all maps into \lstinline{𝔹}.
+
+% \subparagraph*{Check-names}
+\begin{defn}\label{def-check}
+  We define the canonical map \lil{check : pSet → bSet 𝔹} by
+  \begin{lstlisting}
+  def check : pSet → bSet 𝔹
+  | ⟨α,A⟩ := ⟨α, check ∘ A, (λ a, ⊤)⟩
+  \end{lstlisting}
+  We also write $\check{x}$ for \lil{check x}, and call it a \emph{check-name}.
+  % We call members of the image of \lil{check} \emph{check-names}, %\footnote{This terminology is standard, c.f. \cite{hamkins2012well, moore2019method}.}
+  These are also known as \emph{canonical names}, as they are the canonical representation of standard two-valued sets inside a Boolean-valued model of set theory.\footnote{We were pleased to discover Lean's support for custom notation allowed us to declare the Unicode modifier character \texttt{U+030C} ($\check{\hspace{1mm}}$) as a postfix operator for \texttt{check}.}
+\end{defn}
+
+\subparagraph*{ordinals in $\B$}
+We can define a map \lil{ordinal.mk : ordinal → pSet} by transfinite recursion.
+If we compose this map with \lil{check} we get the ordinals in \lil{bSet 𝔹}.
+In particular, we get the least infinite ordinal \lil{ω : bSet 𝔹}, which witnesses the axiom of infinity.
+% \lil{ω : pSet} is defined to be the collection of all finite von Neumann ordinals (via induction on $\mathbb{N}$), and we define \lil{ω : bSet 𝔹} as \(\check{\omega}\).
+% Now \lil{ω} is the $\subseteq$-least set that contains $\varnothing$ and is closed under the successor operation $x \mapsto x \cup \{x\}$.
+
 
 We summarize the relationship between the three ``large'' types currently in play:
 \[
@@ -622,7 +722,7 @@ We spell out the name of Lean ordinals and cardinals, and use (checked) Hebrew l
 \[
   \begin{tikzcd}
     % & \text{\lstinline{Type u+1}} & & \\
-    \aleph_1 \arrow[mapsto]{rr}{\text{\lstinline{check}}} & & \check{\aleph_1} & \\
+    \aleph_1 \arrow[mapsto]{rr}{\texttt{check}} & & \widecheck{\aleph_1} & \\
     & & & \\
     \text{\lstinline{(aleph 1)}} \arrow[mapsto]{uu}{\texttt{ordinal.mk}} \arrow[mapsto]{uurr} & & & % \\
     % \hspace{0mm}  \arrow[dashed, no head]{rrr } & & & \hspace{0mm} \\
