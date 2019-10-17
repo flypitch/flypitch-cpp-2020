@@ -73,6 +73,19 @@
 \definecolor{attributecolor}{rgb}{0.7, 0.1, 0.1} % red
 
 % TODO: replace \check by \widecheck
+%% code from mathabx.sty and mathabx.dcl
+%% This code is here to define the \widecheck control sequence without importing mathabx
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+      <5> <6> <7> <8> <9> <10>
+      <10.95> <12> <14.4> <17.28> <20.74> <24.88>
+      mathx10
+      }{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+\DeclareMathAccent{\wideparen}{0}{mathx}{"75}
+
 \usepackage{listings}
 \def\lstlanguagefiles{lstlean.tex}
 \lstset{language=lean,breakatwhitespace,xleftmargin=0pt, basicstyle=\ttfamily\small}
@@ -271,7 +284,7 @@ The goal of our formalization is to show that we cannot construct proofs of eith
 By proof we mean a natural deduction tree (see Section~\ref{subsection:fol:terms}).
 
 The usual method to show that there is no proof of a certain statement is to construct a model where the statement is false, and apply the soundness theorem.
-Our method is similar, except that we use Boolean-valued models (see Section~\ref{section:boolean-semantics}.
+Our method is similar, except that we use Boolean-valued models (see Section~\ref{section:boolean-semantics}).
 The difference between Boolean-valued models and ordinary models is that the truth values in a Boolean-valued model \lil{M} live in a specified complete Boolean algebra \lil{𝔹}.
 This means that, e.g.\ equality is interpreted as a function \lil{eq : M → M → 𝔹} and transitivity is formulated as \lil{eq(x, y) ⊓ eq(y, z) ≤ eq(x, z)} for all \lil{x, y, z}.
 Here \lil{⊓} and \lil{≤} are the meet and order in \lil{𝔹}.
@@ -279,12 +292,61 @@ For equality, we also have to specify that it is reflexive, symmetric, and respe
 Our task is now to construct two Boolean-valued models of $\ZFC$, one where $\CH$ holds, and one where $\CH$ fails.
 We then apply the soundness theorem for Boolean-valued models to show that $\CH$ is independent from $\ZFC$.
 
-For any complete Boolean algebra $\mathbb{B}$ we can construct the type of $\mathbb{B}$-valued sets, or \lil{bset 𝔹}.
-An element of \lil{x : bset 𝔹} consists of a indexing type \lil{α}, a function \lil{f : α → bset 𝔹} pointing to the elements of \lil{x} and finally a \lil{𝔹}-valued predicate \lil{χ : α → 𝔹} which expresses that \lil{f(i) ∈ x} has truth value (at least) \lil{χ(i)}.
+For any complete Boolean algebra $\mathbb{B}$ we can construct the type of $\mathbb{B}$-valued sets, or \lil{bSet 𝔹} (see Section~\ref{section:bset}).
+An element of \lil{x : bSet 𝔹} has three components:
+\begin{itemize}
+\item An indexing type \lil{α : Type};
+\item A function \lil{f : α → bSet 𝔹} pointing to the (possible) elements of \lil{x};
+\item A \lil{𝔹}-valued predicate \lil{bval : α → 𝔹} which expresses that \lil{f(i) ∈ x} has truth value (at least) \lil{bval i}.
+\end{itemize}
+Now the fundamental theorem of forcing states that \lil{bSet 𝔹} forms a boolean-valued model of $\ZFC$.
+\lil{bSet 𝔹} is a generalization of Aczel encoding of set theory, which is called \lil{pSet} in Lean.
+In this encoding, the third component is missing.
+We can also interpret \lil{pSet} as \lil{bSet unit}, where \lil{unit} is the trivial Boolean algebra (with $\top=\bot$).
 
-Forcing, cardinal collapse, independence of CH.
+The properties of \lil{bSet 𝔹} vary wildly depending on the choice of the complete Boolean algebra \lil{𝔹}.
+There is always a map \lil{check : pSet → bSet 𝔹}, $x \mapsto \check{x}$, although this map need not be injective and $\check{x}$ might have different properties than $x$. However, properties which are definable with only bounded quantification are preserved. In particular, \lil{bSet 𝔹} thinks $\check{\omega}$ is $\omega$.
+We now have to choose two appropriate complete Boolean algebras \lil{𝔹} such that in \lil{bSet 𝔹}, the formula $\CH$ is true ($\top$) in one model and $\CH$ is false ($\bot$) in the other.
+This is where forcing comes in (see Section~\ref{section:forcing}).
 
-During the proof outline, also refer to the sections in the paper.
+To force the negation of the continuum hypothesis, we define Cantor space $2^{\aleph_2 \times \mathbb{N}}$ with its usual product topology (see Section~TODO).
+Then let $\B$ be the regular open algebra of the Cantor space (a set $O$ is a regular open if $O$ is equal to the interior of the closure of $O$).
+Now $\B$ is a complete Boolean algebra, so \lil{bSet 𝔹} models $\ZFC$.
+Internally to this model we can construct an injection $\widetilde{\chi} : \aleph_2 \to \mathcal{P}(\omega)$, in the following way.
+For each $\nu \in \aleph_2$, we associate the $\B$-valued characteristic function $\chi_\nu : \mathbb{N} \to \B$ by $n \mapsto \{f \mid f(\nu, n) = 1\}$.
+This induces an subset $\widetilde{\chi_{\nu}} \subseteq \mathbb{N}$ internal to \lil{bSet 𝔹}, which is called a \emph{Cohen real}.
+This way we obtain an function \(\widecheck{\aleph_2} \to \mathcal{P}(\mathbb{N})\) internal to \lil{bSet 𝔹}.
+We can now show that \lil{bSet 𝔹} thinks this function is injective, and we finish by showing that \lil{bSet 𝔹} thinks that \(\widecheck{\aleph_2}\) is $\aleph_2$ to show that $\neg\CH$ holds in \lil{bSet 𝔹}.
+The proof that \lil{bSet 𝔹} preserves cardinal numbers is really the technical heart of the matter, and relies on a combinatorial property of $\B$ called the \emph{countable chain condition} (CCC).
+The proof that $\B$ has the CCC requires a detailed combinatorial analysis of the basis of the product topology for $2^{\aleph_2 \times \mathbb{N}}$.
+We handle this with a general result in transfinite combinatorics called the \emph{$\Delta$-system lemma}.
+% we can omit the last two sentences, if needed
+
+For the other direction, to force the continuum hypothesis, we define the collapse poset to be the poset of countable partial functions
+\[(\mathbb{P}_{\text{collapse}} = \aleph_1 \rightharpoonup \mathcal{P}(\omega).\]
+%TODO: use \rightharpoonup by default for partial functions
+We can now define a topology on $\aleph_1 \to \mathcal{P}(\omega)$ defined by the principal opens
+\[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \mid g \text{ extends } p\} \]
+for $p \in \mathbb{P}_{\text{collapse}}$.
+The collapse algebra $\mathbb{B}_{\text{collapse}}$ is now defined to be the regular opens in this topology.
+In the resulting model \lil{bSet 𝔹} we can construct a surjection \(F : \aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\). (TODO) (see Section~TODO)
+This depends on \(\sigma\)-closedness (TODO).
+
+This argument is wholly set-theoretic, but we proved it with type theory as our meta-theory.
+To do this, it was important to separate the mathematical content from the metamathematical content of the argument.
+While our objective is only to produce a model of $\mathsf{ZFC}$ satisfying certain properties, traditional presentations of forcing are careful to stay within the foundations of $\mathsf{ZFC}$, emphasizing that all arguments may be performed internal to a model of $\mathsf{ZFC}$, etc.
+It is not immediately clear what parts of the argument use that set-theoretic foundation in an essential way and require modification in the passage to type theory.
+Our formalization clarifies some of these questions.
+
+In our formalization, we used many instances of domain-specific tactics and automation (see Section~\ref{section:metaprogramming}).
+Lean's powerful metaprogramming language is very convenient to define and run automation, which the user can write in Lean without the need to learn a new language.
+
+\subparagraph*{Sources} Our strategy for constructing a Boolean-valued model in which $\mathsf{CH}$ fails is a synthesis of the proofs in the textbooks of Bell (\cite{bell2011set}, Chapter 2) and Manin (\cite{manin2009course}, Chapter 8). For the $\Delta$-system lemma, we follow Kunen (\cite{kunen2014set}, Chapters 1 and 5).
+For the argument using collapse forcing, we use (CITE TODO).
+
+% \subparagraph*{Viewing the formalization}
+% The code blocks in this paper were taken directly from our formalization, but for the sake of readability, we sometimes omit or modify universe levels, type ascriptions, and casts. We refer the interested reader to our repository (see Supplemental Material on page 1) which contains a guide on compiling and navigating the source files of the project.
+
 \section{First-order logic}
 \label{section:fol}
 
@@ -422,7 +484,13 @@ Finally, the axiom schema of collection we use states that for every formula \(\
 
 Now the continuum hypothesis \(\CH\) we use states that there is no ordinal between \(\omega\) and \(\mathcal{P}(\omega)\). It is defined to be the sentence
 \[\CH:=\forall x, \Ord(x) \Rightarrow x \le \omega \vee \mathcal{P}(\omega) \le x,\]
-where \(\Ord(x)\) means ``\(x\) is an ordinal'' and \(x \le y\) means that there is a surjection from a subset of \(y\) to \(x\).
+where \(\Ord(x)\) means ``\(x\) is an ordinal'' and \(x \le y\) means that there is a surjection from a subset of \(y\) to \(x\). In code, we can formulate the \(\CH\) as follows.
+\begin{lstlisting}
+def CH_formula : formula L_ZFC' :=
+∀' (is_ordinal ⟹
+  leq_f[omega_t//1] ⊔ leq_f[Powerset_t omega_t//0])
+\end{lstlisting}
+Here the substitution ensures that the inequality \lil{leq_f} is applied to the correct arguments, and \lil{⊔} is notation for disjunction.
 
 \section{Boolean-valued semantics}
 \label{section:boolean-semantics}
@@ -714,6 +782,7 @@ by finish[independent, CH_unprovable_from_ZFC, neg_CH_unprovable_from_ZFC]
 \end{lstlisting}
 
 \section{Automation and metaprogramming}
+\label{section:metaprogramming}
 
 Mention same stuff as in slides + ITP paper; also mention \lstinline{bv_cc} and the usefulness of quotient types for boolean-valued equality reasoning.
 
