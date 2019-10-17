@@ -754,7 +754,7 @@ We say that \(\B\) is \textbf{\(\sigma\)-closed} if there exists a dense suborde
 
 \subsection{Cohen forcing}
 
-As we have already seen \ref{def-powerset}, we construct the powerset of a \lil{𝔹}-valued set \lstinline{u : bSet 𝔹} using \lil{𝔹}-valued indicator functions \lil{χ : u.type → 𝔹}. The basic strategy of Cohen forcing is to choose \lil{𝔹} such that for every \(\nu : \aleph_2\), there is a canonical indicator function (a ``Cohen real'') \(\chi_{\nu} : \omega \to \mathbb{B}\). This is an external function (a member of a function type of \lstinline{Type u}) which we check descends to an injective function \lil{ℵ₂̌  → 𝒫(ω)} in \lil{bSet 𝔹}. To show that this injection suffices to negate \(\CH\), we show that if \lil{𝔹} satisfies the CCC, then \(\omega \prec \check{\aleph_1} \prec \check{\aleph_2} \preceq \mathcal{P}(\omega)\), and ensure that our choice of \lil{𝔹} has this property.
+As we have already seen \ref{def-powerset}, we construct the powerset of a \lil{𝔹}-valued set \lstinline{u : bSet 𝔹} using \lil{𝔹}-valued indicator functions \lil{χ : u.type → 𝔹}. The basic strategy of Cohen forcing is to choose \lil{𝔹} such that for every \(\nu : \aleph_2\), there is a canonical indicator function (a ``Cohen real'') \(\chi_{\nu} : \omega \to \mathbb{B}\). This is an external function (a member of a function type of \lstinline{Type u}) which we check descends to an injective function \(\widecheck{\aleph_2} \to \mathcal{P}(\omega)\) in \lil{bSet 𝔹}. To show that this injection suffices to negate \(\CH\), we show that if \lil{𝔹} satisfies the CCC, then \(\omega \prec \check{\aleph_1} \prec \check{\aleph_2} \preceq \mathcal{P}(\omega)\), and ensure that our choice of \lil{𝔹} has this property.
 
 \begin{defn}
   The \textbf{Cohen poset} for adding $\aleph_2$-many Cohen reals is the collection of all finite partial functions $\aleph_2 \times \mathbb{N} \to \mathbf{2}$, ordered by reverse inclusion.
@@ -776,7 +776,7 @@ The Boolean algebra which we will use for forcing $\neg\mathsf{CH}$ is \lil{𝔹
 \begin{defn}
   We define the \textbf{canonical embedding} of the Cohen poset into \lil{𝔹_cohen} as follows:
   \begin{lstlisting}
-def ι : 𝒞 → 𝔹 := λ p, {S | p.ins ⊆ S ∧ p.out ⊆ - S}
+def ι : ℙ_cohen → 𝔹_cohen := λ p, {S | p.ins ⊆ S ∧ p.out ⊆ - S}
 \end{lstlisting}
 \end{defn}
 That is, we send each \lil{c : 𝒞} to all the subsets which satisfy the specification given by \lil{c}. This is a clopen set, hence regular. Crucially, the image of this embedding is a dense suborder of \lil{𝔹_cohen}. Recalling that $\leq$ in $\B$ is subset-inclusion, we see that this is essentially because the image of $\iota : \mathcal{C} \to \B$ \emph{is} the standard basis for the product topology. Our chosen encoding of the Cohen poset also made it easier to perform this identification when formalizing this proof.
@@ -796,7 +796,7 @@ That is, we send each \lil{c : 𝒞} to all the subsets which satisfy the specif
 \begin{defn}
   Let $\nu : \aleph_2$. We associate to $\nu$ the $\B$-valued characteristic function $\chi_{\nu} : \N \to \B$ defined by $\chi_{\nu}(n) := \mathbf{P}_{(\nu, n)}$. In light of our previous observations, we see that each $\chi_{\nu}$ induces a new $\B$-valued subset $\widetilde{\chi_{\nu}} \subseteq \check{\N}$. We call $\widetilde{\chi_{\nu}}$ a \textbf{Cohen real}.
 \end{defn}
-This gives us an $\aleph_2$-indexed family of Cohen reals. Converting this data into an injective function from \lil{ℵ₂̌ } to $\mathcal{P}(\mathbb{N})$ inside \lil{bSet 𝔹} requires some care. One must check that $\nu \mapsto \widetilde{\chi_{\nu}}$ is externally injective, and this is where the characterization of the Cohen poset as a dense subset of $\B$ (and moving back and forth between this representation and the definition as finite partial functions) comes in. Furthermore, one has to develop machinery similar to that for the powerset operation to convert an external injective function \lstinline{x.type → bSet 𝔹} to an internal injective function in \lstinline{bSet 𝔹}.  % Our custom tactics and automation for reasoning inside $\B$ made this latter task significantly easier than it would have been otherwise. We refer the interested reader to our formalization for details.
+This gives us an $\aleph_2$-indexed family of Cohen reals. Converting this data into an injective function from \(\widecheck{\aleph_2}\) to $\mathcal{P}(\mathbb{N})$ inside \lil{bSet 𝔹} requires some care. One must check that $\nu \mapsto \widetilde{\chi_{\nu}}$ is externally injective, and this is where the characterization of the Cohen poset as a dense subset of $\B$ (and moving back and forth between this representation and the definition as finite partial functions) comes in. Furthermore, one has to develop machinery similar to that for the powerset operation to convert an external injective function \lstinline{x.type → bSet 𝔹} to an internal injective function in \lstinline{bSet 𝔹}.  % Our custom tactics and automation for reasoning inside $\B$ made this latter task significantly easier than it would have been otherwise. We refer the interested reader to our formalization for details.
 
 By definition, our newly-constructed injection gives that \(\check{\aleph_2} \preceq \mathcal{P}(\omega)\). To finish negating \(\mathsf{CH}\), it suffices to show that there exist some \lil{y : bSet 𝔹} such that \lil{ω ≺ y ≺ ℵ₂̌  ≼ 𝒫(ω)}. Taking \(y\) to be \(\check{\aleph_1}\), it suffices to show that in \lil{bSet 𝔹}, there is no surjection \(\check{\aleph_1} \twoheadrightarrow \check{\aleph_2}\).
 
@@ -809,7 +809,8 @@ lemma AE_of_check_larger_than_check {x y : pSet (f : bSet 𝔹) {Γ : 𝔹} (H_n
   (H : Γ ≤ is_surj_onto x̌ y̌ f) (H_nonempty : ∃ z, z ∈ y) : ∀ i : y.type, ∃ j : x.type, ⊥ < (is_func f) ⊓ (pair (x.func j)̌  (y.func i)̌  ∈ᴮ f)
 \end{lstlisting}
 
-Suppose that there is a surjection \(\check{\aleph_1} \twoheadrightarrow \check{\aleph_2}\). Applying this lemma to \(x := \check{\aleph_1}\), \(y := \check{\aleph_2}\), we obtain a \(\forall\)-\(\exists\) statement in the metatheory to which we can apply Lean's axiom of choice to produce a function \(g : \aleph_2 \to \aleph_1\). Since externally, we know that \(\aleph_1 \prec \aleph_2\), it follows from the infinite pigeonhole principle that \(g\) must have an uncountable fiber over some \(\nu < \aleph_1\). For every \(\eta \in g^{-1}(\{\nu\})\), let \(A_{\eta}\) be the element of \lil{𝔹_cohen} given by the lemma, i.e. \[A_{\eta} := \text{\lil{(is_func f) ⊓ (pair (ℵ₁.func ν)̌  (ℵ₂.func η)̌  ∈ᴮ f)}}\]
+Suppose that there is a surjection \(\check{\aleph_1} \twoheadrightarrow \check{\aleph_2}\). Applying this lemma to \(x := \check{\aleph_1}\), \(y := \check{\aleph_2}\), we obtain a \(\forall\)-\(\exists\) statement in the metatheory to which we can apply Lean's axiom of choice to produce a function \(g : \aleph_2 \to \aleph_1\). Since externally, we know that \(\aleph_1 \prec \aleph_2\), it follows from the infinite pigeonhole principle that \(g\) must have an uncountable fiber over some \(\nu < \aleph_1\). For every \(\eta \in g^{-1}(\{\nu\})\), let \(A_{\eta}\) be the element of \lil{𝔹_cohen} given by the lemma, i.e.
+\[A_{\eta} := \text{\lil{(is_func f) ⊓ (pair (ℵ₁.func ν)̌  (ℵ₂.func η)̌  ∈ᴮ f)}}\]
 
 Because each \(A_{\eta}\) carries around the knowledge that \(f\) is a function as a conjunct, for \(\eta_1 \neq \eta_2\), \(A_{\eta_1}\) and \(A_{\eta_2}\) are incompatible, i.e. \(A_{\eta_1} \sqcap A_{\eta_2} = \bot\). Since the lemma guarantees that each \(A_{\eta}\) is nonzero, the \(A_{\eta}\) form an uncountable antichain. Therefore, if \(\mathbb{B}\) has the CCC, there is a contradiction, so by \ref{lemma-cohen-algebra-CCC}, we have forced \(\neg\mathsf{CH}\) in \lil{bSet 𝔹_cohen}.
 
@@ -838,12 +839,12 @@ Whereas Cohen forcing creates a new injection \(\check{\aleph_2} \hookrightarrow
   As an implementation detail, in the formalization we \emph{define} \lil{ℙ_collapse} to be the countable partial functions (in \lil{Type u}) between \lil{(ordinal.mk (aleph one) : pSet).type} and \lil{(powerset omega : pSet).type}, so that \\ \lil{𝔹_collapse}-valued indicator functions on \lil{ordinal.mk (aleph one) : pSet).type × (powerset omega : pSet).type} are definitionally equal to \lil{𝔹_collapse}-valued indicator functions on the underlying types of \lil{check (ordinal.mk (aleph one))} and \lil{check (powerset omega)}.
 \end{remark}
 
-To specify the surjection \(\check{\aleph_1} \twoheadrightarrow \check{\mathcal{P}(\omega)}\), we specify a subset (the graph of the function) of the powerset \(\mathcal{P}(\check{\aleph_1} \times \check{\mathcal{P}(\omega)})\). In \lil{bSet 𝔹_collapse}, we can do this by specifying the indicator function \(\chi_{\pi}\) of the graph of a function \lil{π : ℵ₁̌  → 𝒫(ω)̌ } as follows: to an \(\eta < \aleph_1\) and a subset \(S \subseteq \mathcal{P}(\omega)\) (in \lil{pSet}), we attach the \emph{principal open} (comprising functions extending the singleton countable partial function \(\{(\eta, S)\}\)):
+To specify the surjection \(\check{\aleph_1} \twoheadrightarrow \check{\mathcal{P}(\omega)}\), we specify a subset (the graph of the function) of the powerset \(\mathcal{P}(\check{\aleph_1} \times \check{\mathcal{P}(\omega)})\). In \lil{bSet 𝔹_collapse}, we can do this by specifying the indicator function \(\chi_{\pi}\) of the graph of a function \(\pi : \widecheck{\aleph_1} \to \widecheck{\mathcal{P}(\omega)}\) as follows: to an \(\eta < \aleph_1\) and a subset \(S \subseteq \mathcal{P}(\omega)\) (in \lil{pSet}), we attach the \emph{principal open} (comprising functions extending the singleton countable partial function \(\{(\eta, S)\}\)):
 \[
   \chi_\pi (\eta, S) := D_{\{(\eta, S)\}} = \{g : \aleph_1 \to \mathcal{P}(\omega) \operatorname{|} g (\eta) = S\}.
 \]
 
-More generally, we formalize conditions over generic \lil{x, y : pSet} and \lil{𝔹} for when a function \lil{af : x.type → y.type → 𝔹} induces a surjection \lil{x̌ → y̌} in \lil{bSet 𝔹}. By definition, such a function always induces a relation on the product (in \lil{bSet 𝔹}) of \lil{x} and \lil{y}. Surjectivity is equivalent to \lil{⨅ j, (⨆ i, af i j) = ⊤}, totality is equivalent to \lil{⨅ i, (⨆ j, af i j) = ⊤}, and well-definedness follow from the following two conditions:
+More generally, we formalize conditions over generic \lil{x, y : pSet} and \lil{𝔹} for when a function \lil{af : x.type → y.type → 𝔹} induces a surjection \(\check{x} \to \check{y}\) in \lil{bSet 𝔹}. By definition, such a function always induces a relation on the product (in \lil{bSet 𝔹}) of \lil{x} and \lil{y}. Surjectivity is equivalent to \lil{⨅ j, (⨆ i, af i j) = ⊤}, totality is equivalent to \lil{⨅ i, (⨆ j, af i j) = ⊤}, and well-definedness follow from the following two conditions:
 \begin{lstlisting}
 (H_anti : ∀ i, ∀ j₁ j₂, j₁ ≠ j₂ → af i j₁ ⊓ af i j₂ ≤ ⊥)
 (H_inj : ∀ i₁ i₂, ⊥ < (func x i₁) =ᴮ (func x i₂) → i₁ = i₂)
@@ -856,7 +857,7 @@ To finish demonstrating that \(\CH\) is true in \lil{bSet 𝔹_collapse}, it rem
 Now we must ensure that no new countable ordinals are added to \(\aleph_1\) and that no new subset of \(\omega\) are added to \(\mathcal{P}(\omega)\) in the passage from \lil{pSet} to \lil{bSet}. The second obstacle is reducing both statements to, and proving, the following lemma:
 
 \begin{lemma}\label{lemma-function-reflect-suffices}
-  Let \(\mathbb{B}\) be a complete Boolean algebra, and suppose that for every \lil{ y : pSet}, and every \lil{f : bSet 𝔹} such that \lil{bSet 𝔹} models that \lil{f} is a function from \(\omega\) to \lil{y̌}, there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹} models that \lil{ǧ = f}. Then \(\check{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\check{\aleph_1} = \aleph_1\).
+  Let \(\mathbb{B}\) be a complete Boolean algebra, and suppose that for every \lil{ y : pSet}, and every \lil{f : bSet 𝔹} such that \lil{bSet 𝔹} models that \lil{f} is a function from \(\omega\) to \(\check{y}\), there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹} models that \(\check{g} = f\). Then \(\check{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\check{\aleph_1} = \aleph_1\).
 \end{lemma}
 
 We describe our solution to this in \ref{subsect:function-reflection}.
@@ -898,7 +899,7 @@ We lay out the basic strategy. Recall that a term of type \lil{bSet 𝔹} compri
 It remains to show that \lil{𝔹_collapse} fulfills the assumptions of Lemma \ref{lemma-function-reflect-suffices}.
 
 \begin{lemma}\label{lemma-function-reflect}
-  For every \lil{ y : pSet}, and every \lil{f : bSet 𝔹_collapse} such that \lil{bSet 𝔹_collapse} models that \lil{f} is a function from \(\omega\) to \lil{y̌}, there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹_collapse} models that \lil{ǧ = f}.
+  For every \lil{ y : pSet}, and every \lil{f : bSet 𝔹_collapse} such that \lil{bSet 𝔹_collapse} models that \lil{f} is a function from \(\omega\) to \(\check{y}\), there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹_collapse} models that \(\check{g} = f\).
 \end{lemma}
 
 % \subsection{Reflecting Boolean-valued \(\forall\)-\(\exists\) statements into the metatheory} \label{subsect:reflect}
@@ -922,10 +923,10 @@ f ∈ᴮ functions ω y̌
 
 \begin{lstlisting}
 lemma AE_of_check_func_check (x y : pSet.{u}) {f : bSet 𝔹} {Γ : 𝔹}
-  (H : Γ ≤ is_func' (x̌) (y̌) f) (H_nonzero : ⊥ < Γ) :
+  (H : Γ ≤ is_func' x̌ y̌ f) (H_nonzero : ⊥ < Γ) :
   Π (i : x.type),
     ∃ (j : y.type ) (Γ' : 𝔹) (H_nonzero' : ⊥ < Γ') (H_le : Γ' ≤ Γ),
-      Γ' ≤ (is_func' (x̌) (y̌) f) ∧ Γ' ≤ (pair ((x.func i)̌ ) ((y.func j)̌ )) ∈ᴮ f :=
+      Γ' ≤ (is_func' x̌ y̌ f) ∧ Γ' ≤ (pair (x.func i)̌  (y.func j)̌ ) ∈ᴮ f :=
 \end{lstlisting}
 
 Recursively applying this lemma, obtain values \(g_0, \dots, g_n, \dots\) such that
