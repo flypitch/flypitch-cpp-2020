@@ -279,7 +279,7 @@ For equality, we also have to specify that it is reflexive, symmetric, and respe
 Our task is now to construct two Boolean-valued models of $\ZFC$, one where $\CH$ holds, and one where $\CH$ fails.
 We then apply the soundness theorem for Boolean-valued models to show that $\CH$ is independent from $\ZFC$.
 
-For any complete Boolean algebra $\mathbb{B}$ we can construct the type of $\mathbb{B}$-valued sets, or \lil{bset 𝔹}. 
+For any complete Boolean algebra $\mathbb{B}$ we can construct the type of $\mathbb{B}$-valued sets, or \lil{bset 𝔹}.
 An element of \lil{x : bset 𝔹} consists of a indexing type \lil{α}, a function \lil{f : α → bset 𝔹} pointing to the elements of \lil{x} and finally a \lil{𝔹}-valued predicate \lil{χ : α → 𝔹} which expresses that \lil{f(i) ∈ x} has truth value (at least) \lil{χ(i)}.
 
 Forcing, cardinal collapse, independence of CH.
@@ -386,7 +386,8 @@ In \lil{allI} the notation \lil{(λ f, f ↑ 1) '' Γ} means lifting all free va
 A term of type \lil{prf Γ A}, denoted \lil{Γ ⊢ A}, is a proof tree encoding a derivation of $A$ from $\Gamma$.
 We also define provability as the proposition stating that a proof tree exists.
 \begin{lstlisting}
-def provable (Γ : set (formula L)) (f : formula L) : Prop :=
+def provable (Γ : set (formula L)) (f : formula L) :
+    Prop :=
 nonempty (prf Γ f)
 \end{lstlisting}
 Our current formalization does not use proof trees in an essential way, but we defined them so that we can define manipulations on proof trees (like detour elimination) in future projects.
@@ -633,7 +634,7 @@ Whereas Cohen forcing creates a new injection \(\check{\aleph_2} \hookrightarrow
 \begin{defn}\label{def-collapse-poset}
   We define \lstinline{ℙ_collapse} to be the poset of countable partial functions \(\aleph_1 \to \mathcal{P}(\omega)\). The principal open sets \[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \hspace{2mm} | \hspace{2mm} g \text{ extends } p\} , \hspace{3mm} p \in \mathbb{P}_{\text{collapse}}\] form the basis of a topology \(\tau\) (finer than the product topology) on the function set \(\mathcal{P}(\omega)^{\aleph_1}\). We put
   \begin{center}
-  \lstinline{𝔹_collapse :=} \(\operatorname{RO}\left(\mathcal{P}(\omega)^{\aleph_1}, \tau\right)\). 
+  \lstinline{𝔹_collapse :=} \(\operatorname{RO}\left(\mathcal{P}(\omega)^{\aleph_1}, \tau\right)\).
   \end{center}
 \end{defn}
 
