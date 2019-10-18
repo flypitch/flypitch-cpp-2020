@@ -16,7 +16,6 @@
 %% For final camera-ready submission, w/ required CCS and ACM Reference
 %\documentclass[sigplan]{acmart}\settopmatter{}
 
-
 %% Conference information
 %% Supplied to authors by publisher for camera-ready submission;
 %% use defaults for review submission.
@@ -238,20 +237,17 @@ This forcing argument to show that $\mathsf{CH}$ is consistent is not the proof 
 The method of forcing with Boolean-valued models was developed by Solovay and Scott in '65-'66 \cite{scott1967proof,scott-solovay} as a simplification of Cohen's method.
 Some of these simplifications were incorporated by Shoenfield \cite{shoenfield1971unramified} into a general theory of forcing using partial orders, and it is in this form that forcing is usually practiced.
 While both approaches have essentially the same mathematical content (see e.g.\ \cite{kunen2014set, jech2013set, moore2019method}), there are several reasons why we chose Boolean-valued models for our formalization.
-The main reason is the directness of forcing with Boolean-valued models.
-Our formalization doesn't require us to prove the L\"owenheim-Skolem theorems, Mostowski collapse, countable transitive models, or genericity considerations for filters.
-Instead, we had to set up a library for Boolean-valued models, including a soundness theorem for Boolean-valued models, but this was similar to the library for ordinary two-valued models.
+The main reason is the directness of forcing with Boolean-valued models, which bypasses the need for the L\"owenheim-Skolem theorems, Mostowski collapse, countable transitive models, or genericity considerations for filters.
 
-We have set up our library in a modular fashion, which allowed us to formalize different components in parallel. Some of the components are
-\begin{itemize}
-  \item A general theory of Boolean-valued semantics for first-order logic;
-  \item A library for calculations inside complete Boolean algebras;
-  \item The construction of Boolean-valued models of set theory;
-  \item The construction of the appropriate Boolean algebras;
-  \item The theory of \(\mathsf{ZFC}\) set theory.
-\end{itemize}
-These components could then be combined to perfom the specific forcing arguments.
-We made sure that the individual components of this formalization are reusable for other projects, e.g.\ to formalize the Boolean-valued semantics of stochastic $\lambda$-calculus~\cite{scott2014stochastic, bacci2018boolean}.
+% TODO(Floris): maybe move to introduction of section on boolean-valued semantics? I already made a similar point in my section on boolean-valued models of set theory
+
+% Instead, we had to set up a library for Boolean-valued models, including a soundness theorem for Boolean-valued models, but this was similar to the library for ordinary two-valued models.
+
+%Note: the intent of the original form of this paragraph was to imply that the modularity of our library is a consequence of our choice to use Boolean-valued models
+
+Moreover, the theory of forcing with Boolean-valued models splits into several parts, allowing us formalize different components in parallel and later recombine them. Some of these components include: a general theory of Boolean-valued semantics for first-order logic, a library for calculations inside complete Boolean algebras, and a construction of Boolean-valued models of set theory.
+
+% We made sure that the individual components of this formalization are reusable for other projects, e.g.\ to formalize the Boolean-valued semantics of stochastic $\lambda$-calculus~\cite{scott2014stochastic, bacci2018boolean}.
 
 %TODO: maybe this is better in the main text. We can mention it briefly here.
 % \textbf{Amenability to structural induction.}
@@ -265,74 +261,60 @@ Our formalization\footnote{\url{https://github.com/flypitch/flypitch}} is writte
 Lean is an interactive proof assistant under active development at Microsoft Research~\cite{de2015lean, ullrich2019counting}.
 It implements the Calculus of Inductive Constructions and has a similar metatheory to Coq, adding definitional proof irrelevance, quotient types, and a noncomputable choice principle.
 Our formalization makes as much use of the expressiveness of Lean's dependent type theory as possible, using constructions which are impossible or unwieldy to encode in HOL, much less ZF.
-We crucially use the types of cardinals and ordinals defined in \textsf{mathlib}, which are defined as equivalence classes of types and well-ordered types, respectively. Ordinals and cardinals live one universe level higher than the types used to construct them.
-Moreover, the models of set theory \lstinline{pSet} and \lstinline{bSet} we use, require as input an entire universe of types.
-Finally, our encoding of first-order logic uses parameterized inductive types which ensures that type-correctness implies well-formedness. This eliminates the need for separate well-formedness proofs.
+We crucially use the types of cardinals and ordinals defined in \textsf{mathlib}, which are defined as equivalence classes of (well-ordered) types, live one universe level higher than the types used to construct them, and our models of set theory require as input an entire universe of type. Our encoding of first-order logic also uses parameterized inductive types which ensure that type-correctness implies well-formedness, eliminating the need for separate well-formedness proofs.
 
 \subsection{Proof Outline}
 \label{subsection:intro:outline}
-$\ZFC$ is a collection of first-order sentences in the language of set theory. For convenience, we extend set theory to have five definable function symbols in addition to the membership relation (see \Cref{subsection:fol:zfc}).
-In this language we can easily formulate $\CH$.
-The goal of our formalization is to show that we cannot construct proofs of either $\CH$ or $\neg\CH$ from $\ZFC$.
-By proof we mean a natural deduction tree (see \Cref{subsection:fol:terms}).
+$\ZFC$ is a collection of first-order sentences in the language of set theory. For convenience, we conservatively extend this language with five function symbols (see \Cref{subsection:fol:zfc}) which make it easier to formulate $\CH$. Our goal is to show that we cannot construct proofs\footnote{By proof we mean a natural deduction tree (see \Cref{subsection:fol:terms}).} of either $\CH$ or $\neg\CH$ from $\ZFC$.
 
-The usual method to show that there is no proof of a certain statement is to construct a model where the statement is false, and apply the soundness theorem.
-Our method is similar, except that we use Boolean-valued models (see \Cref{section:boolean-semantics}).
-The difference between Boolean-valued models and ordinary models is that the truth values in a Boolean-valued model \lil{M} live in a specified complete Boolean algebra \lil{𝔹}.
-This means that, e.g.\ equality is interpreted as a function \lil{eq : M → M → 𝔹} and transitivity is formulated as \lil{eq(x, y) ⊓ eq(y, z) ≤ eq(x, z)} for all \lil{x, y, z}.
-Here \lil{⊓} and \lil{≤} are the meet and order in \lil{𝔹}.
-For equality, we also have to specify that it is reflexive, symmetric, and respects all the interpretations of function symbols and relation symbols in \lil{M}.
+The usual method to show that a statement is unprovable is to construct a model where the statement is false, and apply the soundness theorem; our method is similar, except that we use Boolean-valued models (see \Cref{section:boolean-semantics}).
+The difference between Boolean-valued models and ordinary models is that the truth values in a Boolean-valued model \lil{M} live in a complete Boolean algebra \lil{(𝔹, ⊓, ⊔, ⨅, ⨆,⊥,⊤)}.
+This means that, e.g.\ equality is interpreted as a function \lil{eq : M → M → 𝔹} satisfying \lil{𝔹}-valued reflexivity, symmetry, and transitivity (for example, transitivity is formulated as \lil{eq(x, y) ⊓ eq(y, z) ≤ eq(x, z)} for all \lil{x, y, z}).
+All interpretations of function symbols and relation symbols in \lil{M} must satisfy \lil{𝔹}-valued congruence lemmas with respect to equality.
 Our task is now to construct two Boolean-valued models of $\ZFC$, one where $\CH$ holds, and one where $\CH$ fails.
 We then apply the soundness theorem for Boolean-valued models to show that $\CH$ is independent from $\ZFC$.
 
 For any complete Boolean algebra $\mathbb{B}$ we can construct the type of $\mathbb{B}$-valued sets, or \lil{bSet 𝔹} (see \Cref{section:bset}).
-An element of \lil{x : bSet 𝔹} has three components:
-\begin{itemize}
-\item An indexing type \lil{α : Type};
-\item A function \lil{A : α → bSet 𝔹} pointing to the (possible) elements of \lil{x};
-\item A \lil{𝔹}-valued predicate \lil{B : α → 𝔹} which expresses that \lil{A a ∈ x} has truth value (at least) \lil{B a}.
-\end{itemize}
+% An element of \lil{x : bSet 𝔹} has three components:
+% \begin{itemize}
+% \item An indexing type \lil{α : Type};
+% \item A function \lil{A : α → bSet 𝔹} pointing to the (possible) elements of \lil{x};
+% \item A \lil{𝔹}-valued predicate \lil{B : α → 𝔹} which expresses that \lil{A a ∈ x} has truth value (at least) \lil{B a}.
+% \end{itemize}
 Now the fundamental theorem of forcing states that \lil{bSet 𝔹} forms a Boolean-valued model of $\ZFC$.
-\lil{bSet 𝔹} is a generalization of Aczel encoding of set theory, which is called \lil{pSet} in Lean.
+\lil{bSet 𝔹} is a generalization of the Aczel encoding of set theory \cite{aczel1978type}, which is called \lil{pSet} in Lean.
 In this encoding, the third component is missing.
 We can also interpret \lil{pSet} as \lil{bSet unit}, where \lil{unit} is the trivial Boolean algebra (with $\top=\bot$).
 
 The properties of \lil{bSet 𝔹} vary wildly depending on the choice of the complete Boolean algebra \lil{𝔹}.
-There is always a map \lil{check : pSet → bSet 𝔹}, $x \mapsto \widecheck{x}$, although this map need not be injective and $\widecheck{x}$ might have different properties than $x$. However, properties which are definable with only bounded quantification are preserved. In particular, \lil{bSet 𝔹} thinks $\widecheck{\omega}$ is $\omega$.
+There is always a map \lil{check : pSet → bSet 𝔹}, $x \mapsto \widecheck{x}$; $\widecheck{x}$ might have different properties than $x$, but \(\Delta_0\) properties (i.e. definable with only bounded quantification) are always preserved. In particular, \lil{bSet 𝔹} thinks $\widecheck{\omega}$ is $\omega$.
 We now have to choose two appropriate complete Boolean algebras \lil{𝔹} such that in \lil{bSet 𝔹}, the formula $\CH$ is true ($\top$) in one model and $\CH$ is false ($\bot$) in the other.
 This is where forcing comes in (see \Cref{section:forcing}).
 
-To force the negation of the continuum hypothesis, we define Cantor space $2^{\aleph_2 \times \mathbb{N}}$ with its usual product topology (see TODO).
-Then let $\B$ be the regular open algebra of the Cantor space (a set $O$ is a regular open if $O$ is equal to the interior of the closure of $O$).
-Now $\B$ is a complete Boolean algebra, so \lil{bSet 𝔹} models $\ZFC$.
-Internally to this model we can construct an injection $\widetilde{\chi} : \aleph_2 \to \mathcal{P}(\omega)$, in the following way.
-For each $\nu \in \aleph_2$, we associate the $\B$-valued characteristic function $\chi_\nu : \mathbb{N} \to \B$ by $n \mapsto \{f \mid f(\nu, n) = 1\}$.
-This induces an subset $\widetilde{\chi_{\nu}} \subseteq \mathbb{N}$ internal to \lil{bSet 𝔹}, which is called a \emph{Cohen real}.
-This way we obtain an function \(\widecheck{\aleph_2} \to \mathcal{P}(\mathbb{N})\) internal to \lil{bSet 𝔹}.
-We can now show that \lil{bSet 𝔹} thinks this function is injective, and we finish by showing that \lil{bSet 𝔹} thinks that \(\widecheck{\aleph_2}\) is $\aleph_2$ to show that $\neg\CH$ holds in \lil{bSet 𝔹}.
-The proof that \lil{bSet 𝔹} preserves cardinal numbers is really the technical heart of the matter, and relies on a combinatorial property of $\B$ called the \emph{countable chain condition} (CCC).
-The proof that $\B$ has the CCC requires a detailed combinatorial analysis of the basis of the product topology for $2^{\aleph_2 \times \mathbb{N}}$.
-We handle this with a general result in transfinite combinatorics called the \emph{$\Delta$-system lemma}.
-% we can omit the last two sentences, if needed
+% To force the negation of the continuum hypothesis, we define Cantor space $2^{\aleph_2 \times \mathbb{N}}$ with its usual product topology (see TODO).
+% Then let $\B_{\mathsf{cohen}}$ be the regular open algebra of the Cantor space (a set $O$ is a regular open if $O$ is equal to the interior of the closure of $O$).
+% Now $\B$ is a complete Boolean algebra, so \lil{bSet 𝔹} models $\ZFC$.
+% Internally to this model we can construct an injection $\widetilde{\chi} : \aleph_2 \to \mathcal{P}(\omega)$, in the following way.
+% For each $\nu \in \aleph_2$, we associate the $\B$-valued characteristic function $\chi_\nu : \mathbb{N} \to \B$ by $n \mapsto \{f \mid f(\nu, n) = 1\}$.
+% This induces an subset $\widetilde{\chi_{\nu}} \subseteq \mathbb{N}$ internal to \lil{bSet 𝔹}, which is called a \emph{Cohen real}.
+% This way we obtain an function \(\widecheck{\aleph_2} \to \mathcal{P}(\mathbb{N})\) internal to \lil{bSet 𝔹}.
+% We can now show that \lil{bSet 𝔹} thinks this function is injective, and we finish by showing that \lil{bSet 𝔹} thinks that \(\widecheck{\aleph_2}\) is $\aleph_2$ to show that $\neg\CH$ holds in \lil{bSet 𝔹}.
+% The proof that \lil{bSet 𝔹} preserves cardinal numbers is really the technical heart of the matter, and relies on a combinatorial property of $\B$ called the \emph{countable chain condition} (CCC).
+% The proof that $\B$ has the CCC requires a detailed combinatorial analysis of the basis of the product topology for $2^{\aleph_2 \times \mathbb{N}}$.
+% We handle this with a general result in transfinite combinatorics called the \emph{$\Delta$-system lemma}.
+% % we can omit the last two sentences, if needed
 
-For the other direction, to force the continuum hypothesis, we define the collapse poset to be the poset of countable partial functions
-\[(\mathbb{P}_{\text{collapse}} = \aleph_1 \rightharpoonup \mathcal{P}(\omega).\]
-%TODO: use \rightharpoonup by default for partial functions
-We can now define a topology on $\aleph_1 \to \mathcal{P}(\omega)$ defined by the principal opens
-\[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \mid g \text{ extends } p\} \]
-for $p \in \mathbb{P}_{\text{collapse}}$.
-The collapse algebra $\mathbb{B}_{\text{collapse}}$ is now defined to be the regular opens in this topology.
-In the resulting model \lil{bSet 𝔹} we can construct a surjection \(F : \aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\). (TODO) (see TODO)
-This depends on \(\sigma\)-closedness (TODO).
+% For the other direction, to force the continuum hypothesis, we define the collapse poset to be the poset of countable partial functions
+% \(\mathbb{P}_{\mathsf{collapse}} := \aleph_1 \rightharpoonup \mathcal{P}(\omega)\), and topologize $\mathcal{P}(\omega)^{\aleph_1}$ with the basis of opens
+% \[\left\{ D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \mid g \text{ extends } p\} \right\}_{p \in \mathbb{P}_{\mathsf{collapse}}}\]
 
-This argument is wholly set-theoretic, but we proved it with type theory as our meta-theory.
-To do this, it was important to separate the mathematical content from the metamathematical content of the argument.
-While our objective is only to produce a model of $\mathsf{ZFC}$ satisfying certain properties, traditional presentations of forcing are careful to stay within the foundations of $\mathsf{ZFC}$, emphasizing that all arguments may be performed internal to a model of $\mathsf{ZFC}$, etc.
-It is not immediately clear what parts of the argument use that set-theoretic foundation in an essential way and require modification in the passage to type theory.
-Our formalization clarifies some of these questions.
+% The collapse algebra $\mathbb{B}_{\mathsf{collapse}}$ is now defined to be the regular opens in this topology.
+% In the resulting model \lil{bSet 𝔹} we can construct a surjection \(F : \aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\). (TODO) (see TODO)
+% This depends on \(\sigma\)-closedness (TODO).
 
-In our formalization, we used many instances of domain-specific tactics and automation (see \Cref{section:metaprogramming}).
-Lean's powerful metaprogramming language is very convenient to define and run automation, which the user can write in Lean without the need to learn a new language.
+Traditional presentations of forcing, even with Boolean-valued models (e.g. \cite{bell2011set}, \cite{jech2013set}), are careful to stay within the foundations of $\mathsf{ZFC}$, emphasizing that all arguments may be performed internal to a model of $\mathsf{ZFC}$, etc. In order to formalize these set-theoretic arguments in a type-theoretic metatheory, it is important to separate their mathematical content from their metamathematical content. It is not immediately clear what parts of these arguments use their set-theoretic foundation in an essential way and require modification in the passage to set theory. Our formalization clarifies some of these questions.
+
+Our formalization uses custom domain-specific tactics and automation throughout, notably a tactic library for simulating natural deduction proofs inside a complete Boolean algebra \Cref{section:metaprogramming}). This is another advantage of using a proof assistant: the bookkeeping of Boolean truth-values, sometimes regarded as a tedious aspect of the Boolean-valued approach to forcing, can be hidden via automation.
 
 \subparagraph*{Sources} % TODO: fully incorporate this section into related work(?)
 Our strategy for constructing a Boolean-valued model in which $\mathsf{CH}$ fails is a synthesis of the proofs in the textbooks of Bell (\cite{bell2011set}, Chapter 2) and Manin (\cite{manin2009course}, Chapter 8).
