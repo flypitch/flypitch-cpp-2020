@@ -316,12 +316,12 @@ Traditional presentations of forcing, even with Boolean-valued models (e.g. \cit
 
 Our formalization uses custom domain-specific tactics and automation throughout, notably a tactic library for simulating natural deduction proofs inside a complete Boolean algebra \Cref{section:metaprogramming}). This is another advantage of using a proof assistant: the bookkeeping of Boolean truth-values, sometimes regarded as a tedious aspect of the Boolean-valued approach to forcing, can be hidden via automation.
 
-\subparagraph*{Sources} % TODO: fully incorporate this section into related work(?)
+\subparagraph*{Sources}
 Our strategy for constructing a Boolean-valued model in which $\mathsf{CH}$ fails is a synthesis of the proofs in the textbooks of Bell (\cite{bell2011set}, Chapter 2) and Manin (\cite{manin2009course}, Chapter 8).
 For the $\Delta$-system lemma, we follow Kunen (\cite{kunen2014set}, Chapters 1 and 5).
 There is no good reference for the Boolean-valued model where $\CH$ holds.
 A conventional argument using filters is given in Weaver \cite{weaver2014forcing}, which we adapted to Boolean-valued models.
-See also the Related Work (\Cref{section:related-work}).
+% See also the Related Work (\Cref{section:related-work}).
 
 % \subparagraph*{Viewing the formalization}
 % The code blocks in this paper were taken directly from our formalization, but for the sake of readability, we sometimes omit or modify universe levels, type ascriptions, and casts. We refer the interested reader to our repository (see Supplemental Material on page 1) which contains a guide on compiling and navigating the source files of the project.
@@ -755,7 +755,7 @@ We say that $\B$ has the \textbf{countable chain condition} (CCC) if every antic
 \end{defn}
 
 \begin{defn}\label{def-sigma-closed}
-We say that \(\B\) is \textbf{\(\sigma\)-closed} if there exists a dense suborder \(\mathbb{P}\) of \(\B\) such that every \(\omega\)-indexed downwards chain \(p_0 \geq p_1 \geq \cdots \geq p_n \cdots\) in \(\mathbb{P}\) has a lower bound \(p_{\omega}\) in \(\mathbb{P}\).
+We say that \(\B\) is \textbf{\(\sigma\)-closed} if there exists a dense suborder \(\mathbb{P}\) of \(\B\) such that every \(\omega\)-indexed downwards chain \(p_0 \geq p_1 \geq \cdots \geq p_n \geq \cdots\) in \(\mathbb{P}\) has a lower bound \(p_{\omega}\) in \(\mathbb{P}\).
 \end{defn}
 
 \subsection{Cohen forcing}
@@ -801,12 +801,23 @@ Crucially, the image of this embedding is a dense suborder of \(\mathbb{B}_{\tex
 Recalling that $\leq$ in $\B$ is subset-inclusion, we see that this is essentially because the image of $\iota : \mathbb{P}_{\text{cohen}} \to \B_{\text{cohen}}$ \emph{is} the standard basis for the product topology.
 Our chosen encoding of the Cohen poset also made it easier to perform this identification when formalizing this proof.
 
+To show that \(\B_{\text{cohen}}\) has the CCC, we use a powerful combinatorial argument called the \emph{$\Delta$-system lemma}. A family $(A_i)_i$ of sets is called a \textbf{$\Delta$-system} if there is a set $r$, called the \textbf{root} such that whenever $i \ne j$ we have $A_i \cap A_j = r$.
+\begin{lemma}[$\Delta$-system lemma]
+  If we have an uncountable family of finite sets, there is an uncounbtable subfamily which forms a $\Delta$-system.
+\end{lemma}
+We omit the proof, referring the interested reader to Kunen~\cite{kunen2014set} or the formalization.
+We use this to show the following theorem. We say that a topological space has the countable chain condition if every family of pairwise disjoint open sets is countable.
+\begin{thm}\label{thm:product-ccc}
+  If we have a family $(X_i)_{i\in I}$ of topological spaces, then $\prod_{i\in I} X_i$ has the countable chain condition if for every finite $J\subseteq I$ the product $\prod_{i\in J} X_i$ has the countable chain condition.
+  \end{thm}
+  \begin{proof}
+  For the proof, suppose we had an uncountable family of pairwise disjoint open subsets $U_k$ of $\prod_{i\in I} X_i$. By shrinking $U_k$, we may assume that each $U_k$ is a basic open set of the form $\prod_{i\in F_k} U_{k,i} \times \prod_{i \not\in F_k} X_i$ for some finite set $F_k\subseteq I$ and $U_{k,i}\neq X_i$ open in $X_i$. Now the $(F_k)_k$ form a uncountable family of finite sets, so by the $\Delta$-system lemma we know that there is an uncountable family $K$ of indices such that $(F_k)_{k\in K}$ forms a $\Delta$-system with root $J$. Now we can take the projections $\pi(U_k)$ onto $\prod_{i\in J}X_i$ for $k\in K$. We can show this forms an uncountable disjoint family of opens in $\prod_{i\in J}X_i$, contradicting the assumption.
+\end{proof}
 \begin{lemma}\label{lemma-cohen-algebra-CCC}
   \(\B_{\text{cohen}}\) has the CCC.
 \end{lemma}
-
 \begin{proof}
-  TODO(floris)
+  It suffices to show that the topological space $2^{\aleph_2 \times \mathbb{N}}$ has the countable chain condition, which follows immediately from \Cref{thm:product-ccc} and the observation that $2^J$ has the countable chain condition if $J$ is finite.
 \end{proof}
 
 \begin{defn}\label{def:principal-open}
@@ -866,22 +877,28 @@ this will follow from ensuring our choice of \(\mathbb{B}\) is \(\sigma\)-closed
   \[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \hspace{2mm} | \hspace{2mm} g \text{ extends } p\} , \hspace{3mm} p \in \mathbb{P}_{\text{collapse}}\]
   form the basis of a topology \(\tau\) (finer than the product topology) on the function set \(\mathcal{P}(\omega)^{\aleph_1}\).
   We put
-  \begin{center}
-  \lstinline{𝔹_collapse :=} \(\operatorname{RO}\left(\mathcal{P}(\omega)^{\aleph_1}, \tau\right)\).
-  \end{center}
+  \[\B_{\text{collapse}} := \operatorname{RO}\left(\mathcal{P}(\omega)^{\aleph_1}, \tau\right).\]
 \end{defn}
 
 \begin{lemma}\label{lemma-collapse-algebra-sigma-closed}
   % Note to Floris: currently, sigma-closed is defined to be a property of complete Boolean algebras, namely that they possess a sigma-closed (in the usual sense) dense suborder
-  \lil{𝔹_collapse} is \(\sigma\)-closed.
+  \(\B_{\text{collapse}}\) is \(\sigma\)-closed.
 \end{lemma}
 
 \begin{proof}
-  TODO(floris)
+  We show that the collection of principal open sets \(\{D_p\}_p\) forms a dense subset of
+  \(\B_{\text{collapse}}\) such that every $\omega$-indexed downwards chain has a principal open set as lower bound.
+  It is clearly dense, because it generates the topology, so suppose we have a downwards chain
+  \[D_{p_0} \supseteq D_{p_1} \supseteq \cdots \supseteq D_{p_n} \supseteq \cdots\] in \(\mathbb{P}\).
+  This means that we have $p_0 \subseteq p_1 \subseteq \cdots \supseteq p_n \supseteq \cdots$.
+  We can now set $p_\omega := \bigcup_i p_i$, which is again a countable partial function, and it is easy to see that $D_{p_\omega}$ is a lower bound of $\{D_{p_i}\}_i$.
 \end{proof}
 
 \begin{remark}
-  As an implementation detail, in the formalization we \emph{define} \lil{ℙ_collapse} to be the countable partial functions (in \lil{Type u}) between \lil{(ordinal.mk (aleph one) : pSet).type} and \lil{(powerset omega : pSet).type}, so that \\ \lil{𝔹_collapse}-valued indicator functions on \lil{ordinal.mk (aleph one) : pSet).type × (powerset omega : pSet).type} are definitionally equal to \lil{𝔹_collapse}-valued indicator functions on the underlying types of \lil{check (ordinal.mk (aleph one))} and \lil{check (powerset omega)}.
+  As an implementation detail, in the formalization we \emph{define} \lil{ℙ_collapse} to be the countable partial functions (in \lil{Type u}) between \lil{(ordinal.mk (aleph one) : pSet).type} and \lil{(powerset omega : pSet).type}, so that \\
+  \lil{𝔹_collapse}-valued indicator functions on
+  \lil{ordinal.mk (aleph one) : pSet).type × (powerset omega : pSet).type}
+  are definitionally equal to \lil{𝔹_collapse}-valued indicator functions on the underlying types of \lil{check (ordinal.mk (aleph one))} and \lil{check (powerset omega)}.
 \end{remark}
 
 To specify the surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\mathcal{P}(\omega)}\), we specify a subset (the graph of the function) of the powerset \(\mathcal{P}(\widecheck{\aleph_1} \times \widecheck{\mathcal{P}(\omega)})\).
