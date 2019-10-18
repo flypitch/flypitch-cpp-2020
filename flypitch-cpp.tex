@@ -354,7 +354,6 @@ structure Language : Type (u+1) :=
 (functions : ℕ → Type u)
 (relations : ℕ → Type u)
 \end{lstlisting}
-
 \subsection{Terms, Formulae and Proofs}
 \label{subsection:fol:terms}
 The main novelty of our implementation of first-order logic is the use of \emph{partially applied} terms and formulas, encoded in a parameterized inductive type where the $\N$ parameter measures the difference between the arity and the number of applications.
@@ -572,7 +571,6 @@ def equiv : pSet → pSet → Prop
 | ⟨α,A⟩ ⟨β,B⟩ := (∀a, ∃b, equiv (A a) (B b)) ∧
   (∀b, ∃a, equiv (A a) (B b))
 \end{lstlisting}
-
 We can now membership from equivalence and check that modulo extensional equivalence, \lstinline{pSet} is a model of \(\mathsf{ZFC}\).
 
 % \paragraph{Two roads to \lstinline{bSet}}
@@ -638,14 +636,12 @@ def bv_eq : bSet 𝔹 → bSet 𝔹 → 𝔹
   (⨅a, B a ⟹ ⨆a', B' a' ⊓ bv_eq (A a) (A' a')) ⊓
   (⨅a', B' a' ⟹ ⨆a, B a ⊓ bv_eq (A a) (A' a'))
 \end{lstlisting}
-
 We abbreviate \lil{bv_eq} with the infix operator \lil{=ᴮ}.
 It is now easy to define $\B$-valued membership, which we denote by \lil{∈ᴮ}.
 \begin{lstlisting}
 def mem : bSet 𝔹 → bSet 𝔹 → 𝔹
 | x ⟨α, A, B⟩ := ⨆a, B a ⊓ x =ᴮ A a
 \end{lstlisting}
-
 \subsection{The fundamental theorem of forcing}
 \label{subsection:bset:fundamental-thm}
 The fundamental theorem of forcing for Boolean-valued models~\cite{hamkins2012well} states that for any complete Boolean algebra \lil{𝔹}, the type \lil{bSet 𝔹} forms a Boolean-valued model of $\mathsf{ZFC}$.
@@ -739,25 +735,30 @@ Since in general, \(\widecheck{\aleph_1}\) is \emph{not} what \lil{bSet 𝔹} th
 
 
 \section{Forcing} \label{section:forcing}
-Our point of departure from conventional accounts of forcing with a poset \(\mathbb{P}\) over a countable transitive model \cite{kunen2014set, jech2013set}, which use a generic filter to ``evaluate'' the \lstinline{ℙ}-names and produce an ordinary model of \(\ZFC\), is to force with \emph{Boolean-valued models} of \(\ZFC\) instead.
+The conventional accounts of forcing work with a poset \(\mathbb{P}\) over a countable transitive model \cite{kunen2014set, jech2013set}, and use a generic filter to ``evaluate'' the \lstinline{ℙ}-names and produce an ordinary model of \(\ZFC\).
+Instead, we force with \emph{Boolean-valued models} of \(\ZFC\) instead.
 As first observed by Scott and Solovay \cite{scott-solovay}, this obviates the need for countable transitive models, generic filters, or the truth and definability lemmas, and allows us to work only with the \lstinline{𝔹}-names.
+% Comment: this would be much better in the introduction: we need to motivate why we use boolean valued models.
 
 The cost of taking the \lstinline{𝔹}-names at face value is that the calculus of the forcing relation \cite{shoenfield1971unramified}, a key technical tool in usual forcing arguments, is replaced by the calculation of Boolean truth-values in \lstinline{𝔹}.
-From the Boolean-valued perspective, forcing a sentence \(\Phi\) in the language of \(\mathsf{ZFC}\) means constructing some \lil{𝔹} and a \lil{𝔹}-valued model \(M\) of \(\ZFC\) such that the truth value \(\Phi^{M}\) of \(\Phi\) is \(\top\).
+From the Boolean-valued perspective, forcing a sentence \(\Phi\) in the language of \(\mathsf{ZFC}\) means constructing some Boolean algebra \lil{𝔹} and a \lil{𝔹}-valued model \(M\) of \(\ZFC\) such that the truth value \(\Phi^{M}\) of \(\Phi\) is \(\top\).
 We will always force over a type universe \lil{Type u}, and our Boolean-valued models of \(\mathsf{ZFC}\) are always of the form \lil{bSet 𝔹} for some \lil{𝔹 : Type u}.
 That \lil{𝔹} belongs to {Type u} is crucial for forcing, as specific choices of \lil{𝔹} will affect the structure of \lil{bSet 𝔹} (and hence the truth-value of \(\Phi\)). % However, the effects of a particular choice of \lil{𝔹} is often only easily determined on the check-names, and a deeper combinatorial analysis of \lil{𝔹} is required to complete the argument.
 
 In this section, we describe two forcing arguments, one for \(\neg \CH\) and another for \(\CH\).
-Both follow roughly the same pattern. In both cases, we require the existence of a function (for \(\neg \CH\), an injection \(\aleph_2 \hookrightarrow \mathcal{P}(\omega)\), and for \(\CH\), a surjection \(\aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\).)
-We will construct a \lil{𝔹}  which encodes the construction (in \lil{Type u}) of such a function \(F\). Then \lil{𝔹} induces in \lil{bSet 𝔹} an approximation \(\widetilde{F}\) to such a function, which \emph{a priori} is only between check-names.
-To finish the forcing argument, we must show that it suffices to work with \(\widetilde{F}\). This requires a careful study of how truth-values are calculated in \lil{bSet 𝔹},
+Both follow roughly the same pattern. In both cases, we require the existence of a function; for \(\neg \CH\), an injection \(\aleph_2 \hookrightarrow \mathcal{P}(\omega)\), and for \(\CH\), a surjection \(\aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\).
+We will construct a Boolean algebra \lil{𝔹} which encodes the construction (in \lil{Type u}) of such a function \(F\).
+Then \lil{𝔹} induces in \lil{bSet 𝔹} an approximation \(\widetilde{F}\) to such a function, which \emph{a priori} is only between check-names.
+To finish the forcing argument, we must show that it suffices to work with \(\widetilde{F}\).
+This requires a careful study of how truth-values are calculated in \lil{bSet 𝔹},
 and ultimately reduces to an analysis of how truth-values of \(\forall\)-\(\exists\) statements in \lil{bSet 𝔹} can be reflected \emph{back} to \lil{Type u}, and verifying a combinatorial condition on \lil{𝔹}.
 
 \subsection{Regular open algebras}
 \begin{defn}\label{def-regular-open-algebra}
   Let $X$ be a topological space, and for any open set $U$, let $U^{\perp}$ denote the complement of the closure of $U$.
-  The \textbf{regular open algebra} of a topological space $X$, written $\operatorname{RO}(X)$, is the collection of all open sets $U$ such that $U = (U^\perp)^\perp$,
-  equipped with the structure of a complete Boolean algebra, with $x \sqcap y := x \cap y$, $x \sqcup y := ((x \cup y)^\perp)^\perp$, $\neg x := x^\perp$, and $\bigsqcup x_i := ((\bigcup x_i)^\perp)^\perp$.
+  The \textbf{regular open algebra} of a topological space $X$, written $\operatorname{RO}(X)$, is the collection of all open sets $U$ such that $U = (U^\perp)^\perp$, or equivalently such that
+  $U$ is equal to the interior of the closure of $U$.
+  $\operatorname{RO}(X)$ is equipped with the structure of a complete Boolean algebra, with $x \sqcap y := x \cap y$ and $x \sqcup y := ((x \cup y)^\perp)^\perp$ and $\neg x := x^\perp$ and $\bigsqcup x_i := ((\bigcup x_i)^\perp)^\perp$.
 \end{defn}
 
 While forcing conditions usually present themselves as a poset instead of a complete Boolean algebra, any forcing poset can be represented as the dense suborder of a regular open algebra \cite{moore2019method}.
@@ -793,7 +794,6 @@ structure ℙ_cohen : Type :=
   (out : finset (ℵ₂.type × ℕ))
   (H : ins ∩ out = ∅)
 \end{lstlisting}
-
 %TODO(jesse): reword
 That is, we identify a finite partial function $f$ with the triple \lil{⟨f.ins, f.out, f.H⟩}, where \lil{f.ins} is the preimage of $\{1\}$, \lil{f.out} is the preimage of $\{0\}$, and \lil{f.H} ensures well-definedness.
 While $f$ is usually defined as a finite partial function, we found that in practice $f$ is really only needed to give a finite partial specification of a subset of $\aleph_2 \times \mathbb{N}$ (i.e. a finite set \lil{f.ins} which \emph{must} be in the subset,
@@ -842,12 +842,10 @@ Thus surjectivity assumption is a Boolean-valued \(\forall\)-\(\exists\) stateme
 We will then use a combinatorial condition on \lil{𝔹_cohen} (in this case, the CCC) to show that the reflected \(\forall\)-\(\exists\) statement implies a contradiction.
 
 Specifically, we use the following lemma, which is true for general \(\mathbb{B}\):
-
 \begin{lstlisting}
 lemma AE_of_check_larger_than_check {x y : pSet (f : bSet 𝔹) {Γ : 𝔹} (H_nonzero : ⊥ < Γ)
   (H : Γ ≤ is_surj_onto x̌ y̌ f) (H_nonempty : ∃ z, z ∈ y) : ∀ i : y.type, ∃ j : x.type, ⊥ < (is_func f) ⊓ (pair (x.func j)̌  (y.func i)̌  ∈ᴮ f)
 \end{lstlisting}
-
 Suppose that there is a surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\).
 Applying this lemma to \(x := \widecheck{\aleph_1}\), \(y := \widecheck{\aleph_2}\), we obtain a \(\forall\)-\(\exists\) statement in the metatheory to which we can apply Lean's axiom of choice to produce a function \(g : \aleph_2 \to \aleph_1\).
 Since externally, we know that \(\aleph_1 \prec \aleph_2\), it follows from the infinite pigeonhole principle that \(g\) must have an uncountable fiber over some \(\nu < \aleph_1\).
@@ -900,7 +898,6 @@ Surjectivity is equivalent to \lil{⨅ j, (⨆ i, af i j) = ⊤}, totality is eq
 (H_anti : ∀ i, ∀ j₁ j₂, j₁ ≠ j₂ → af i j₁ ⊓ af i j₂ ≤ ⊥)
 (H_inj : ∀ i₁ i₂, ⊥ < (func x i₁) =ᴮ (func x i₂) → i₁ = i₂)
 \end{lstlisting}
-
 Both surjectivity and totality of \(\chi_{\pi}\) require \emph{denseness arguments}, where the definition of indexed supremum (\(\bigsqcup x_i\)) in the regular open algebra as the regularization \(((\bigcup x_i)^\perp)^\perp\) of the set-theoretic union plays a key role: the union of the truth values is not the entire space, but is only a dense open whose regularization is the entire space. In particular, the denseness argument for surjectivity crucially uses that \(\aleph_1\) is uncountable while \(\omega\) is countable.
 
 To finish demonstrating that \(\CH\) is true in \lil{bSet 𝔹_collapse}, it remains to check that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1\).
@@ -981,23 +978,18 @@ It remains to show that \lil{𝔹_collapse} fulfills the assumptions of \Cref{le
 
 \begin{proof}
   Fix \(y\) and \(f\). It suffices to show that
-
 \begin{lstlisting}
 f ∈ᴮ functions ω y̌
   ≤ ⨆ (g : bSet 𝔹),
       g ∈ᴮ (functions omega y)̌  ⊓ g =ᴮ f
 \end{lstlisting}
-
   and by a density argument, it suffices to show that for every principal open \(D_p\),
-
 \begin{lstlisting}
 ⊥ < (⋃ g, D_p ⊓ g ∈ᴮ (functions omega y)̌  ⊓ g =ᴮ f)
 \end{lstlisting}
-
   It suffices to construct a single function \(g : \omega \to y\) such that \(\bot < D_p \sqcap \widecheck{g} = f\).
   As with Cohen forcing, we will reflect a Boolean-valued \(\forall\)-\(\exists\) statement into the metatheory, and then use a combinatorial property of \lil{𝔹_collapse} to strengthen it.
   The following lemma is true for general \(\mathbb{B}\):
-
 \begin{lstlisting}
 lemma AE_of_check_func_check (x y : pSet.{u}) {f : bSet 𝔹} {Γ : 𝔹}
   (H : Γ ≤ is_func' x̌ y̌ f) (H_nonzero : ⊥ < Γ) :
@@ -1005,7 +997,6 @@ lemma AE_of_check_func_check (x y : pSet.{u}) {f : bSet 𝔹} {Γ : 𝔹}
     ∃ (j : y.type ) (Γ' : 𝔹) (H_nonzero' : ⊥ < Γ') (H_le : Γ' ≤ Γ),
       Γ' ≤ (is_func' x̌ y̌ f) ∧ Γ' ≤ (pair (x.func i)̌  (y.func j)̌ ) ∈ᴮ f :=
 \end{lstlisting}
-
 Recursively applying this lemma, obtain values \(g_0, \dots, g_n, \dots\) such that
 
 \[\bot < \dots < D_p \sqcap \left(\bigsqcap_{k \leq n} ((k, g_k) \in^{\mathbb{B}} f)\right) < \cdots < D_p \sqcap (0 , g_0) \in^{\mathbb{B}} f\]
@@ -1028,7 +1019,6 @@ The intersection of this chain implies that \(g := \{(k, g_k)\}_{k \in \omega}\)
 % Construction of $\aleph_1$.
 
 \subsection{The independence of CH} \label{subsection:forcing:independence}
-
 \begin{lstlisting}
 theorem CH_unprovable_from_ZFC : ¬ (ZFC' ⊢' CH_sentence) :=
 unprovable_of_model_neg (V 𝔹_cohen) fundamental_theorem_of_forcing
@@ -1044,7 +1034,6 @@ def independent {L : Language} (T : Theory L) (f : sentence L) : Prop :=
 theorem independence_of_CH : independent ZFC' CH_sentence :=
 by finish[independent, CH_unprovable_from_ZFC, neg_CH_unprovable_from_ZFC]
 \end{lstlisting}
-
 \section{Automation and metaprogramming}
 \label{section:metaprogramming}
 
@@ -1074,7 +1063,6 @@ lemma poset_yoneda {β} [partial_order β] {a b : β}
 (H : ∀ Γ : β, Γ ≤ a → Γ ≤ b) : a ≤ b
 \end{lstlisting}
 With a little custom automation, our first example nearly becomes ``\lil{by assumption}''
-
 \begin{lstlisting}
 example {a b c d e f g : 𝔹} : (d ⊓ e) ⊓ (f ⊓ g ⊓((b ⊓ a)⊓ c)) ≤ a :=
 by {tidy_context, assumption}
@@ -1084,7 +1072,6 @@ by {tidy_context, assumption}
   H_right_right_left_right : Γ ≤ a
   ⊢ Γ ≤ a  -/
 \end{lstlisting}
-
 Above, \lil{tidy_context} combines an application of this lemma with a call to the simplifier to split hypotheses of the form \lstinline{Γ ≤ a₁ ⊓ a₂ ⊓ ... aₙ} into \lstinline{Γ ≤ a₁, Γ ≤ a₂, ..., Γ ≤ aₙ}.
 With more custom tactics and coercions to simulate natural deduction proof steps in \(\mathbb{B}\), our second example is handled just as easily:
 \begin{lstlisting}
@@ -1094,9 +1081,7 @@ example {𝔹} [complete_boolean_algebra 𝔹]
   by {tidy_context, bv_imp_intro Ha,
       exact a_1_right (a_1_left Ha)}
 \end{lstlisting}
-
 Compare this with a more conventional proof, where we have the deduction theorem and modus ponens available as lemmas:
-
 \begin{lstlisting}
 example {β : Type*} [complete_boolean_algebra β] {a b c : β} :
  ( a ⟹ b ) ⊓ ( b ⟹ c ) ≤ a ⟹ c :=
@@ -1109,7 +1094,6 @@ begin
     { rw inf_comm, apply mp }
 end
 \end{lstlisting}
-
 One use-case where automation is crucial is context specialization.
 For example, suppose that after preprocessing with \lstinline{poset_yoneda}, the goal is \lstinline{Γ ≤ (a ⟹ b)}, and one would like to apply implication introduction,
 adding \lstinline{Γ ≤ a} to the context and reducing the goal to \lstinline{Γ ≤ b}.
@@ -1125,54 +1109,44 @@ However, we felt the benefits of doing so in our formalization would have been m
 \subsection{Boolean-valued equality reasoning}
 
 \paragraph{Congruence closure on quotient types} \label{subsect:bv-cc}
-Another benefit of applying \Cref{poset-yoneda} and using context variables \(\Gamma\) throughout the formalization is that this approach exposes a canonical family of setoids on \lil{bSet 𝔹} induced by \lil{𝔹}-valued equality:
+Another benefit of applying \hyperref[poset-yoneda]{\lstinline{poset_yoneda}} and using context variables \(\Gamma\) throughout the formalization is that this approach exposes a canonical family of setoids on \lil{bSet 𝔹} induced by \lil{𝔹}-valued equality:
 for every \(\Gamma : \mathbb{B}\), \(\lambda\; x \; y, \Gamma \leq x =^{\mathbb{B}} y\) is an equivalence relation on \lil{bSet 𝔹} (the larger \(\Gamma\) is, the finer the equivalence relation).
 
 Since Lean natively supports quotient types, then as soon as e.g. all (Boolean-valued) existentials have been split and the only task remaining is to perform equality reasoning,
 we can quotient by the appropriate setoid and simply call \lil{cc};
 this is easy to automate with a custom tactic \lil{bv_cc}:
-
 \begin{lstlisting}
 example {x y z x₁ y₁ z₁: bSet 𝔹} {Γ : 𝔹}
   (H1 : Γ ≤ x =ᴮ y) (H2 : Γ ≤ y =ᴮ z)
   (H3 : Γ ≤ z =ᴮ z₁) (H4 : Γ ≤ z₁ =ᴮ y₁)
   (H5 : Γ ≤ y₁ =ᴮ x₁) : Γ ≤ x =ᴮ x₁ := by bv_cc
 \end{lstlisting}
-
 We can add support for any predicate satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma,
 although we do not have a way of handling such extensions uniformly and currently add support for individual predicates by hand:
-
 \begin{lstlisting}
 example {x₁ y₁ x₂ y₂ : bSet 𝔹} {Γ}
   (H₁ : Γ ≤ x₁ ∈ᴮ y₁) (H₂ : Γ ≤ x₁ =ᴮ x₂)
   (H₂ : Γ ≤ y₁ =ᴮ y₂) : Γ ≤ x₂ ∈ᴮ y₂ := by bv_cc
 \end{lstlisting}
-
 \paragraph{Discharging congruence lemmas via \texttt{simp}} Rewriting along \(\mathbb{B}\)-valued equality is the same as rewriting in the appropriate setoid parametrized by the current context \(\Gamma\),
 so that the motive must satisfy an appropriate \emph{congruence lemma} \lil{h_congr} with respect to the equivalence relation:
-
 \begin{lstlisting}
 lemma bv_rw {x y : bSet 𝔹} {Γ : 𝔹}
   (H : Γ ≤ x =ᴮ y) {ϕ : bSet 𝔹 → 𝔹}
   {h_congr : ∀ x y, x =ᴮ y ⊓ ϕ x ≤ ϕ y}
   {H_new : Γ ≤ ϕ y} : Γ ≤ ϕ x
 \end{lstlisting}
-
 We alias the type of \lil{h_congr}, and add a database of \lil{@[simp]} lemmas expressing that congruence lemmas are preserved by first-order logical operations:
-
 \begin{lstlisting}
 def B_ext (ϕ : bSet 𝔹 → 𝔹) : Prop := ∀ x y, x =ᴮ y ⊓ ϕ x ≤ ϕ y
 @[simp]lemma B_ext_infi {ι} {ϕ : ι → (bSet 𝔹 → 𝔹)} {h : ∀ i, B_ext (ϕ i)} : B_ext (λ x, ⨅i, ϕ i x)
 \end{lstlisting}
-
 Surprisingly, \lil{simp} is able to handle recursive applications of these lemmas on its own, allowing most congruence lemma proof obligations to be automatically discharged:
-
 \begin{lstlisting}
 example {w : bSet 𝔹} : (let ϕ :=
   λ x, ⨅ z, z ∈ᴮ w ⊓ z ⊆ᴮ x ⊓ x ⊆ᴮ z
   in B_ext ϕ) := by simp
 \end{lstlisting}
-
 \section{Related Work}
 \label{section:related-work}
 Compare with other formalization on the consistency of CH.
