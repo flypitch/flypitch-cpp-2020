@@ -259,7 +259,7 @@ We made sure that the individual components of this formalization are reusable f
 % and (2) that the automatically-generated induction principle for that inductive type \emph{is} $\in$-induction,
 % it is easy to see that this encoding can be modified to produce a Boolean-valued model of set theory where, again, $\in$-induction comes for free.
 
-Our formalization\footnote{\url{https://github.com/flypitch/flypitch}} is written in the Lean 3 theorem prover, building on top of \textsf{mathlib}~\cite{mathlib}.
+Our formalization\footnote{\url{https://github.com/flypitch/flypitch}} is written in the Lean 3 theorem prover, building on top of \textsf{mathlib}~\cite{mathlib}. % TODO(after review): update reference
 Lean is an interactive proof assistant under active development at Microsoft Research~\cite{de2015lean, ullrich2019counting}.
 It implements the Calculus of Inductive Constructions and has a similar metatheory to Coq, adding definitional proof irrelevance, quotient types, and a noncomputable choice principle.
 Our formalization makes as much use of the expressiveness of Lean's dependent type theory as possible, using constructions which are impossible or unwieldy to encode in HOL, much less ZF.
@@ -983,16 +983,29 @@ Compare with other formalization on the consistency of CH.
 
 \section{Conclusions}
 \label{section:conclusions}
-Future work: construction of L, ZFC without function symbols, parser and better printer for FOL
 
-Under future work:
+This paper describes a successful completion of the Flypitch project, giving the first formalization of the independence of the continuum hypothesis.
+This problem is problem 24 on Wiedijk's list ``Formalizing 100 theorem''~\cite{wiedijk100theorems},
+and this is the 95-th formalized result of that list.
 
-There are many possible generalizations of our result.
-Instead of showing the consistency of $\mathsf{CH}$ we could have shown the consistency of the generalized continuum hypothesis $\mathsf{GCH}$, which states that $2^{\aleph_\alpha}=\aleph_{\alpha+1}$ for all ordinals $\alpha$.
-The generalized continuum hypothesis is true in the constructible universe $L$, and its consistency can be shown by a forcing argument, but this forcing argument is significantly more involved than the forcing argument for $\mathsf{CH}$.
-We could generalize the consistency of $\neg \mathsf{CH}$ to the consistency of $\mathfrak{c}=\aleph_\alpha$, for any cardinal $\aleph_\alpha$ with uncountable cofinality.
+\subsection{Future Work}
+
+This formalization consists of a reusable library which can be used for future formalizations in first-order logic, model theory and set theory.
+We have just scratched the surface of modern set theory with this formalization, and it would be interesting to formalize some more modern results.
+In this section we will focus only on results directly related to the results in our paper.
+
+In this paper we used \(\sigma\)-closed forcing to show the consistency of $\CH$.
+It would be interesting to formalize the construction of $L$, the constructible hierarchy.
+In $L$ the generalized continuum hypothesis $\mathsf{GCH}$ also holds, which states that $2^{\aleph_\alpha}=\aleph_{\alpha+1}$ for all ordinals $\alpha$.
+The consistency of $\mathsf{GCH}$ can also be shown by an iterated forcing argument, but this proof is significantly more involved than the proof in this paper.
+
+There are also many generalizations of the consistency of $\neg \mathsf{CH}$.
+We could generalize it to the consistency of $\mathfrak{c}=\aleph_\alpha$, for any cardinal $\aleph_\alpha$ with uncountable cofinality.
 Or more generally, we could formalize Easton's theorem, which states that on regular cardinals the function $\kappa\mapsto 2^\kappa$ can be any monotone function that doesn't contradicts K\"onig's Theorem ($\kappa<\cf(2^\kappa)$)~\cite{easton1970powers}.
 
+We want to formalize that extending a language by definable constant and function symbols is conservative.
+This would show that $\CH$ is independent of the usual presentation of $\ZFC$, in the language with only one relation symbol.
+Furthermore, it would be nice to have a better parser and printer for sentences in first-order logic, since writing them by hand is pretty painful with de Bruijn variables.
 
 %% Acknowledgments
 \begin{acks}                            %% acks environment is optional
