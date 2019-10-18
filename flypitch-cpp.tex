@@ -636,9 +636,9 @@ We can define subsets of a set $x$ by just modifying the last component of $x$.
 This gives a nice definition of powerset:
 \begin{defn} \label{def-powerset}
   Fix a $\B$-valued set \lil{x = ⟨α, A, b⟩} and \lil{χ : α → 𝔹} be a function.
-  We can define the $\B$-valued set $\tilde{\chi}$ as \lil{⟨α, A, χ⟩}.
+  We can define the $\B$-valued set $\widetilde{\chi}$ as \lil{⟨α, A, χ⟩}.
   The \textbf{powerset} $\mathcal{P}(x)$ of $x$ is defined to be the \lil{𝔹}-valued set
-  \[\langle \alpha \to \B, (\lambda\; \chi, \widetilde{\chi}),\ (\lambda\;\chi, \tilde{\chi} \subseteq^B x)\rangle.\]
+  \[\langle \alpha \to \B, (\lambda\; \chi, \widetilde{\chi}),\ (\lambda\;\chi, \widetilde{\chi} \subseteq^B x)\rangle.\]
 \end{defn}
 
 In particular, this gives an easy proof of the axiom of comprehension (not just for interpretations of formulas, but for any \(\mathbb{B}\)-valued predicate on \lil{bSet 𝔹} satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma):
@@ -751,7 +751,7 @@ While forcing conditions usually present themselves as a poset instead of a comp
 We will use the following combinatorial conditions on \(\mathbb{B}\) in our forcing arguments:
 
 \begin{defn}\label{def-ccc}
-We say that $\B$ has the \textbf{countable chain condition} (CCC) if every antichain $\mathcal{A} : I \to \B$ (i.e. an indexed collection of elements $\mathcal{A} := \{a_i\}$ such that whenever $i \neq j, a_i \sqcap a_j = \bot$) has a countable image.
+We say that $\B$ has the \textbf{countable chain condition} (CCC) if every antichain $\mathcal{A} : I \to \B$ (i.e. an indexed collection of elements $\mathcal{A} = \{a_i\}_i$ such that whenever $i \neq j, a_i \sqcap a_j = \bot$) has a countable image.
 \end{defn}
 
 \begin{defn}\label{def-sigma-closed}
@@ -760,17 +760,20 @@ We say that \(\B\) is \textbf{\(\sigma\)-closed} if there exists a dense suborde
 
 \subsection{Cohen forcing}
 
-As we have already seen in Definition~\Cref{def-powerset}, we construct the powerset of a \lil{𝔹}-valued set \lstinline{u : bSet 𝔹} using \lil{𝔹}-valued indicator functions \lil{χ : u.type → 𝔹}.
+As we have already seen in \Cref{def-powerset}, we construct the powerset of a \lil{𝔹}-valued set \lstinline{u : bSet 𝔹} using \lil{𝔹}-valued indicator functions \lil{χ : u.type → 𝔹}.
 The basic strategy of Cohen forcing is to choose \lil{𝔹} such that for every \(\nu : \aleph_2\), there is a canonical indicator function (a ``Cohen real'') \(\chi_{\nu} : \omega \to \mathbb{B}\).
-This is an external function (a member of a function type of \lstinline{Type u}) which we check descends to an injective function \(\widecheck{\aleph_2} \to \mathcal{P}(\omega)\) in \lil{bSet 𝔹}.
-To show that this injection suffices to negate \(\CH\), we show that if \lil{𝔹} satisfies the CCC, then \(\omega \prec \widecheck{\aleph_1} \prec \widecheck{\aleph_2} \preceq \mathcal{P}(\omega)\),
-and ensure that our choice of \lil{𝔹} has this property.
+This is an external function (a member of a function type of \lstinline{Type u}) which descends to an injective function \(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\) in \lil{bSet 𝔹}.
+We also show that if \lil{𝔹} satisfies the CCC, then
+\(\omega \prec \widecheck{\aleph_1} \prec \widecheck{\aleph_2}\),
+where $x\prec y$ means that there is no surjection from a subset of $x$ to $y$.
+We ensure that our choice of \lil{𝔹} has this property, and together with the injection
+\(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\) this suffices to negate \(\CH\).
 
 \begin{defn}
   The \textbf{Cohen poset} for adding $\aleph_2$-many Cohen reals is the collection of all finite partial functions $\aleph_2 \times \mathbb{N} \to \mathbf{2}$, ordered by reverse inclusion.
 \end{defn}
 
-In the formalization, the Cohen poset is represented as a \lstinline{structure} with three fields:
+In the formalization, the Cohen poset is represented as a structure with three fields:
 \begin{lstlisting}
 structure ℙ_cohen : Type :=
   (ins : finset (ℵ₂.type × ℕ))
@@ -778,61 +781,70 @@ structure ℙ_cohen : Type :=
   (H : ins ∩ out = ∅)
 \end{lstlisting}
 %TODO(jesse): reword
-That is, we identify a finite partial function $f$ with the triple \lil{⟨f.ins, f.out, f.H⟩}, where \lil{f.ins} is the preimage of $\{1\}$, \lil{f.out} is the preimage of $\{0\}$, and \lil{f.H} ensures well-definedness.
-While $f$ is usually defined as a finite partial function, we found that in practice $f$ is really only needed to give a finite partial specification of a subset of $\aleph_2 \times \mathbb{N}$ (i.e. a finite set \lil{f.ins} which \emph{must} be in the subset,
-and a finite set \lil{f.out} which \emph{must not} be in the subset), and chose this representation to make that information immediately accessible.
+That is, we identify a finite partial function \lil{f} with the triple \lil{⟨f.ins, f.out, f.H⟩}, where \lil{f.ins} is the preimage of $\{1\}$, \lil{f.out} is the preimage of $\{0\}$, and \lil{f.H} ensures that \lil{f} is well-defined.
+We found that in practice \lil{f} is only needed to give a finite partial specification of a subset of $\aleph_2 \times \mathbb{N}$ (i.e. a finite set \lil{f.ins} which \emph{must} be in the subset, and a finite set \lil{f.out} which \emph{must not} be in the subset).
+We chose this representation to make that information immediately accessible.
 
-The Boolean algebra which we will use for forcing $\neg\mathsf{CH}$ is \lil{𝔹_cohen := } $\operatorname{RO}(2^{\aleph_2 \times \mathbb{N}})$, where we equip $2^{\aleph_2 \times \mathbb{N}}$ with the usual product space topology.
+The Boolean algebra which we use for forcing $\neg\mathsf{CH}$ is
+$$\mathbb{B}_{\text{cohen}} := \operatorname{RO}(2^{\aleph_2 \times \mathbb{N}}),$$
+where we equip $2^{\aleph_2 \times \mathbb{N}}$ with the usual product space topology.
 
 \begin{defn}
-  We define the \textbf{canonical embedding} of the Cohen poset into \lil{𝔹_cohen} as follows:
-  \begin{lstlisting}
-def ι : ℙ_cohen → 𝔹_cohen := λ p, {S | p.ins ⊆ S ∧ p.out ⊆ - S}
+  We define the \textbf{canonical embedding} of the Cohen poset into \(\B_{\text{cohen}}\) as follows:
+\begin{lstlisting}
+def ι : ℙ_cohen → 𝔹_cohen :=
+λ p, {S | p.ins ⊆ S ∧ p.out ⊆ - S}
 \end{lstlisting}
+That is, we send each \lil{c : ℙ_cohen} to all the subsets which satisfy the specification given by \lil{c}. This is a clopen set, hence regular.
 \end{defn}
-That is, we send each \lil{c : 𝒞} to all the subsets which satisfy the specification given by \lil{c}. This is a clopen set, hence regular.
-Crucially, the image of this embedding is a dense suborder of \lil{𝔹_cohen}.
-Recalling that $\leq$ in $\B$ is subset-inclusion, we see that this is essentially because the image of $\iota : \mathcal{C} \to \B$ \emph{is} the standard basis for the product topology.
+Crucially, the image of this embedding is a dense suborder of \(\mathbb{B}_{\text{cohen}}\).
+Recalling that $\leq$ in $\B$ is subset-inclusion, we see that this is essentially because the image of $\iota : \mathbb{P}_{\text{cohen}} \to \B_{\text{cohen}}$ \emph{is} the standard basis for the product topology.
 Our chosen encoding of the Cohen poset also made it easier to perform this identification when formalizing this proof.
 
 \begin{lemma}\label{lemma-cohen-algebra-CCC}
-  \lil{𝔹_cohen} has the CCC.
+  \(\B_{\text{cohen}}\) has the CCC.
 \end{lemma}
 
 \begin{proof}
   TODO(floris)
 \end{proof}
 
-\begin{defn}
+\begin{defn}\label{def:principal-open}
   Let $\nu : \aleph_2$. For any $n : \N$, the collection of all subsets of $\aleph_2 \times \N$ which contain $(\nu, n)$ is a regular open of $2^{\aleph_2 \times \N}$, called the \textbf{principal open} $\mathbf{P}_{(\nu, n)}$ over $(\nu, n)$.
 \end{defn}
 
-\begin{defn}
+\begin{defn}\label{def:cohen-real}
   Let $\nu : \aleph_2$. We associate to $\nu$ the $\B$-valued characteristic function $\chi_{\nu} : \N \to \B$ defined by $\chi_{\nu}(n) := \mathbf{P}_{(\nu, n)}$.
-  In light of our previous observations, we see that each $\chi_{\nu}$ induces a new $\B$-valued subset $\widetilde{\chi_{\nu}} \subseteq \widecheck{\N}$. We call $\widetilde{\chi_{\nu}}$ a \textbf{Cohen real}.
+  We can use \Cref{def-powerset} to get a $\B$-valued subset $\widetilde{\chi_{\nu}} \subseteq \widecheck{\N}$. We call $\widetilde{\chi_{\nu}}$ a \textbf{Cohen real}.
 \end{defn}
-This gives us an $\aleph_2$-indexed family of Cohen reals. Converting this data into an injective function from \(\widecheck{\aleph_2}\) to $\mathcal{P}(\mathbb{N})$ inside \lil{bSet 𝔹} requires some care.
+\Cref{def:cohen-real} gives us an $\aleph_2$-indexed family of Cohen reals.
+Converting this data into an injective function from \(\widecheck{\aleph_2}\) to $\mathcal{P}(\mathbb{N})$ inside \lil{bSet 𝔹} requires some care.
 One must check that $\nu \mapsto \widetilde{\chi_{\nu}}$ is externally injective, and this is where the characterization of the Cohen poset as a dense subset of $\B$ (and moving back and forth between this representation and the definition as finite partial functions) comes in.
 Furthermore, one has to develop machinery similar to that for the powerset operation to convert an external injective function \lstinline{x.type → bSet 𝔹} to an internal injective function in \lstinline{bSet 𝔹}.
 % Our custom tactics and automation for reasoning inside $\B$ made this latter task significantly easier than it would have been otherwise. We refer the interested reader to our formalization for details.
 
-By definition, our newly-constructed injection gives that \(\widecheck{\aleph_2} \preceq \mathcal{P}(\omega)\).
-To finish negating \(\mathsf{CH}\), it suffices to show that there exist some \lil{y : bSet 𝔹} such that \lil{ω ≺ y ≺ ℵ₂̌  ≼ 𝒫(ω)}.
-Taking \(y\) to be \(\widecheck{\aleph_1}\), it suffices to show that in \lil{bSet 𝔹}, there is no surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\).
+%By definition, our newly-constructed injection gives that \(\widecheck{\aleph_2} \preceq \mathcal{P}(\omega)\).
+To finish negating \(\mathsf{CH}\), it suffices to show that
+\[\omega \prec \widecheck{\aleph_1} \prec \widecheck{\aleph_2}.\]
+i.e. that there is no surjection \(\widecheck{\omega} \twoheadrightarrow \widecheck{\aleph_1}\) and no surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\).
+We will prove the latter claim; an identical argument can be used to show the former claim.
 
 The strategy of the proof is to assume that there is a surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\).
 Thus surjectivity assumption is a Boolean-valued \(\forall\)-\(\exists\) statement about check-names, and we will \emph{reflect} it into the metatheory, producing a \(\forall\)-\(\exists\) statement about the non-checked counterparts in \lil{pSet}.
-We will then use a combinatorial condition on \lil{𝔹_cohen} (in this case, the CCC) to show that the reflected \(\forall\)-\(\exists\) statement implies a contradiction.
+We will then use the CCC in \(\B_{\text{cohen}}\) to show that the reflected \(\forall\)-\(\exists\) statement implies a contradiction.
 
 Specifically, we use the following lemma, which is true for general \(\mathbb{B}\):
 \begin{lstlisting}
-lemma AE_of_check_larger_than_check {x y : pSet (f : bSet 𝔹) {Γ : 𝔹} (H_nonzero : ⊥ < Γ)
-  (H : Γ ≤ is_surj_onto x̌ y̌ f) (H_nonempty : ∃ z, z ∈ y) : ∀ i : y.type, ∃ j : x.type, ⊥ < (is_func f) ⊓ (pair (x.func j)̌  (y.func i)̌  ∈ᴮ f)
+lemma AE_of_check_larger_than_check {x y : pSet}
+  (f : bSet 𝔹) {Γ : 𝔹} (H_nonzero : ⊥ < Γ)
+  (H : Γ ≤ is_surj_onto x̌ y̌ f) (Hy : ∃ z, z ∈ y) :
+  ∀ i : y.type, ∃ j : x.type,
+  ⊥ < is_func f ⊓ pair (x.func j)̌  (y.func i)̌  ∈ᴮ f
 \end{lstlisting}
 Suppose that there is a surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\).
 Applying this lemma to \(x := \widecheck{\aleph_1}\), \(y := \widecheck{\aleph_2}\), we obtain a \(\forall\)-\(\exists\) statement in the metatheory to which we can apply Lean's axiom of choice to produce a function \(g : \aleph_2 \to \aleph_1\).
 Since externally, we know that \(\aleph_1 \prec \aleph_2\), it follows from the infinite pigeonhole principle that \(g\) must have an uncountable fiber over some \(\nu < \aleph_1\).
-For every \(\eta \in g^{-1}(\{\nu\})\), let \(A_{\eta}\) be the element of \lil{𝔹_cohen} given by the lemma, i.e.
+For every \(\eta \in g^{-1}(\{\nu\})\), let \(A_{\eta}\) be the element of \(\B_{\text{cohen}}\) given by the lemma, i.e.
 \[A_{\eta} := \text{\lil{(is_func f) ⊓ (pair (ℵ₁.func ν)̌  (ℵ₂.func η)̌  ∈ᴮ f)}}\]
 
 Because each \(A_{\eta}\) carries around the knowledge that \(f\) is a function as a conjunct, for \(\eta_1 \neq \eta_2\), \(A_{\eta_1}\) and \(A_{\eta_2}\) are incompatible, i.e. \(A_{\eta_1} \sqcap A_{\eta_2} = \bot\).
@@ -849,7 +861,11 @@ Both equalities follow from being able to lift functions \(\omega \to \widecheck
 this will follow from ensuring our choice of \(\mathbb{B}\) is \(\sigma\)-closed (\Cref{def-sigma-closed}).
 
 \begin{defn}\label{def-collapse-poset}
-  We define \lstinline{ℙ_collapse} to be the poset of countable partial functions \(\aleph_1 \to \mathcal{P}(\omega)\). The principal open sets \[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \hspace{2mm} | \hspace{2mm} g \text{ extends } p\} , \hspace{3mm} p \in \mathbb{P}_{\text{collapse}}\] form the basis of a topology \(\tau\) (finer than the product topology) on the function set \(\mathcal{P}(\omega)^{\aleph_1}\). We put
+  We define \lstinline{ℙ_collapse} to be the poset of countable partial functions \(\aleph_1 \to \mathcal{P}(\omega)\).
+  The principal open sets
+  \[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \hspace{2mm} | \hspace{2mm} g \text{ extends } p\} , \hspace{3mm} p \in \mathbb{P}_{\text{collapse}}\]
+  form the basis of a topology \(\tau\) (finer than the product topology) on the function set \(\mathcal{P}(\omega)^{\aleph_1}\).
+  We put
   \begin{center}
   \lstinline{𝔹_collapse :=} \(\operatorname{RO}\left(\mathcal{P}(\omega)^{\aleph_1}, \tau\right)\).
   \end{center}
