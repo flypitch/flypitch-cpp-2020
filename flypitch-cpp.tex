@@ -539,21 +539,22 @@ inductive pSet : Type (u+1)
 For an element \lil{x = ⟨α, A⟩ : pSet}, the function \lil{A} points to the elements of \lil{x}.
 We can define the empty set as \lstinline{∅ := ⟨empty, empty.elim⟩ : pSet}.
 Note that \lil{pSet} does not satisfy the axiom of extensionality.
-In order to obtain a model where the axiom of extensionality holds, we must quotient \lstinline{pSet} by \emph{extensional equivalence} \lil{≈}.
-We have to be a bit careful with defining extensional equivalence.
-Although extensional equivalence and membership are easily defined in terms of each other,
-one has to be careful to make sure the definition is well-founded.
-\begin{lstlisting}
-x ≈ y ↔ ∀w, w ∈ x ↔ w ∈ y
-x ∈ ⟨α, A⟩ ↔ ∃a, x ≈ A a
-\end{lstlisting}
-In order to make this well-founded, equivalence is defined by structural recursion:
+In order to obtain a model where the axiom of extensionality holds, we must quotient \lstinline{pSet} by \emph{extensional equivalence}, which is defined by structural recursion: %  {≈}% .
+% % We have to be a bit careful with defining extensional equivalence.
+% % Although extensional equivalence and membership are easily defined in terms of each other,
+% % one has to be careful to make sure the definition is well-founded.
+% \begin{lstlisting}
+% x ≈ y ↔ ∀w, w ∈ x ↔ w ∈ y
+% x ∈ ⟨α, A⟩ ↔ ∃a, x ≈ A a
+% \end{lstlisting}
+% In order to make this well-founded, equivalence is defined by structural recursion:
 \begin{lstlisting}
 def equiv : pSet → pSet → Prop
 | ⟨α,A⟩ ⟨β,B⟩ := (∀a, ∃b, equiv (A a) (B b)) ∧
   (∀b, ∃a, equiv (A a) (B b))
 \end{lstlisting}
-We can now membership from equivalence and check that modulo extensional equivalence, \lstinline{pSet} is a model of \(\mathsf{ZFC}\).
+
+We can then define membership from equivalence and check that modulo extensional equivalence, \lstinline{pSet} is a model of \(\mathsf{ZFC}\).
 
 % \paragraph{Two roads to \lstinline{bSet}}
 % We describe two ways by which one can start at the ordinary model of \(\mathsf{ZFC}\) \lstinline{pSet} and end with a Boolean-valued model \lstinline{bSet}.
@@ -584,8 +585,9 @@ We can now membership from equivalence and check that modulo extensional equival
 
 \subsection{Boolean-valued sets}
 \label{subsection:bset:bset}
-We now want to generalize \lil{pSet} to a Boolean-valued model of \(\ZFC\). In order to do this, we need to give a
-\(\B\)-valued relation that corresponds to membership \lil{∈}. We encode this information, by adding an extra field to elements of \lil{pSet}, which is a \(\B\)-valued predicate.
+
+We now want to generalize \lil{pSet} to a Boolean-valued model of \(\ZFC\). We must give a
+\(\B\)-valued predicate interpreting membership \lil{∈}. We will encode this information by extending each \lil{⟨α,A⟩ : pSet} with an additional function \lil{B : α → 𝔹}, which has the effect of attaching a \emph{Boolean truth-value} to every member of \lil{⟨α,A⟩}:
 \begin{lstlisting}
 inductive bSet (𝔹 : Type u)
     [complete_boolean_algebra 𝔹] : Type (u+1)
@@ -594,22 +596,20 @@ inductive bSet (𝔹 : Type u)
 \end{lstlisting}
 The predicate \lil{B} expresses that \lil{A a ∈ ⟨α, A, B⟩} has truth value (at least) \lil{B i}.
 
-This is closely related to the recursive \emph{name}-construction from forcing, a key ingredient to building forcing extensions. Let \(\mathbb{P}\) be a poset. From e.g.\ Kunen \cite{kunen2014set}, Definition IV.2.5:
+One can also be led to this construction by considering the recursive \emph{name}-construction from forcing, a key ingredient to building forcing extensions. Let \(\mathbb{P}\) be a poset. From e.g. (Kunen \cite{kunen2014set}, Definition IV.2.5):
 \begin{defn}
   A set \(\tau\) is a \(\mathbb{P}\)-name iff \(\tau\) is a relation and for all \(\langle  \sigma, p\rangle \in \tau\) we have that \(\sigma\) is a \(\mathbb{P}\)-name and \(p \in \mathbb{P}\).
 \end{defn}
-\lstinline{bSet 𝔹} should be thought of as the type of \lstinline{𝔹}-names, where the relation of \lil{⟨α, A, B⟩} is given by \lstinline"{ ⟨A i, B i⟩ | i ∈ α }".
-The definitions are not exactly the same, as \lil{A} need not be injective, but we can define the same operations on \lil{bSet 𝔹} as on \lil{𝔹}-names.
 
-% In particular, if \(\mathbb{P}\) is the singleton poset, then a \(\mathbb{P}\)-name is a set of \(\mathbb{P}\)-names, in the same way that a term of type \lstinline{pSet} is a type-indexed collection of terms of type \lstinline{pSet}.
-% Reversing this observation, we replace \(\mathbb{P}\) with a complete Boolean algebra \(\mathbb{B}\) and generalize the definition of \lstinline{pSet.mk} with a third field, so that as in the case of \(\mathbb{P}\)-names, every element of a set is assigned an element (a ``Boolean truth-value'') of \(\mathbb{B}\):
+In particular, if \(\mathbb{P}\) is the singleton poset, then a \(\mathbb{P}\)-name is a set of \(\mathbb{P}\)-names, in the same way that a term of type \lstinline{pSet} is a type-indexed collection of terms of type \lstinline{pSet}. Reversing this observation, we can replace \(\mathbb{P}\) with a complete Boolean algebra \(\mathbb{B}\) and generalize the definition of \lstinline{pSet.mk} with a third field, so that as in the case of \(\mathbb{P}\)-names, every element of a set is assigned an element (a ``Boolean truth-value'') of \(\mathbb{B}\), again giving us \lil{bSet 𝔹}. Thus, \lil{bSet 𝔹} should be thought of as the type of \lil{𝔹}-names
+
 % \begin{lstlisting}
 % inductive bSet {𝔹 : Type u) : Type (u+1)
 % | mk (α: Type u) (A: α → bSet) (B: α → 𝔹) : bSet
 % \end{lstlisting}
 % Whatever is important in \lstinline{bvm}, \lstinline{bvm_extras}, \lstinline{bvm_extras2} for this argument.
 
-% \subsection{Boolean-valued equality and membership}
+\paragraph{Boolean-valued equality and membership}
 We can define Boolean-valued equality and membership analogously to the definitions in \lil{pSet}.
 To do this, we have to translating quantifiers and connectives into operations on $\B$:
 \begin{lstlisting}
@@ -624,6 +624,9 @@ It is now easy to define $\B$-valued membership, which we denote by \lil{∈ᴮ}
 def mem : bSet 𝔹 → bSet 𝔹 → 𝔹
 | x ⟨α, A, B⟩ := ⨆a, B a ⊓ x =ᴮ A a
 \end{lstlisting}
+
+We remark that while standard treatments of Boolean-valued models of \(\ZFC\) mutually define equivalence and membership so that the axiom of extensionality follows definitionally (\cite{bell2011set}, \cite{hamkins2012well}), the induction principle given by the non-mutual definition is easier to work with in our formalization.
+
 \subsection{The fundamental theorem of forcing}
 \label{subsection:bset:fundamental-thm}
 The fundamental theorem of forcing for Boolean-valued models~\cite{hamkins2012well} states that for any complete Boolean algebra \lil{𝔹}, the type \lil{bSet 𝔹} forms a Boolean-valued model of $\mathsf{ZFC}$.
@@ -632,18 +635,31 @@ Bell~\cite{bell2011set} gives an extremely detailed account of the verification 
 and we faithfully followed his presentation for this part of the formalization.
 Although most of the argument is routine, we describe some aspects of \lil{bSet 𝔹} which are revealed by this verification.
 
-We can define subsets of a set $x$ by just modifying the last component of $x$.
+Notably, we can define subsets of a set \lil{x : bSet 𝔹} by just modifying \lil{x.bval}.
 This gives a nice definition of powerset:
 \begin{defn} \label{def-powerset}
   Fix a $\B$-valued set \lil{x = ⟨α, A, b⟩} and \lil{χ : α → 𝔹} be a function.
   We can define the $\B$-valued set $\widetilde{\chi}$ as \lil{⟨α, A, χ⟩}.
   The \textbf{powerset} $\mathcal{P}(x)$ of $x$ is defined to be the \lil{𝔹}-valued set
-  \[\langle \alpha \to \B, (\lambda\; \chi, \widetilde{\chi}),\ (\lambda\;\chi, \widetilde{\chi} \subseteq^B x)\rangle.\]
+  \[\text{ \lstinline{set_of_indicator χ :=} }\langle \alpha \to \B, (\lambda\; \chi, \widetilde{\chi}),\ (\lambda\;\chi, \widetilde{\chi} \subseteq^B x)\rangle.\]
 \end{defn}
 
-In particular, this gives an easy proof of the axiom of comprehension (not just for interpretations of formulas, but for any \(\mathbb{B}\)-valued predicate on \lil{bSet 𝔹} satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma):
+In particular, this gives an easy implemention of the axiom of comprehension (not just for interpretations of formulas, but for any \(\mathbb{B}\)-valued predicate on \lil{bSet 𝔹} satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma):
 
-%TODO(jesse): add axiom of comprehension
+\begin{lstlisting}
+def subset.mk {u} (χ : u.type → 𝔹) : bSet 𝔹 :=
+set_of_indicator (λ i, χ i ⊓ (u.bval i))
+
+variables (ϕ : bSet 𝔹 → 𝔹) (x : bSet 𝔹)
+  (H_congr : B_ext ϕ)
+
+def comprehend : bSet 𝔹 :=
+subset.mk (λ i : x.type, ϕ (x.func i))
+
+lemma mem_comprehend_iff : ∀ {z x} {Γ},
+  Γ ≤ z ∈ᴮ comprehend ϕ x ↔
+  Γ ≤ ⨆ (i : x.type), x.bval i ⊓ (z =ᴮ (x.func i) ⊓ (λ i : x.type, ϕ (x.func i)) i)
+\end{lstlisting}
 
 % \subparagraph*{The axiom of infinity}
 % \lil{ω : pSet} is defined to be the collection of all finite von Neumann ordinals (via induction on $\mathbb{N}$), and we define \lil{ω : bSet 𝔹} as \(\widecheck{\omega}\).
@@ -674,12 +690,20 @@ It also uses the \emph{maximum principle}, which allows existentially quantified
   These are also known as \emph{canonical names}, as they are the canonical representation of standard two-valued sets inside a Boolean-valued model of set theory.\footnote{We were pleased to discover Lean's support for custom notation allowed us to declare the Unicode modifier character \texttt{U+030C} ($\widecheck{\hspace{1mm}}$) as a postfix operator for \texttt{check}.}
 \end{defn}
 
-% \subparagraph*{ordinals in $\B$}
+\subparagraph*{Ordinals in \lil{bSet 𝔹}}
+The treatment of ordinals in \lil{mathlib} associates a class of ordinals to every type universe, defined as isomorphism classes of well-ordered types, and includes interfaces for both well-founded and transfinite recursion. Lean's ordinals may be represented inside \lil{pSet} by defining a map \lil{ordinal.mk : ordinal → pSet} via transfinite recursion (by indexing the von Neumann construction of ordinals). In pseudocode,
+\begin{lstlisting}
+def ordinal.mk : ordinal → pSet
+| 0 := ∅
+| succ ξ := pSet.succ (ordinal.mk ξ) -- (mk ξ ∪ {mk ξ})
+| is_limit ξ := ⋃ η < ξ, (ordinal.mk η)
+\end{lstlisting}
+Alternately, for any model \(M\) of \(\ZFC\), we can define the class \(\operatorname{Ord}(M)\) as the collection of transitive sets which are well-ordered by their membership relation.
 
-% TODO(jesse): fix this
-To define ordinals, we can define a map \lil{ordinal.mk : ordinal → pSet} by transfinite recursion.
-If we compose this map with \lil{check} we get the ordinals in \lil{bSet 𝔹}.
-In particular, we get the least infinite ordinal \lil{ω : bSet 𝔹}, which witnesses the axiom of infinity.
+Composing \lil{ordinal.mk} by \lil{check} yields a map \lil{ordinal → bSet 𝔹}.
+% To define ordinals, we can define a map \lil{ordinal.mk : ordinal → pSet} by transfinite recursion.
+% If we compose this map with \lil{check} we get the ordinals in \lil{bSet 𝔹}.
+% In particular, we get the least infinite ordinal \lil{ω : bSet 𝔹}, which witnesses the axiom of infinity.
 % \lil{ω : pSet} is defined to be the collection of all finite von Neumann ordinals (via induction on $\mathbb{N}$), and we define \lil{ω : bSet 𝔹} as \(\widecheck{\omega}\).
 % Now \lil{ω} is the $\subseteq$-least set that contains $\varnothing$ and is closed under the successor operation $x \mapsto x \cup \{x\}$.
 
@@ -724,7 +748,7 @@ As first observed by Scott and Solovay \cite{scott-solovay}, this obviates the n
 The cost of taking the \lstinline{𝔹}-names at face value is that the calculus of the forcing relation \cite{shoenfield1971unramified}, a key technical tool in usual forcing arguments, is replaced by the calculation of Boolean truth-values in \lstinline{𝔹}.
 From the Boolean-valued perspective, forcing a sentence \(\Phi\) in the language of \(\mathsf{ZFC}\) means constructing some Boolean algebra \lil{𝔹} and a \lil{𝔹}-valued model \(M\) of \(\ZFC\) such that the truth value \(\Phi^{M}\) of \(\Phi\) is \(\top\).
 We will always force over a type universe \lil{Type u}, and our Boolean-valued models of \(\mathsf{ZFC}\) are always of the form \lil{bSet 𝔹} for some \lil{𝔹 : Type u}.
-That \lil{𝔹} belongs to {Type u} is crucial for forcing, as specific choices of \lil{𝔹} will affect the structure of \lil{bSet 𝔹} (and hence the truth-value of \(\Phi\)). % However, the effects of a particular choice of \lil{𝔹} is often only easily determined on the check-names, and a deeper combinatorial analysis of \lil{𝔹} is required to complete the argument.
+That \lil{𝔹} belongs to the ``ground model'' {Type u} is crucial for forcing, as specific choices of \lil{𝔹} will affect the structure of \lil{bSet 𝔹} (and hence the truth-value of \(\Phi\)). % However, the effects of a particular choice of \lil{𝔹} is often only easily determined on the check-names, and a deeper combinatorial analysis of \lil{𝔹} is required to complete the argument.
 
 In this section, we describe two forcing arguments, one for \(\neg \CH\) and another for \(\CH\).
 Both follow roughly the same pattern. In both cases, we require the existence of a function; for \(\neg \CH\), an injection \(\aleph_2 \hookrightarrow \mathcal{P}(\omega)\), and for \(\CH\), a surjection \(\aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\).
