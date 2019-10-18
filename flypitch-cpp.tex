@@ -228,11 +228,11 @@ In 1963, Paul Cohen developed \emph{forcing} \cite{cohen-the-independence-of-the
 For this work, which marked the beginning of modern set theory, he was awarded a Fields medal---the only one to ever be awarded for a work in mathematical logic.
 
 In this paper we describe the successful completion of the Flypitch project\footnote{\url{https://flypitch.github.io}} (\textbf{F}ormal\textbf{ly} \textbf{p}roving the \textbf{i}ndependence of \textbf{t}he \textbf{c}ontinuum \textbf{h}ypothesis).
-For both parts of the independence of the continuum hypothesis, we use forcing to construct a Boolean-valued model of $\mathsf{ZFC}$.
-To show that $\mathsf{CH}$ is consistent, we use $\sigma$-closed forcing, to collapse the cardinality of the continuum to $\aleph_1$.
-To show that $\neg \mathsf{CH}$ is consistent, we use Cohen forcing, to add $\aleph_2$ many new real numbers, giving an injection from $\aleph_2$ into the continuum.
-The consistency of $\neg \mathsf{CH}$ already appeared in \cite{DBLP:conf/itp/HanD19}, and we will summarize this proof briefly.
-This forcing argument to show that $\mathsf{CH}$ is consistent is not the proof that G\"odel gave in 1938, who instead used the constructible universe $L$, where $\mathsf{CH}$ holds. We decided to formalize this proof so that we used an forcing argument for both parts of the independence.
+For both parts of the independence of the continuum hypothesis, we use forcing to construct a Boolean-valued model of $\mathsf{ZFC}$, using Cohen forcing for the consistency of \(\neg\CH\) and a \(\sigma\)-closed forcing for the consistency of \(\CH\).
+
+A formalization of Cohen forcing and the consistency of $\neg \mathsf{CH}$ already appeared in \cite{DBLP:conf/itp/HanD19}.
+
+% This forcing argument to show that $\mathsf{CH}$ is consistent is not the proof that G\"odel gave in 1938, who instead used the constructible universe $L$, where $\mathsf{CH}$ holds. We decided to formalize this proof so that we used an forcing argument for both parts of the independence.
 
 The method of forcing with Boolean-valued models was developed by Solovay and Scott in '65-'66 \cite{scott1967proof,scott-solovay} as a simplification of Cohen's method.
 Some of these simplifications were incorporated by Shoenfield \cite{shoenfield1971unramified} into a general theory of forcing using partial orders, and it is in this form that forcing is usually practiced.
@@ -261,7 +261,7 @@ Our formalization\footnote{\url{https://github.com/flypitch/flypitch}} is writte
 Lean is an interactive proof assistant under active development at Microsoft Research~\cite{de2015lean, ullrich2019counting}.
 It implements the Calculus of Inductive Constructions and has a similar metatheory to Coq, adding definitional proof irrelevance, quotient types, and a noncomputable choice principle.
 Our formalization makes as much use of the expressiveness of Lean's dependent type theory as possible, using constructions which are impossible or unwieldy to encode in HOL, much less ZF.
-We crucially use the types of cardinals and ordinals defined in \textsf{mathlib}, which are defined as equivalence classes of (well-ordered) types, live one universe level higher than the types used to construct them, and our models of set theory require as input an entire universe of type. Our encoding of first-order logic also uses parameterized inductive types which ensure that type-correctness implies well-formedness, eliminating the need for separate well-formedness proofs.
+The types of cardinals and ordinals defined in \textsf{mathlib}, which are defined as equivalence classes of (well-ordered) types, live one universe level higher than the types used to construct them, and our models of set theory require as input an entire universe of types. Our encoding of first-order logic also uses parameterized inductive types which ensure that type-correctness implies well-formedness, eliminating the need for separate well-formedness proofs.
 
 \subsection{Proof Outline}
 \label{subsection:intro:outline}
@@ -287,7 +287,7 @@ In this encoding, the third component is missing.
 We can also interpret \lil{pSet} as \lil{bSet unit}, where \lil{unit} is the trivial Boolean algebra (with $\top=\bot$).
 
 The properties of \lil{bSet 𝔹} vary wildly depending on the choice of the complete Boolean algebra \lil{𝔹}.
-There is always a map \lil{check : pSet → bSet 𝔹}, $x \mapsto \widecheck{x}$; $\widecheck{x}$ might have different properties than $x$, but \(\Delta_0\) properties (i.e. definable with only bounded quantification) are always preserved. In particular, \lil{bSet 𝔹} thinks $\widecheck{\omega}$ is $\omega$.
+There is always a map \lil{check : pSet → bSet 𝔹}, $x \mapsto \widecheck{x}$; in general, $\widecheck{x}$ might have different properties than $x$, but \(\Delta_0\) properties (i.e. definable with only bounded quantification) are always preserved. In particular, \lil{bSet 𝔹} thinks $\widecheck{\omega}$ is $\omega$.
 We now have to choose two appropriate complete Boolean algebras \lil{𝔹} such that in \lil{bSet 𝔹}, the formula $\CH$ is true ($\top$) in one model and $\CH$ is false ($\bot$) in the other.
 This is where forcing comes in (see \Cref{section:forcing}).
 
