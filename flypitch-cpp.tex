@@ -739,15 +739,25 @@ Since in general, \(\widecheck{\aleph_1}\) is \emph{not} what \lil{bSet 𝔹} th
 
 
 \section{Forcing} \label{section:forcing}
-Our point of departure from conventional accounts of forcing with a poset \(\mathbb{P}\) over a countable transitive model \cite{kunen2014set, jech2013set}, which use a generic filter to ``evaluate'' the \lstinline{ℙ}-names and produce an ordinary model of \(\ZFC\), is to force with \emph{Boolean-valued models} of \(\ZFC\) instead. As first observed by Scott and Solovay \cite{scott-solovay}, this obviates the need for countable transitive models, generic filters, or the truth and definability lemmas, and allows us to work only with the \lstinline{𝔹}-names.
+Our point of departure from conventional accounts of forcing with a poset \(\mathbb{P}\) over a countable transitive model \cite{kunen2014set, jech2013set}, which use a generic filter to ``evaluate'' the \lstinline{ℙ}-names and produce an ordinary model of \(\ZFC\), is to force with \emph{Boolean-valued models} of \(\ZFC\) instead.
+As first observed by Scott and Solovay \cite{scott-solovay}, this obviates the need for countable transitive models, generic filters, or the truth and definability lemmas, and allows us to work only with the \lstinline{𝔹}-names.
 
-The cost of taking the \lstinline{𝔹}-names at face value is that the calculus of the forcing relation \cite{shoenfield1971unramified}, a key technical tool in usual forcing arguments, is replaced by the calculation of Boolean truth-values in \lstinline{𝔹}. From the Boolean-valued perspective, forcing a sentence \(\Phi\) in the language of \(\mathsf{ZFC}\) means constructing some \lil{𝔹} and a \lil{𝔹}-valued model \(M\) of \(\ZFC\) such that the truth value \(\Phi^{M}\) of \(\Phi\) is \(\top\). We will always force over a type universe \lil{Type u}, and our Boolean-valued models of \(\mathsf{ZFC}\) are always of the form \lil{bSet 𝔹} for some \lil{𝔹 : Type u}. That \lil{𝔹} belongs to {Type u} is crucial for forcing, as specific choices of \lil{𝔹} will affect the structure of \lil{bSet 𝔹} (and hence the truth-value of \(\Phi\)). % However, the effects of a particular choice of \lil{𝔹} is often only easily determined on the check-names, and a deeper combinatorial analysis of \lil{𝔹} is required to complete the argument.
+The cost of taking the \lstinline{𝔹}-names at face value is that the calculus of the forcing relation \cite{shoenfield1971unramified}, a key technical tool in usual forcing arguments, is replaced by the calculation of Boolean truth-values in \lstinline{𝔹}.
+From the Boolean-valued perspective, forcing a sentence \(\Phi\) in the language of \(\mathsf{ZFC}\) means constructing some \lil{𝔹} and a \lil{𝔹}-valued model \(M\) of \(\ZFC\) such that the truth value \(\Phi^{M}\) of \(\Phi\) is \(\top\).
+We will always force over a type universe \lil{Type u}, and our Boolean-valued models of \(\mathsf{ZFC}\) are always of the form \lil{bSet 𝔹} for some \lil{𝔹 : Type u}.
+That \lil{𝔹} belongs to {Type u} is crucial for forcing, as specific choices of \lil{𝔹} will affect the structure of \lil{bSet 𝔹} (and hence the truth-value of \(\Phi\)). % However, the effects of a particular choice of \lil{𝔹} is often only easily determined on the check-names, and a deeper combinatorial analysis of \lil{𝔹} is required to complete the argument.
 
-In this section, we describe two forcing arguments, one for \(\neg \CH\) and another for \(\CH\). Both follow roughly the same pattern. In both cases, we require the existence of a function (for \(\neg \CH\), an injection \(\aleph_2 \hookrightarrow \mathcal{P}(\omega)\), and for \(\CH\), a surjection \(\aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\).) We will construct a \lil{𝔹}  which encodes the construction (in \lil{Type u}) of such a function \(F\). Then \lil{𝔹} induces in \lil{bSet 𝔹} an approximation \(\widetilde{F}\) to such a function, which \emph{a priori} is only between check-names. To finish the forcing argument, we must show that it suffices to work with \(\widetilde{F}\). This requires a careful study of how truth-values are calculated in \lil{bSet 𝔹}, and ultimately reduces to an analysis of how truth-values of \(\forall\)-\(\exists\) statements in \lil{bSet 𝔹} can be reflected \emph{back} to \lil{Type u}, and verifying a combinatorial condition on \lil{𝔹}.
+In this section, we describe two forcing arguments, one for \(\neg \CH\) and another for \(\CH\).
+Both follow roughly the same pattern. In both cases, we require the existence of a function (for \(\neg \CH\), an injection \(\aleph_2 \hookrightarrow \mathcal{P}(\omega)\), and for \(\CH\), a surjection \(\aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\).)
+We will construct a \lil{𝔹}  which encodes the construction (in \lil{Type u}) of such a function \(F\). Then \lil{𝔹} induces in \lil{bSet 𝔹} an approximation \(\widetilde{F}\) to such a function, which \emph{a priori} is only between check-names.
+To finish the forcing argument, we must show that it suffices to work with \(\widetilde{F}\). This requires a careful study of how truth-values are calculated in \lil{bSet 𝔹},
+and ultimately reduces to an analysis of how truth-values of \(\forall\)-\(\exists\) statements in \lil{bSet 𝔹} can be reflected \emph{back} to \lil{Type u}, and verifying a combinatorial condition on \lil{𝔹}.
 
 \subsection{Regular open algebras}
 \begin{defn}\label{def-regular-open-algebra}
-  Let $X$ be a topological space, and for any open set $U$, let $U^{\perp}$ denote the complement of the closure of $U$. The \textbf{regular open algebra} of a topological space $X$, written $\operatorname{RO}(X)$, is the collection of all open sets $U$ such that $U = (U^\perp)^\perp$, equipped with the structure of a complete Boolean algebra, with $x \sqcap y := x \cap y$, $x \sqcup y := ((x \cup y)^\perp)^\perp$, $\neg x := x^\perp$, and $\bigsqcup x_i := ((\bigcup x_i)^\perp)^\perp$.
+  Let $X$ be a topological space, and for any open set $U$, let $U^{\perp}$ denote the complement of the closure of $U$.
+  The \textbf{regular open algebra} of a topological space $X$, written $\operatorname{RO}(X)$, is the collection of all open sets $U$ such that $U = (U^\perp)^\perp$,
+  equipped with the structure of a complete Boolean algebra, with $x \sqcap y := x \cap y$, $x \sqcup y := ((x \cup y)^\perp)^\perp$, $\neg x := x^\perp$, and $\bigsqcup x_i := ((\bigcup x_i)^\perp)^\perp$.
 \end{defn}
 
 While forcing conditions usually present themselves as a poset instead of a complete Boolean algebra, any forcing poset can be represented as the dense suborder of a regular open algebra \cite{moore2019method}.
@@ -766,7 +776,11 @@ We say that \(\B\) is \textbf{\(\sigma\)-closed} if there exists a dense suborde
 
 \subsection{Cohen forcing}
 
-As we have already seen in Definition~\Cref{def-powerset}, we construct the powerset of a \lil{𝔹}-valued set \lstinline{u : bSet 𝔹} using \lil{𝔹}-valued indicator functions \lil{χ : u.type → 𝔹}. The basic strategy of Cohen forcing is to choose \lil{𝔹} such that for every \(\nu : \aleph_2\), there is a canonical indicator function (a ``Cohen real'') \(\chi_{\nu} : \omega \to \mathbb{B}\). This is an external function (a member of a function type of \lstinline{Type u}) which we check descends to an injective function \(\widecheck{\aleph_2} \to \mathcal{P}(\omega)\) in \lil{bSet 𝔹}. To show that this injection suffices to negate \(\CH\), we show that if \lil{𝔹} satisfies the CCC, then \(\omega \prec \widecheck{\aleph_1} \prec \widecheck{\aleph_2} \preceq \mathcal{P}(\omega)\), and ensure that our choice of \lil{𝔹} has this property.
+As we have already seen in Definition~\Cref{def-powerset}, we construct the powerset of a \lil{𝔹}-valued set \lstinline{u : bSet 𝔹} using \lil{𝔹}-valued indicator functions \lil{χ : u.type → 𝔹}.
+The basic strategy of Cohen forcing is to choose \lil{𝔹} such that for every \(\nu : \aleph_2\), there is a canonical indicator function (a ``Cohen real'') \(\chi_{\nu} : \omega \to \mathbb{B}\).
+This is an external function (a member of a function type of \lstinline{Type u}) which we check descends to an injective function \(\widecheck{\aleph_2} \to \mathcal{P}(\omega)\) in \lil{bSet 𝔹}.
+To show that this injection suffices to negate \(\CH\), we show that if \lil{𝔹} satisfies the CCC, then \(\omega \prec \widecheck{\aleph_1} \prec \widecheck{\aleph_2} \preceq \mathcal{P}(\omega)\),
+and ensure that our choice of \lil{𝔹} has this property.
 
 \begin{defn}
   The \textbf{Cohen poset} for adding $\aleph_2$-many Cohen reals is the collection of all finite partial functions $\aleph_2 \times \mathbb{N} \to \mathbf{2}$, ordered by reverse inclusion.
@@ -781,7 +795,9 @@ structure ℙ_cohen : Type :=
 \end{lstlisting}
 
 %TODO(jesse): reword
-That is, we identify a finite partial function $f$ with the triple \lil{⟨f.ins, f.out, f.H⟩}, where \lil{f.ins} is the preimage of $\{1\}$, \lil{f.out} is the preimage of $\{0\}$, and \lil{f.H} ensures well-definedness. While $f$ is usually defined as a finite partial function, we found that in practice $f$ is really only needed to give a finite partial specification of a subset of $\aleph_2 \times \mathbb{N}$ (i.e. a finite set \lil{f.ins} which \emph{must} be in the subset, and a finite set \lil{f.out} which \emph{must not} be in the subset), and chose this representation to make that information immediately accessible.
+That is, we identify a finite partial function $f$ with the triple \lil{⟨f.ins, f.out, f.H⟩}, where \lil{f.ins} is the preimage of $\{1\}$, \lil{f.out} is the preimage of $\{0\}$, and \lil{f.H} ensures well-definedness.
+While $f$ is usually defined as a finite partial function, we found that in practice $f$ is really only needed to give a finite partial specification of a subset of $\aleph_2 \times \mathbb{N}$ (i.e. a finite set \lil{f.ins} which \emph{must} be in the subset,
+and a finite set \lil{f.out} which \emph{must not} be in the subset), and chose this representation to make that information immediately accessible.
 
 The Boolean algebra which we will use for forcing $\neg\mathsf{CH}$ is \lil{𝔹_cohen := } $\operatorname{RO}(2^{\aleph_2 \times \mathbb{N}})$, where we equip $2^{\aleph_2 \times \mathbb{N}}$ with the usual product space topology.
 
@@ -791,7 +807,10 @@ The Boolean algebra which we will use for forcing $\neg\mathsf{CH}$ is \lil{𝔹
 def ι : ℙ_cohen → 𝔹_cohen := λ p, {S | p.ins ⊆ S ∧ p.out ⊆ - S}
 \end{lstlisting}
 \end{defn}
-That is, we send each \lil{c : 𝒞} to all the subsets which satisfy the specification given by \lil{c}. This is a clopen set, hence regular. Crucially, the image of this embedding is a dense suborder of \lil{𝔹_cohen}. Recalling that $\leq$ in $\B$ is subset-inclusion, we see that this is essentially because the image of $\iota : \mathcal{C} \to \B$ \emph{is} the standard basis for the product topology. Our chosen encoding of the Cohen poset also made it easier to perform this identification when formalizing this proof.
+That is, we send each \lil{c : 𝒞} to all the subsets which satisfy the specification given by \lil{c}. This is a clopen set, hence regular.
+Crucially, the image of this embedding is a dense suborder of \lil{𝔹_cohen}.
+Recalling that $\leq$ in $\B$ is subset-inclusion, we see that this is essentially because the image of $\iota : \mathcal{C} \to \B$ \emph{is} the standard basis for the product topology.
+Our chosen encoding of the Cohen poset also made it easier to perform this identification when formalizing this proof.
 
 \begin{lemma}\label{lemma-cohen-algebra-CCC}
   \lil{𝔹_cohen} has the CCC.
@@ -806,13 +825,21 @@ That is, we send each \lil{c : 𝒞} to all the subsets which satisfy the specif
 \end{defn}
 
 \begin{defn}
-  Let $\nu : \aleph_2$. We associate to $\nu$ the $\B$-valued characteristic function $\chi_{\nu} : \N \to \B$ defined by $\chi_{\nu}(n) := \mathbf{P}_{(\nu, n)}$. In light of our previous observations, we see that each $\chi_{\nu}$ induces a new $\B$-valued subset $\widetilde{\chi_{\nu}} \subseteq \widecheck{\N}$. We call $\widetilde{\chi_{\nu}}$ a \textbf{Cohen real}.
+  Let $\nu : \aleph_2$. We associate to $\nu$ the $\B$-valued characteristic function $\chi_{\nu} : \N \to \B$ defined by $\chi_{\nu}(n) := \mathbf{P}_{(\nu, n)}$.
+  In light of our previous observations, we see that each $\chi_{\nu}$ induces a new $\B$-valued subset $\widetilde{\chi_{\nu}} \subseteq \widecheck{\N}$. We call $\widetilde{\chi_{\nu}}$ a \textbf{Cohen real}.
 \end{defn}
-This gives us an $\aleph_2$-indexed family of Cohen reals. Converting this data into an injective function from \(\widecheck{\aleph_2}\) to $\mathcal{P}(\mathbb{N})$ inside \lil{bSet 𝔹} requires some care. One must check that $\nu \mapsto \widetilde{\chi_{\nu}}$ is externally injective, and this is where the characterization of the Cohen poset as a dense subset of $\B$ (and moving back and forth between this representation and the definition as finite partial functions) comes in. Furthermore, one has to develop machinery similar to that for the powerset operation to convert an external injective function \lstinline{x.type → bSet 𝔹} to an internal injective function in \lstinline{bSet 𝔹}.  % Our custom tactics and automation for reasoning inside $\B$ made this latter task significantly easier than it would have been otherwise. We refer the interested reader to our formalization for details.
+This gives us an $\aleph_2$-indexed family of Cohen reals. Converting this data into an injective function from \(\widecheck{\aleph_2}\) to $\mathcal{P}(\mathbb{N})$ inside \lil{bSet 𝔹} requires some care.
+One must check that $\nu \mapsto \widetilde{\chi_{\nu}}$ is externally injective, and this is where the characterization of the Cohen poset as a dense subset of $\B$ (and moving back and forth between this representation and the definition as finite partial functions) comes in.
+Furthermore, one has to develop machinery similar to that for the powerset operation to convert an external injective function \lstinline{x.type → bSet 𝔹} to an internal injective function in \lstinline{bSet 𝔹}.
+% Our custom tactics and automation for reasoning inside $\B$ made this latter task significantly easier than it would have been otherwise. We refer the interested reader to our formalization for details.
 
-By definition, our newly-constructed injection gives that \(\widecheck{\aleph_2} \preceq \mathcal{P}(\omega)\). To finish negating \(\mathsf{CH}\), it suffices to show that there exist some \lil{y : bSet 𝔹} such that \lil{ω ≺ y ≺ ℵ₂̌  ≼ 𝒫(ω)}. Taking \(y\) to be \(\widecheck{\aleph_1}\), it suffices to show that in \lil{bSet 𝔹}, there is no surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\).
+By definition, our newly-constructed injection gives that \(\widecheck{\aleph_2} \preceq \mathcal{P}(\omega)\).
+To finish negating \(\mathsf{CH}\), it suffices to show that there exist some \lil{y : bSet 𝔹} such that \lil{ω ≺ y ≺ ℵ₂̌  ≼ 𝒫(ω)}.
+Taking \(y\) to be \(\widecheck{\aleph_1}\), it suffices to show that in \lil{bSet 𝔹}, there is no surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\).
 
-The strategy of the proof is to assume that there is a surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\). Ths surjectivity assumption is a Boolean-valued \(\forall\)-\(\exists\) statement about check-names, and we will \emph{reflect} it into the metatheory, producing a \(\forall\)-\(\exists\) statement about the non-checked counterparts in \lil{pSet}. We will then use a combinatorial condition on \lil{𝔹_cohen} (in this case, the CCC) to show that the reflected \(\forall\)-\(\exists\) statement implies a contradiction.
+The strategy of the proof is to assume that there is a surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\).
+Thus surjectivity assumption is a Boolean-valued \(\forall\)-\(\exists\) statement about check-names, and we will \emph{reflect} it into the metatheory, producing a \(\forall\)-\(\exists\) statement about the non-checked counterparts in \lil{pSet}.
+We will then use a combinatorial condition on \lil{𝔹_cohen} (in this case, the CCC) to show that the reflected \(\forall\)-\(\exists\) statement implies a contradiction.
 
 Specifically, we use the following lemma, which is true for general \(\mathbb{B}\):
 
@@ -821,15 +848,24 @@ lemma AE_of_check_larger_than_check {x y : pSet (f : bSet 𝔹) {Γ : 𝔹} (H_n
   (H : Γ ≤ is_surj_onto x̌ y̌ f) (H_nonempty : ∃ z, z ∈ y) : ∀ i : y.type, ∃ j : x.type, ⊥ < (is_func f) ⊓ (pair (x.func j)̌  (y.func i)̌  ∈ᴮ f)
 \end{lstlisting}
 
-Suppose that there is a surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\). Applying this lemma to \(x := \widecheck{\aleph_1}\), \(y := \widecheck{\aleph_2}\), we obtain a \(\forall\)-\(\exists\) statement in the metatheory to which we can apply Lean's axiom of choice to produce a function \(g : \aleph_2 \to \aleph_1\). Since externally, we know that \(\aleph_1 \prec \aleph_2\), it follows from the infinite pigeonhole principle that \(g\) must have an uncountable fiber over some \(\nu < \aleph_1\). For every \(\eta \in g^{-1}(\{\nu\})\), let \(A_{\eta}\) be the element of \lil{𝔹_cohen} given by the lemma, i.e.
+Suppose that there is a surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\).
+Applying this lemma to \(x := \widecheck{\aleph_1}\), \(y := \widecheck{\aleph_2}\), we obtain a \(\forall\)-\(\exists\) statement in the metatheory to which we can apply Lean's axiom of choice to produce a function \(g : \aleph_2 \to \aleph_1\).
+Since externally, we know that \(\aleph_1 \prec \aleph_2\), it follows from the infinite pigeonhole principle that \(g\) must have an uncountable fiber over some \(\nu < \aleph_1\).
+For every \(\eta \in g^{-1}(\{\nu\})\), let \(A_{\eta}\) be the element of \lil{𝔹_cohen} given by the lemma, i.e.
 \[A_{\eta} := \text{\lil{(is_func f) ⊓ (pair (ℵ₁.func ν)̌  (ℵ₂.func η)̌  ∈ᴮ f)}}\]
 
-Because each \(A_{\eta}\) carries around the knowledge that \(f\) is a function as a conjunct, for \(\eta_1 \neq \eta_2\), \(A_{\eta_1}\) and \(A_{\eta_2}\) are incompatible, i.e. \(A_{\eta_1} \sqcap A_{\eta_2} = \bot\). Since the lemma guarantees that each \(A_{\eta}\) is nonzero, the \(A_{\eta}\) form an uncountable antichain. Therefore, if \(\mathbb{B}\) has the CCC, there is a contradiction, so by \Cref{lemma-cohen-algebra-CCC}, we have forced \(\neg\mathsf{CH}\) in \lil{bSet 𝔹_cohen}.
+Because each \(A_{\eta}\) carries around the knowledge that \(f\) is a function as a conjunct, for \(\eta_1 \neq \eta_2\), \(A_{\eta_1}\) and \(A_{\eta_2}\) are incompatible, i.e. \(A_{\eta_1} \sqcap A_{\eta_2} = \bot\).
+Since the lemma guarantees that each \(A_{\eta}\) is nonzero, the \(A_{\eta}\) form an uncountable antichain.
+Therefore, if \(\mathbb{B}\) has the CCC, there is a contradiction, so by \Cref{lemma-cohen-algebra-CCC}, we have forced \(\neg\mathsf{CH}\) in \lil{bSet 𝔹_cohen}.
 
 \subsection{Collapse forcing} \label{subsection:collapse}
 % note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
 
-Whereas Cohen forcing creates a new injection \(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\), we can use \emph{collapse forcing} to create a new surjection \(F : \aleph_1^{\mathbb{B}} \twoheadrightarrow \mathcal{P}(\omega)\). Similarly to Cohen forcing, the strategy is to pick \lil{𝔹} such that there is a canonical \lil{𝔹}-valued indicator function on \(\widecheck{\aleph_1} \times \widecheck{\mathcal{P}(\omega)}\) representing the graph of a surjection \(\widetilde{F}\). To show that \(\widetilde{F}\) suffices to force \(\CH\), we must show that \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\), and that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega).\) Both equalities follow from being able to lift functions \(\omega \to \widecheck{y}\) to functions \(\omega \to y\); this will follow from ensuring our choice of \(\mathbb{B}\) is \(\sigma\)-closed (\Cref{def-sigma-closed}).
+Whereas Cohen forcing creates a new injection \(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\), we can use \emph{collapse forcing} to create a new surjection \(F : \aleph_1^{\mathbb{B}} \twoheadrightarrow \mathcal{P}(\omega)\).
+Similarly to Cohen forcing, the strategy is to pick \lil{𝔹} such that there is a canonical \lil{𝔹}-valued indicator function on \(\widecheck{\aleph_1} \times \widecheck{\mathcal{P}(\omega)}\) representing the graph of a surjection \(\widetilde{F}\).
+To show that \(\widetilde{F}\) suffices to force \(\CH\), we must show that \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\), and that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega).\)
+Both equalities follow from being able to lift functions \(\omega \to \widecheck{y}\) to functions \(\omega \to y\);
+this will follow from ensuring our choice of \(\mathbb{B}\) is \(\sigma\)-closed (\Cref{def-sigma-closed}).
 
 \begin{defn}\label{def-collapse-poset}
   We define \lstinline{ℙ_collapse} to be the poset of countable partial functions \(\aleph_1 \to \mathcal{P}(\omega)\). The principal open sets \[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \hspace{2mm} | \hspace{2mm} g \text{ extends } p\} , \hspace{3mm} p \in \mathbb{P}_{\text{collapse}}\] form the basis of a topology \(\tau\) (finer than the product topology) on the function set \(\mathcal{P}(\omega)^{\aleph_1}\). We put
@@ -851,12 +887,15 @@ Whereas Cohen forcing creates a new injection \(\widecheck{\aleph_2} \hookrighta
   As an implementation detail, in the formalization we \emph{define} \lil{ℙ_collapse} to be the countable partial functions (in \lil{Type u}) between \lil{(ordinal.mk (aleph one) : pSet).type} and \lil{(powerset omega : pSet).type}, so that \\ \lil{𝔹_collapse}-valued indicator functions on \lil{ordinal.mk (aleph one) : pSet).type × (powerset omega : pSet).type} are definitionally equal to \lil{𝔹_collapse}-valued indicator functions on the underlying types of \lil{check (ordinal.mk (aleph one))} and \lil{check (powerset omega)}.
 \end{remark}
 
-To specify the surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\mathcal{P}(\omega)}\), we specify a subset (the graph of the function) of the powerset \(\mathcal{P}(\widecheck{\aleph_1} \times \widecheck{\mathcal{P}(\omega)})\). In \lil{bSet 𝔹_collapse}, we can do this by specifying the indicator function \(\chi_{\pi}\) of the graph of a function \(\pi : \widecheck{\aleph_1} \to \widecheck{\mathcal{P}(\omega)}\) as follows: to an \(\eta < \aleph_1\) and a subset \(S \subseteq \mathcal{P}(\omega)\) (in \lil{pSet}), we attach the \emph{principal open} (comprising functions extending the singleton countable partial function \(\{(\eta, S)\}\)):
+To specify the surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\mathcal{P}(\omega)}\), we specify a subset (the graph of the function) of the powerset \(\mathcal{P}(\widecheck{\aleph_1} \times \widecheck{\mathcal{P}(\omega)})\).
+In \lil{bSet 𝔹_collapse}, we can do this by specifying the indicator function \(\chi_{\pi}\) of the graph of a function \(\pi : \widecheck{\aleph_1} \to \widecheck{\mathcal{P}(\omega)}\) as follows: to an \(\eta < \aleph_1\) and a subset \(S \subseteq \mathcal{P}(\omega)\) (in \lil{pSet}), we attach the \emph{principal open} (comprising functions extending the singleton countable partial function \(\{(\eta, S)\}\)):
 \[
   \chi_\pi (\eta, S) := D_{\{(\eta, S)\}} = \{g : \aleph_1 \to \mathcal{P}(\omega) \operatorname{|} g (\eta) = S\}.
 \]
 
-More generally, we formalize conditions over generic \lil{x, y : pSet} and \lil{𝔹} for when a function \lil{af : x.type → y.type → 𝔹} induces a surjection \(\widecheck{x} \to \widecheck{y}\) in \lil{bSet 𝔹}. By definition, such a function always induces a relation on the product (in \lil{bSet 𝔹}) of \lil{x} and \lil{y}. Surjectivity is equivalent to \lil{⨅ j, (⨆ i, af i j) = ⊤}, totality is equivalent to \lil{⨅ i, (⨆ j, af i j) = ⊤}, and well-definedness follow from the following two conditions:
+More generally, we formalize conditions over generic \lil{x, y : pSet} and \lil{𝔹} for when a function \lil{af : x.type → y.type → 𝔹} induces a surjection \(\widecheck{x} \to \widecheck{y}\) in \lil{bSet 𝔹}.
+By definition, such a function always induces a relation on the product (in \lil{bSet 𝔹}) of \lil{x} and \lil{y}.
+Surjectivity is equivalent to \lil{⨅ j, (⨆ i, af i j) = ⊤}, totality is equivalent to \lil{⨅ i, (⨆ j, af i j) = ⊤}, and well-definedness follow from the following two conditions:
 \begin{lstlisting}
 (H_anti : ∀ i, ∀ j₁ j₂, j₁ ≠ j₂ → af i j₁ ⊓ af i j₂ ≤ ⊥)
 (H_inj : ∀ i₁ i₂, ⊥ < (func x i₁) =ᴮ (func x i₂) → i₁ = i₂)
@@ -864,12 +903,16 @@ More generally, we formalize conditions over generic \lil{x, y : pSet} and \lil{
 
 Both surjectivity and totality of \(\chi_{\pi}\) require \emph{denseness arguments}, where the definition of indexed supremum (\(\bigsqcup x_i\)) in the regular open algebra as the regularization \(((\bigcup x_i)^\perp)^\perp\) of the set-theoretic union plays a key role: the union of the truth values is not the entire space, but is only a dense open whose regularization is the entire space. In particular, the denseness argument for surjectivity crucially uses that \(\aleph_1\) is uncountable while \(\omega\) is countable.
 
-To finish demonstrating that \(\CH\) is true in \lil{bSet 𝔹_collapse}, it remains to check that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1\). There are two major obstacles. The first is that to even formally state the latter equality, we must construct \(\aleph_1^{\mathbb{B}}\) in \lil{bSet 𝔹}. (While the operation \lil{bv_powerset} (\Cref{def-bv-powerset}) gives a construction of the internal powerset of any \lil{x : bSet 𝔹} (using \lil{𝔹}-valued indicator functions, for any \lil{𝔹}), \(\aleph_1^{\mathbb{B}}\) is only specified as the least ordinal greater than \(\omega\), and does not admit as direct a a construction.) We describe our construction of \(\aleph_1^{\mathbb{B}}\) (as the Hartogs number of \(\omega\)) in \Cref{subsection:forcing:aleph-1}.
+To finish demonstrating that \(\CH\) is true in \lil{bSet 𝔹_collapse}, it remains to check that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1\).
+There are two major obstacles. The first is that to even formally state the latter equality, we must construct \(\aleph_1^{\mathbb{B}}\) in \lil{bSet 𝔹}.
+(While the operation \lil{bv_powerset} (\Cref{def-bv-powerset}) gives a construction of the internal powerset of any \lil{x : bSet 𝔹} (using \lil{𝔹}-valued indicator functions, for any \lil{𝔹}), \(\aleph_1^{\mathbb{B}}\) is only specified as the least ordinal greater than \(\omega\), and does not admit as direct a a construction.)
+We describe our construction of \(\aleph_1^{\mathbb{B}}\) (as the Hartogs number of \(\omega\)) in \Cref{subsection:forcing:aleph-1}.
 
 Now we must ensure that no new countable ordinals are added to \(\aleph_1\) and that no new subset of \(\omega\) are added to \(\mathcal{P}(\omega)\) in the passage via \lil{check} from \lil{pSet} to \lil{bSet}. The second obstacle is reducing both statements to, and proving, the following lemma:
 
 \begin{lemma}\label{lemma-function-reflect-suffices}
-  Let \(\mathbb{B}\) be a complete Boolean algebra, and suppose that for every \lil{ y : pSet}, and every \lil{f : bSet 𝔹} such that \lil{bSet 𝔹} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\), there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹} models that \(\widecheck{g} = f\). Then \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\).
+  Let \(\mathbb{B}\) be a complete Boolean algebra, and suppose that for every \lil{y : pSet}, and every \lil{f : bSet 𝔹} such that \lil{bSet 𝔹} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\), there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹} models that \(\widecheck{g} = f\).
+  Then \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\).
 \end{lemma}
 
 We describe our solution to this in \Cref{subsect:function-reflection}.
@@ -880,19 +923,28 @@ We describe our solution to this in \Cref{subsect:function-reflection}.
 % As with Cohen forcing, we will proceed by using \(\forall\)-\(\exists\) reflection to reflect functions from \(\omega\) to check-names back into \lil{pSet}, and then showing that the two required equalities follow from this.
 
 \subsection{Construction of $\aleph_1$} \label{subsection:forcing:aleph-1}
-Instead of using the specification of \(\aleph_1^{\mathbb{B}}\) as the least ordinal larger than \(\omega\) with Cantor's theorem and using the well-foundedness of the ordinals to construct \(\aleph_1\), we opt for a direct construction of \(\aleph_1\), based on the well-known construction of \(\aleph_1\) as the \textbf{Hartogs number} of \(\omega\) \cite{hartogs1915problem}.
+Instead of using the specification of \(\aleph_1^{\mathbb{B}}\) as the least ordinal larger than \(\omega\) with Cantor's theorem and using the well-foundedness of the ordinals to construct \(\aleph_1\),
+we opt for a direct construction of \(\aleph_1\), based on the well-known construction of \(\aleph_1\) as the \textbf{Hartogs number} of \(\omega\) \cite{hartogs1915problem}.
 
 % TODO: summarize the construction of the Hartogs number
 
-We lay out the basic strategy. Recall that a term of type \lil{bSet 𝔹} comprises three pieces of information: an indexing type \(\alpha\), an indexing function \lil{A : α → bSet 𝔹}, and a truth-value function \lil{B : α → 𝔹}.
+We lay out the basic strategy.
+Recall that a term of type \lil{bSet 𝔹} comprises three pieces of information: an indexing type \(\alpha\), an indexing function \lil{A : α → bSet 𝔹}, and a truth-value function \lil{B : α → 𝔹}.
 \begin{enumerate}
 \item We \emph{define} the underlying type \(\alpha\) for \(\aleph_1^{\mathbb{B}}\) to be \lil{𝒫(ω × ω).type}.
-\item We define the truth-value function \lil{B : α → 𝔹} to assign to any \(R \subseteq \omega \times \omega\) the (truth-value of) the sentence, ``there exists an ordinal \(\eta\) and an injection \(f : \eta \hookrightarrow \omega\) such that \(R\) is the image of the membership relation of \(\eta\) under \(f\).''
+\item We define the truth-value function \lil{B : α → 𝔹} to assign to any \(R \subseteq \omega \times \omega\) the (truth-value of) the sentence,
+``there exists an ordinal \(\eta\) and an injection \(f : \eta \hookrightarrow \omega\) such that \(R\) is the image of the membership relation of \(\eta\) under \(f\).''
 
-\item Using the maximum principle (which is essentially \(\mathsf{AC}\)), we define the indexing function \(A\) for \(\aleph_1^{\mathbb{B}}\) by choosing, for every \(R : \alpha\), a witness \(\eta_R\) such that \(R\) is the image of \(\eta\) under an injection into \(\omega\). That \(A\) surjects onto countable ordinals reduces to the fact that order-isomorphic ordinals must be equal.
+\item Using the maximum principle (which is essentially \(\mathsf{AC}\)), we define the indexing function \(A\) for \(\aleph_1^{\mathbb{B}}\) by choosing, for every \(R : \alpha\), a witness \(\eta_R\) such that \(R\) is the image of \(\eta\) under an injection into \(\omega\).
+That \(A\) surjects onto countable ordinals reduces to the fact that order-isomorphic ordinals must be equal.
 \end{enumerate}
 
-\paragraph{Implementation details} In the formalization, this strategy is implemented in three stages. First, the axiom of comprehension is applied to \(\mathcal{P}(\omega \times \omega)\) to produce (what \lil{bSet 𝔹} thinks is) the collection of all relations \(R\) on \(\omega\) such that there exists an ordinal \(\eta\) and an injection \(f : \eta \hookrightarrow \omega\) such that \(R\) is the image of \(\eta\)'s membership relation under \(f\). This combines steps \(1\) and \(2\) and produces a set \lil{a1'_aux}. Then we \emph{modify} the indexing function \lil{a1'_aux.func} (by using the maximum principle, as described in step \(3\)) to point from \(R\) to a chosen witness \(\eta_R\) for \(R\), producing \lil{a1'}. Finally, since the ordinals \(0\) and \(1\) both have empty membership relations, it is unprovable in Lean whether \lil{a1'} contains one or the other, so we add both manually, producing \lil{a1 :=} \(\aleph_1^{\mathbb{B}}\). We remark that our construction does not use specific properties of \(\omega\) and easily generalizes to construct the successor cardinal of any infinite set.
+\paragraph{Implementation details}
+In the formalization, this strategy is implemented in three stages.
+First, the axiom of comprehension is applied to \(\mathcal{P}(\omega \times \omega)\) to produce (what \lil{bSet 𝔹} thinks is) the collection of all relations \(R\) on \(\omega\) such that there exists an ordinal \(\eta\) and an injection \(f : \eta \hookrightarrow \omega\) such that \(R\) is the image of \(\eta\)'s membership relation under \(f\).
+This combines steps \(1\) and \(2\) and produces a set \lil{a1'_aux}. Then we \emph{modify} the indexing function \lil{a1'_aux.func} (by using the maximum principle, as described in step \(3\)) to point from \(R\) to a chosen witness \(\eta_R\) for \(R\), producing \lil{a1'}.
+Finally, since the ordinals \(0\) and \(1\) both have empty membership relations, it is unprovable in Lean whether \lil{a1'} contains one or the other, so we add both manually, producing \lil{a1 :=} \(\aleph_1^{\mathbb{B}}\).
+We remark that our construction does not use specific properties of \(\omega\) and easily generalizes to construct the successor cardinal of any infinite set.
 
 % TODO(jesse): maybe describe the interesting technical caveat about why external choice on the indexing types is not enough to finish the construction
 
@@ -901,17 +953,28 @@ We lay out the basic strategy. Recall that a term of type \lil{bSet 𝔹} compri
 \begin{proof}[Proof of \Cref{lemma-function-reflect-suffices}.]
   % Observe that by definition of \(\aleph_1\), we have that for every ordinal \(\eta\), \(\eta < \aleph_1\) if and only if there exists a surjection \(\omega \twoheadrightarrow \eta\) (equivalently, there is an injection \(\eta \hookrightarrow \omega\)). Also, \(\mathcal{P}(\omega) \simeq \widecheck{2}^{\widecheck{\omega}}\) (in \(\mathsf{ZF}\)).
 
-  To see that \(\widecheck{\aleph_1} \subseteq \aleph_1^{\mathbb{B}}\), let \(x\) be an arbitrary element of \(\widecheck{\aleph_1}\). By definition \(x\) is equal to \(\widecheck{\eta}\) for some \(\eta < \aleph_1\) in \lil{pSet}. Since the ordinals and cardinals of \lil{pSet} are isomorphic to Lean's ordinals and cardinals for \lil{Type u}, \(\eta\) injects into \(\omega\) (in \lil{pSet}, and also at the level of indexing types). Since being an injective function is \(\Delta_0\), it is absolute for \lil{check}, so \(x = \widecheck{\eta}\) injects into \(\omega\). Then, by definition of \(\aleph_1^{\mathbb{B}}\), \(x \in \aleph_1^{\mathbb{B}}\). \footnote{Note that this did not use our assumption, and holds for general \(\mathbb{B}\). For a conventional proof in a set-theoretic metatheory, see e.g. \cite{bell2011set}}
+  To see that \(\widecheck{\aleph_1} \subseteq \aleph_1^{\mathbb{B}}\), let \(x\) be an arbitrary element of \(\widecheck{\aleph_1}\).
+  By definition \(x\) is equal to \(\widecheck{\eta}\) for some \(\eta < \aleph_1\) in \lil{pSet}.
+  Since the ordinals and cardinals of \lil{pSet} are isomorphic to Lean's ordinals and cardinals for \lil{Type u}, \(\eta\) injects into \(\omega\) (in \lil{pSet}, and also at the level of indexing types).
+  Since being an injective function is \(\Delta_0\), it is absolute for \lil{check}, so \(x = \widecheck{\eta}\) injects into \(\omega\).
+  Then, by definition of \(\aleph_1^{\mathbb{B}}\), \(x \in \aleph_1^{\mathbb{B}}\).\footnote{Note that this did not use our assumption, and holds for general \(\mathbb{B}\).
+  For a conventional proof in a set-theoretic metatheory, see e.g. \cite{bell2011set}}
 
-  To see that \(\aleph_1^{\mathbb{B}} \subseteq \widecheck{\aleph_1}\), suppose towards a contradiction that this is not true; since the ordinals are well-ordered, this means that \(\widecheck{\aleph_1} < \aleph_1^{\mathbb{B}}\), so by definition of \(\aleph_1^{\mathbb{B}}\), there is a surjection \(f : \omega \to \widecheck{\aleph_1}\). By assumption, this surjection can be lifted to a function \(g : \omega \to \aleph_1\) in \lil{pSet}, which can again be checked to be surjective, a contradiction.
+  To see that \(\aleph_1^{\mathbb{B}} \subseteq \widecheck{\aleph_1}\), suppose towards a contradiction that this is not true; since the ordinals are well-ordered,
+  this means that \(\widecheck{\aleph_1} < \aleph_1^{\mathbb{B}}\), so by definition of \(\aleph_1^{\mathbb{B}}\), there is a surjection \(f : \omega \to \widecheck{\aleph_1}\).
+  By assumption, this surjection can be lifted to a function \(g : \omega \to \aleph_1\) in \lil{pSet}, which can again be checked to be surjective, a contradiction.
 
- Similarly, it is true for general \(\mathbb{B}\) that for any \lil{x : pSet}, \(\widecheck{\mathcal{P}(x)} \subseteq \mathcal{P}(\widecheck{x})\), because indicator functions into \lil{bool} naturally induce indicator functions to \(\mathbb{B}\) (by composing with the canonical inclusion \lil{bool → 𝔹}). Conversely, to show that \(\mathcal{P}(\omega) \subseteq \widecheck{\mathcal{P}(\omega)}\), use the isomorphism \(\mathcal{P}(\omega) \simeq \widecheck{2}^{\widecheck{\omega}}\) to reduce this to showing that \(\widecheck{2}^{\widecheck{\omega}} \subseteq \widecheck{2^{\omega}}\), and then apply the assumption to an arbitrary element of \(\widecheck{2}^{\widecheck{\omega}}\).
+  Similarly, it is true for general \(\mathbb{B}\) that for any \lil{x : pSet}, \(\widecheck{\mathcal{P}(x)} \subseteq \mathcal{P}(\widecheck{x})\),
+  because indicator functions into \lil{bool} naturally induce indicator functions to \(\mathbb{B}\) (by composing with the canonical inclusion \lil{bool → 𝔹}).
+  Conversely, to show that \(\mathcal{P}(\omega) \subseteq \widecheck{\mathcal{P}(\omega)}\), use the isomorphism \(\mathcal{P}(\omega) \simeq \widecheck{2}^{\widecheck{\omega}}\) to reduce this to showing that \(\widecheck{2}^{\widecheck{\omega}} \subseteq \widecheck{2^{\omega}}\),
+  and then apply the assumption to an arbitrary element of \(\widecheck{2}^{\widecheck{\omega}}\).
 \end{proof}
 
 It remains to show that \lil{𝔹_collapse} fulfills the assumptions of \Cref{lemma-function-reflect-suffices}.
 
 \begin{lemma}\label{lemma-function-reflect}
-  For every \lil{ y : pSet}, and every \lil{f : bSet 𝔹_collapse} such that \lil{bSet 𝔹_collapse} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\), there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹_collapse} models that \(\widecheck{g} = f\).
+  For every \lil{ y : pSet}, and every \lil{f : bSet 𝔹_collapse} such that \lil{bSet 𝔹_collapse} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\),
+  there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹_collapse} models that \(\widecheck{g} = f\).
 \end{lemma}
 
 % \subsection{Reflecting Boolean-valued \(\forall\)-\(\exists\) statements into the metatheory} \label{subsect:reflect}
@@ -931,7 +994,9 @@ f ∈ᴮ functions ω y̌
 ⊥ < (⋃ g, D_p ⊓ g ∈ᴮ (functions omega y)̌  ⊓ g =ᴮ f)
 \end{lstlisting}
 
-  It suffices to construct a single function \(g : \omega \to y\) such that \(\bot < D_p \sqcap \widecheck{g} = f\). As with Cohen forcing, we will reflect a Boolean-valued \(\forall\)-\(\exists\) statement into the metatheory, and then use a combinatorial property of \lil{𝔹_collapse} to strengthen it. The following lemma is true for general \(\mathbb{B}\):
+  It suffices to construct a single function \(g : \omega \to y\) such that \(\bot < D_p \sqcap \widecheck{g} = f\).
+  As with Cohen forcing, we will reflect a Boolean-valued \(\forall\)-\(\exists\) statement into the metatheory, and then use a combinatorial property of \lil{𝔹_collapse} to strengthen it.
+  The following lemma is true for general \(\mathbb{B}\):
 
 \begin{lstlisting}
 lemma AE_of_check_func_check (x y : pSet.{u}) {f : bSet 𝔹} {Γ : 𝔹}
@@ -983,10 +1048,15 @@ by finish[independent, CH_unprovable_from_ZFC, neg_CH_unprovable_from_ZFC]
 \section{Automation and metaprogramming}
 \label{section:metaprogramming}
 
-A key feature of Lean is that it is its own metalanguage \cite{Ebner:2017:MFF:3136534.3110278}, allowing for seamless in-line definitions of custom tactics (and modifications of existing ones). This feature was an invaluable asset, as it allowed the rapid development of a custom tactic library for simulating natural-deduction style proofs in complete Boolean algebras (\Cref{subsect:natded}) and automating equality reasoning in those proofs (\Cref{subsect:bv-cc}).
+A key feature of Lean is that it is its own metalanguage \cite{Ebner:2017:MFF:3136534.3110278}, allowing for seamless in-line definitions of custom tactics (and modifications of existing ones).
+This feature was an invaluable asset, as it allowed the rapid development of a custom tactic library for simulating natural-deduction style proofs in complete Boolean algebras (\Cref{subsect:natded}) and automating equality reasoning in those proofs (\Cref{subsect:bv-cc}).
 
 \subsection{Simulating natural deduction proofs in \(\mathbb{B}\)} \label{subsect:natded}
-As stressed by Scott \cite{scott2008algebraic}, ``A main point ... is that the well-known algebraic characterizations of [complete Heyting algebras] and [complete Boolean algebras] exactly mimic the rules of deduction in the respective logics.'' Indeed, that is really why the Boolean-valued soundness theorem (see \Cref{boolean-soundness}) is true. One thinks of the \lil{≤} symbol in an inequality of Boolean truth-values as a turnstile in a proof state: the conjuncts on the left as a list of assumptions in context, and the quantity on the right as the goal. For example, given \lil{a b : 𝔹}, the identity $(a \Rightarrow b) \sqcap a \leq b$ could be proven by unfolding the definition of material implication, but it is really just modus ponens; similarly, given an indexed family \lil{a : I → 𝔹}, the equivalence \lstinline{(⨆i, a i ≤ b) ↔ ∀ i, a i ≤ b} is just $\exists$-elimination.
+As stressed by Scott \cite{scott2008algebraic}, ``A main point ... is that the well-known algebraic characterizations of [complete Heyting algebras] and [complete Boolean algebras] exactly mimic the rules of deduction in the respective logics.''
+Indeed, that is really why the Boolean-valued soundness theorem (see \Cref{boolean-soundness}) is true. One thinks of the \lil{≤} symbol in an inequality of Boolean truth-values as a turnstile in a proof state:
+the conjuncts on the left as a list of assumptions in context, and the quantity on the right as the goal.
+For example, given \lil{a b : 𝔹}, the identity $(a \Rightarrow b) \sqcap a \leq b$ could be proven by unfolding the definition of material implication, but it is really just modus ponens;
+similarly, given an indexed family \lil{a : I → 𝔹}, the equivalence \lstinline{(⨆i, a i ≤ b) ↔ ∀ i, a i ≤ b} is just $\exists$-elimination.
 
 Difficulties arise when the statements to be proved become only slightly more complicated. Consider the following example, which should be  ``\lil{by assumption}'':
 \begin{lstlisting}
@@ -996,8 +1066,8 @@ or slightly less trivially, the following example where the goal is attainable b
 \begin{lstlisting}
 (a ⟹ b) ⊓ (b ⟹ c) ≤ a ⟹ c
 \end{lstlisting}
-In this last example, even if one has a lemma which concludes \lil{a ⟹ b ⊓ a ≤ b}, one must perform tedious reasoning modulo the associativity and commutativity of \(\sqcap\) to apply it. Our solution is to piggyback on top of the tactic monad's AC-invariant handling of hypotheses in the tactic state, by applying the \textbf{Yoneda lemma} for posets, which we formulate as
-
+In this last example, even if one has a lemma which concludes \lil{a ⟹ b ⊓ a ≤ b}, one must perform tedious reasoning modulo the associativity and commutativity of \(\sqcap\) to apply it.
+Our solution is to piggyback on top of the tactic monad's AC-invariant handling of hypotheses in the tactic state, by applying the \textbf{Yoneda lemma} for posets, which we formulate as
 \label{poset-yoneda}
 \begin{lstlisting}
 lemma poset_yoneda {β} [partial_order β] {a b : β}
@@ -1015,7 +1085,8 @@ by {tidy_context, assumption}
   ⊢ Γ ≤ a  -/
 \end{lstlisting}
 
-Above, \lil{tidy_context} combines an application of this lemma with a call to the simplifier to split hypotheses of the form \lstinline{Γ ≤ a₁ ⊓ a₂ ⊓ ... aₙ} into \lstinline{Γ ≤ a₁, Γ ≤ a₂, ..., Γ ≤ aₙ}. With more custom tactics and coercions to simulate natural deduction proof steps in \(\mathbb{B}\), our second example is handled just as easily:
+Above, \lil{tidy_context} combines an application of this lemma with a call to the simplifier to split hypotheses of the form \lstinline{Γ ≤ a₁ ⊓ a₂ ⊓ ... aₙ} into \lstinline{Γ ≤ a₁, Γ ≤ a₂, ..., Γ ≤ aₙ}.
+With more custom tactics and coercions to simulate natural deduction proof steps in \(\mathbb{B}\), our second example is handled just as easily:
 \begin{lstlisting}
 example {𝔹} [complete_boolean_algebra 𝔹]
  {a b c : 𝔹} :
@@ -1039,16 +1110,27 @@ begin
 end
 \end{lstlisting}
 
-One use-case where automation is crucial is context specialization. For example, suppose that after preprocessing with \lstinline{poset_yoneda}, the goal is \lstinline{Γ ≤ (a ⟹ b)}, and one would like to apply implication introduction, adding \lstinline{Γ ≤ a} to the context and reducing the goal to \lstinline{Γ ≤ b}. This is impossible as stated. Rather, the deduction theorem lets us rewrite the goal to \lstinline{Γ ⊓ a ≤ b}, and now we may add \lstinline{Γ ⊓ a ≤ a} to the context. So we may introduce the implication after all, but at the cost of specializing the context \lstinline{Γ} to the smaller context \lstinline{Γ' := Γ ⊓ a}. But now, in order for the user to continue the pretense that they are merely doing first-order logic, this change of variables must be propagated to the rest of the assumptions which may still be of the form \lstinline{Γ ≤ _}---which is extremely tedious to do by hand, but easy to automate.
+One use-case where automation is crucial is context specialization.
+For example, suppose that after preprocessing with \lstinline{poset_yoneda}, the goal is \lstinline{Γ ≤ (a ⟹ b)}, and one would like to apply implication introduction,
+adding \lstinline{Γ ≤ a} to the context and reducing the goal to \lstinline{Γ ≤ b}.
+This is impossible as stated. Rather, the deduction theorem lets us rewrite the goal to \lstinline{Γ ⊓ a ≤ b}, and now we may add \lstinline{Γ ⊓ a ≤ a} to the context.
+So we may introduce the implication after all, but at the cost of specializing the context \lstinline{Γ} to the smaller context \lstinline{Γ' := Γ ⊓ a}.
+But now, in order for the user to continue the pretense that they are merely doing first-order logic, this change of variables must be propagated to the rest of the assumptions which may still be of the form \lstinline{Γ ≤ _}---which is extremely tedious to do by hand, but easy to automate.
 
-It would have been possible to go further and even write a custom tactic state, as was done for temporal logic in Unit-B \cite{Hudon2015TheUM} or for Lean's SMT-mode framework, such that the machinery for handling the ambient context \(\Gamma\) is completely hidden and the Boolean-valued tactics receive their own namespace. However, we felt the benefits of doing so in our formalization would have been mostly cosmetic, and we leave more sophisticated implementations for future work.
+It would have been possible to go further and even write a custom tactic state,
+as was done for temporal logic in Unit-B \cite{Hudon2015TheUM} or for Lean's SMT-mode framework,
+such that the machinery for handling the ambient context \(\Gamma\) is completely hidden and the Boolean-valued tactics receive their own namespace.
+However, we felt the benefits of doing so in our formalization would have been mostly cosmetic, and we leave more sophisticated implementations for future work.
 
 \subsection{Boolean-valued equality reasoning}
 
 \paragraph{Congruence closure on quotient types} \label{subsect:bv-cc}
-Another benefit of applying \Cref{poset-yoneda} and using context variables \(\Gamma\) throughout the formalization is that this approach exposes a canonical family of setoids on \lil{bSet 𝔹} induced by \lil{𝔹}-valued equality: for every \(\Gamma : \mathbb{B}\), \(\lambda\; x \; y, \Gamma \leq x =^{\mathbb{B}} y\) is an equivalence relation on \lil{bSet 𝔹} (the larger \(\Gamma\) is, the finer the equivalence relation).
+Another benefit of applying \Cref{poset-yoneda} and using context variables \(\Gamma\) throughout the formalization is that this approach exposes a canonical family of setoids on \lil{bSet 𝔹} induced by \lil{𝔹}-valued equality:
+for every \(\Gamma : \mathbb{B}\), \(\lambda\; x \; y, \Gamma \leq x =^{\mathbb{B}} y\) is an equivalence relation on \lil{bSet 𝔹} (the larger \(\Gamma\) is, the finer the equivalence relation).
 
-Since Lean natively supports quotient types, then as soon as e.g. all (Boolean-valued) existentials have been split and the only task remaining is to perform equality reasoning, we can quotient by the appropriate setoid and simply call \lil{cc}; this is easy to automate with a custom tactic \lil{bv_cc}:
+Since Lean natively supports quotient types, then as soon as e.g. all (Boolean-valued) existentials have been split and the only task remaining is to perform equality reasoning,
+we can quotient by the appropriate setoid and simply call \lil{cc};
+this is easy to automate with a custom tactic \lil{bv_cc}:
 
 \begin{lstlisting}
 example {x y z x₁ y₁ z₁: bSet 𝔹} {Γ : 𝔹}
@@ -1057,7 +1139,8 @@ example {x y z x₁ y₁ z₁: bSet 𝔹} {Γ : 𝔹}
   (H5 : Γ ≤ y₁ =ᴮ x₁) : Γ ≤ x =ᴮ x₁ := by bv_cc
 \end{lstlisting}
 
-We can add support for any predicate satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma, although we do not have a way of handling such extensions uniformly and currently add support for individual predicates by hand:
+We can add support for any predicate satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma,
+although we do not have a way of handling such extensions uniformly and currently add support for individual predicates by hand:
 
 \begin{lstlisting}
 example {x₁ y₁ x₂ y₂ : bSet 𝔹} {Γ}
@@ -1065,7 +1148,8 @@ example {x₁ y₁ x₂ y₂ : bSet 𝔹} {Γ}
   (H₂ : Γ ≤ y₁ =ᴮ y₂) : Γ ≤ x₂ ∈ᴮ y₂ := by bv_cc
 \end{lstlisting}
 
-\paragraph{Discharging congruence lemmas via \texttt{simp}} Rewriting along \(\mathbb{B}\)-valued equality is the same as rewriting in the appropriate setoid parametrized by the current context \(\Gamma\), so that the motive must satisfy an appropriate \emph{congruence lemma} \lil{h_congr} with respect to the equivalence relation:
+\paragraph{Discharging congruence lemmas via \texttt{simp}} Rewriting along \(\mathbb{B}\)-valued equality is the same as rewriting in the appropriate setoid parametrized by the current context \(\Gamma\),
+so that the motive must satisfy an appropriate \emph{congruence lemma} \lil{h_congr} with respect to the equivalence relation:
 
 \begin{lstlisting}
 lemma bv_rw {x y : bSet 𝔹} {Γ : 𝔹}
