@@ -717,8 +717,7 @@ Since in general, \(\widecheck{\aleph_1}\) is \emph{not} what \lil{bSet 𝔹} th
 
 
 \section{Forcing} \label{section:forcing}
-The conventional accounts of forcing work with a poset \(\mathbb{P}\) over a countable transitive model \cite{kunen2014set, jech2013set}, and use a generic filter to ``evaluate'' the \lstinline{ℙ}-names and produce an ordinary model of \(\ZFC\).
-Instead, we force with \emph{Boolean-valued models} of \(\ZFC\) instead.
+Our point of departure from conventional accounts of forcing with a poset \(\mathbb{P}\) over a countable transitive model \cite{kunen2014set, jech2013set}, which use a generic filter to ``evaluate'' the \lstinline{ℙ}-names to produce an ordinary model of \(\ZFC\), is to force with \emph{Boolean-valued models} of \(\ZFC\) instead.
 As first observed by Scott and Solovay \cite{scott-solovay}, this obviates the need for countable transitive models, generic filters, or the truth and definability lemmas, and allows us to work only with the \lstinline{𝔹}-names.
 % Comment: this would be much better in the introduction: we need to motivate why we use boolean valued models.
 
@@ -748,6 +747,8 @@ While forcing conditions usually present themselves as a poset instead of a comp
 \begin{defn}\label{def-dense-suborder}
   A \textbf{dense suborder} of \(\B\) is a subset \(\mathbb{P} \subseteq \B\) satisfying the following conditions: (1) for all \(p \in \mathbb{P}\), \(\bot < p\); (2) for all \(\bot < b \in \B\), there exists a \(p \in \mathbb{P}\) such that \(p \leq b\).
 \end{defn}
+
+We will use the following combinatorial conditions on \(\mathbb{B}\) in our forcing arguments:
 
 \begin{defn}\label{def-ccc}
 We say that $\B$ has the \textbf{countable chain condition} (CCC) if every antichain $\mathcal{A} : I \to \B$ (i.e. an indexed collection of elements $\mathcal{A} := \{a_i\}$ such that whenever $i \neq j, a_i \sqcap a_j = \bot$) has a countable image.
