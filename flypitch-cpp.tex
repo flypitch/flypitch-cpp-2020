@@ -951,14 +951,14 @@ Surjectivity is equivalent to \lil{⨅ j, (⨆ i, af i j) = ⊤}, totality is eq
 (H_anti : ∀ i, ∀ j₁ j₂, j₁ ≠ j₂ → af i j₁ ⊓ af i j₂ ≤ ⊥)
 (H_inj : ∀ i₁ i₂, ⊥ < (func x i₁) =ᴮ (func x i₂) → i₁ = i₂)
 \end{lstlisting}
-Both surjectivity and totality of \(\chi_{\pi}\) require \emph{denseness arguments}, where the definition of indexed supremum (\(\bigsqcup x_i\)) in the regular open algebra as the regularization \(((\bigcup x_i)^\perp)^\perp\) of the set-theoretic union plays a key role: the union of the truth values is not the entire space, but is only a dense open whose regularization is the entire space. In particular, the denseness argument for surjectivity crucially uses that \(\aleph_1\) is uncountable while \(\omega\) is countable.
+Both surjectivity and totality of \(\chi_{\pi}\) require \emph{density arguments}, where the definition of indexed supremum (\(\bigsqcup x_i\)) in the regular open algebra as the regularization \(((\bigcup x_i)^\perp)^\perp\) of the set-theoretic union plays a key role: the union of the truth values is not the entire space, but is only a dense open whose regularization is the entire space. In particular, the density argument for surjectivity crucially uses that \(\aleph_1\) is uncountable while \(\omega\) is countable.
 
 To finish demonstrating that \(\CH\) is true in \lil{bSet 𝔹_collapse}, it remains to check that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1\).
 There are two major obstacles. The first is that to even formally state the latter equality, we must construct \(\aleph_1^{\mathbb{B}}\) in \lil{bSet 𝔹}.
 (While the operation \lil{bv_powerset} (\Cref{def-powerset}) gives a construction of the internal powerset of any \lil{x : bSet 𝔹} (using \lil{𝔹}-valued indicator functions, for any \lil{𝔹}), \(\aleph_1^{\mathbb{B}}\) is only specified as the least ordinal greater than \(\omega\), and does not admit as direct a a construction.)
 We describe our construction of \(\aleph_1^{\mathbb{B}}\) (as the Hartogs number of \(\omega\)) in \Cref{subsect:forcing:aleph-1}.
 
-Now we must ensure that no new countable ordinals are added to \(\aleph_1\) and that no new subset of \(\omega\) are added to \(\mathcal{P}(\omega)\) in the passage via \lil{check} from \lil{pSet} to \lil{bSet}. The second obstacle is reducing both statements to, and proving, the following lemma:
+Now we must ensure that no new countable ordinals are added to \(\aleph_1\) and that no new subsets of \(\omega\) are added to \(\mathcal{P}(\omega)\) in the passage via \lil{check} from \lil{pSet} to \lil{bSet}. The second obstacle is reducing both statements to, and proving, the following lemma:
 
 \begin{lemma}\label{lemma-function-reflect-suffices}
   Let \(\mathbb{B}\) be a complete Boolean algebra, and suppose that for every \lil{y : pSet}, and every \lil{f : bSet 𝔹} such that \lil{bSet 𝔹} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\), there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹} models that \(\widecheck{g} = f\).
@@ -1118,7 +1118,7 @@ by finish [independent, CH_unprv, neg_CH_unprv]
 % \end{lstlisting}
 
 \paragraph{Concluding remarks}
-The formalization of Cohen forcing is actually much easier than the formalization of collapse forcing. In Cohen forcing, unlike collapse forcing, constructing the new function (and actually the entire forcing argument) required no denseness arguments at all. This is because in order to force \(\neg \CH\), we only had to ensure there was some infinite cardinality between \(\omega\) and \(\mathcal{P}(\omega)\), whereas to force \(\CH\), we had to determine the exact cardinality of \(\widecheck{\aleph_1}\) to be \(\aleph_1\). However, proving that \(\mathbb{B}_{\mathsf{cohen}}\) has the CCC is more delicate than just observing that a union of countable partial functions is again countable.
+The formalization of Cohen forcing is actually much easier than the formalization of collapse forcing. In Cohen forcing, unlike collapse forcing, constructing the new function (and actually the entire forcing argument) required no density arguments at all. This is because in order to force \(\neg \CH\), we only had to ensure there was some infinite cardinality between \(\omega\) and \(\mathcal{P}(\omega)\), whereas to force \(\CH\), we had to determine the exact cardinality of \(\widecheck{\aleph_1}\) to be \(\aleph_1\). However, proving that \(\mathbb{B}_{\mathsf{cohen}}\) has the CCC is more delicate than just observing that a union of countable partial functions is again countable.
 
 % TODO(jesse): make this sound less lame
 % While the \(\Delta\)-system lemma (\Cref{lemma:delta-system-lemma})
@@ -1126,7 +1126,7 @@ The formalization of Cohen forcing is actually much easier than the formalizatio
 % TODO(jesse): reorganize and put into other sections
 % To prove that the regular open algebra RO (2^(aleph_2 x omega)) for Cohen forcing has the CCC, a much more direct argument suffices. Given an antichain of regular opens, shrink them to basic clopens, which can then be identified with finite partial functions (p_i : aleph_2 x omega -> 2). Disjointness is equivalent to the finite partial functions all disagreeing with each other at some point. It suffices to show that for every n : N that there are only finitely many p_i of cardinality n. It's easy to see this for n = 1, and at the induction step, fix some p* and towards a contradiction if there are infinitely many, then we can use the pigeonhole principle to get an infinite subfamily (q_i) which disagree with p* at the same point. Then the (q_i) agree at that point, so that point can be removed, contradicting the induction hypothesis.
 
-% This is indeed more delicate than proving the corresponding combinatorial property on the forcing CH side, where we just observe that a countable union of countable partial functions is again a countable partial function, but after this point the rest of the Cohen forcing argument is very easy (I just checked and we actually don't use a denseness argument at all), while collapse forcing uses denseness in an essential way in multiple places.
+% This is indeed more delicate than proving the corresponding combinatorial property on the forcing CH side, where we just observe that a countable union of countable partial functions is again a countable partial function, but after this point the rest of the Cohen forcing argument is very easy (I just checked and we actually don't use a density argument at all), while collapse forcing uses density in an essential way in multiple places.
 
 \section{Automation and metaprogramming}
 \label{sect:metaprogramming}
