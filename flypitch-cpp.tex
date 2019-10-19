@@ -220,7 +220,7 @@
 
 
 \section{Introduction}
-\label{section:intro}
+\label{sect:intro}
 The continuum hypothesis ($\mathsf{CH}$) states that there is no cardinality between $\omega$, the smallest infinite cardinal and $\mathfrak{c}$, the cardinality of the continuum.
 It was introduced by Cantor \cite{cantor1878beitrag} in 1878 and was the very first problem on Hilbert's list of twenty-three outstanding problems in mathematics.
 G\"odel \cite{godel1938consistency} proved in 1938 that $\mathsf{CH}$ was consistent with $\mathsf{ZFC}$, and later conjectured that $\mathsf{CH}$ is independent of $\mathsf{ZFC}$, i.e. neither provable nor disprovable from the $\mathsf{ZFC}$ axioms.
@@ -247,30 +247,30 @@ Moreover, the theory of forcing with Boolean-valued models cleanly splits into s
 
 % We made sure that the individual components of this formalization are reusable for other projects, e.g.\ to formalize the Boolean-valued semantics of stochastic $\lambda$-calculus~\cite{scott2014stochastic, bacci2018boolean}.
 
-Finally, we observed that our construction of Boolean-valued models of set theory (\Cref{section:bset}) is amenable to structural induction. As with Coq, Lean is able to encode extremely complex objects and reason about their specifications using inductive types.
+Finally, we observed that our construction of Boolean-valued models of set theory (\Cref{sect:bset}) is amenable to structural induction. As with Coq, Lean is able to encode extremely complex objects and reason about their specifications using inductive types.
 However, the user must be careful to choose the encoding so that properties they wish to reason about are accessible by structural induction, which is the most natural mode of reasoning in the proof assistant.
-After observing (1) that the Aczel encoding of $\mathsf{ZFC}$ as an inductive type is essentially a special case of the recursive \emph{name} construction from forcing (\Cref{section:bset}),
+After observing (1) that the Aczel encoding of $\mathsf{ZFC}$ as an inductive type is essentially a special case of the recursive \emph{name} construction from forcing (\Cref{sect:bset}),
 and (2) that the automatically-generated induction principle for that inductive type \emph{is} $\in$-induction,
 it is easy to see that this encoding can be modified to produce a Boolean-valued model of set theory where, again, $\in$-induction comes for free.
 %TODO: maybe this is better in the main text. We can mention it briefly here.
 % \textbf{Amenability to structural induction.}
 % As with Coq, Lean is able to encode extremely complex objects and reason about their specifications using inductive types.
 % However, the user must be careful to choose the encoding so that properties they wish to reason about are accessible by structural induction, which is the most natural mode of reasoning in the proof assistant.
-% After observing (1) that the Aczel-Werner encoding of $\mathsf{ZFC}$ as an inductive type is essentially a special case of the recursive \emph{name} construction from forcing (c.f. \ref{section:boolean-semantics}),
+% After observing (1) that the Aczel-Werner encoding of $\mathsf{ZFC}$ as an inductive type is essentially a special case of the recursive \emph{name} construction from forcing (c.f. \ref{sect:boolean-semantics}),
 % and (2) that the automatically-generated induction principle for that inductive type \emph{is} $\in$-induction,
 % it is easy to see that this encoding can be modified to produce a Boolean-valued model of set theory where, again, $\in$-induction comes for free.
 
 \subsection{Proof Outline}
-\label{subsection:intro:outline}
-$\ZFC$ is a collection of first-order sentences in the language of set theory. For convenience, we conservatively extend this language with five function symbols (see \Cref{subsection:fol:zfc}) which make it easier to formulate $\CH$. Our goal is to show that we cannot construct proofs\footnote{By proof we mean a natural deduction tree (see \Cref{subsection:fol:terms}).} of either $\CH$ or $\neg\CH$ from $\ZFC$.
+\label{subsect:intro:outline}
+$\ZFC$ is a collection of first-order sentences in the language of set theory. For convenience, we conservatively extend this language with five function symbols (see \Cref{subsect:fol:zfc}) which make it easier to formulate $\CH$. Our goal is to show that we cannot construct proofs\footnote{By proof we mean a natural deduction tree (see \Cref{subsect:fol:terms}).} of either $\CH$ or $\neg\CH$ from $\ZFC$.
 
-The usual method to show that a statement is unprovable is to construct a model where the statement is false, and apply the soundness theorem; our method is similar, except that we use Boolean-valued semantics and a Boolean-valued soundness theorem (see \Cref{section:boolean-semantics}).
+The usual method to show that a statement is unprovable is to construct a model where the statement is false, and apply the soundness theorem; our method is similar, except that we use Boolean-valued semantics and a Boolean-valued soundness theorem (see \Cref{sect:boolean-semantics}).
 The difference between Boolean-valued models and ordinary models is that the truth values in a Boolean-valued model \lil{M} live in a complete Boolean algebra \lil{(𝔹, ⊓, ⊔, ⨅, ⨆,⊥,⊤)}.
 This means that, e.g.\ equality is interpreted as a function \lil{eq : M → M → 𝔹} satisfying \lil{𝔹}-valued reflexivity, symmetry, and transitivity (for example, transitivity is formulated as \lil{∀ x y z, eq(x, y) ⊓ eq(y, z) ≤ eq(x, z)}).
 All interpretations of function symbols and relation symbols in \lil{M} must satisfy \lil{𝔹}-valued congruence lemmas with respect to equality.
 If we can construct two Boolean-valued models of $\ZFC$, one where $\CH$ holds, and one where $\CH$ fails, then we can apply the Boolean-valued soundness theorem to show that $\CH$ is independent from $\ZFC$.
 
-For any complete Boolean algebra $\mathbb{B}$ we implement the set-theoretic universe \(V^{\mathbb{B}}\) of \(\mathbb{B}\)-valued sets by generalizing the Aczel encoding of set theory (called \lil{pSet}, see \Cref{section:bset}), obtaining a type \lil{bSet 𝔹} of $\mathbb{B}$-valued sets. The fundamental theorem of forcing for Boolean-valued models \cite{hamkins2012well}, translated to our situation, then states that \lil{bSet 𝔹} is a \lil{𝔹}-valued model is \(\ZFC\).
+For any complete Boolean algebra $\mathbb{B}$ we implement the set-theoretic universe \(V^{\mathbb{B}}\) of \(\mathbb{B}\)-valued sets by generalizing the Aczel encoding of set theory (called \lil{pSet}, see \Cref{sect:bset}), obtaining a type \lil{bSet 𝔹} of $\mathbb{B}$-valued sets. The fundamental theorem of forcing for Boolean-valued models \cite{hamkins2012well}, translated to our situation, then states that \lil{bSet 𝔹} is a \lil{𝔹}-valued model is \(\ZFC\).
 % An element of \lil{x : bSet 𝔹} has three components:
 % \begin{itemize}
 % \item An indexing type \lil{α : Type};
@@ -284,7 +284,7 @@ For any complete Boolean algebra $\mathbb{B}$ we implement the set-theoretic uni
 
 The properties of \lil{bSet 𝔹} can vary wildly depending on the choice of the complete Boolean algebra \lil{𝔹}. There is always a map \lil{check : pSet → bSet 𝔹}, $x \mapsto \widecheck{x}$; in general, $\widecheck{x}$ might have different properties than $x$, but \(\Delta_0\) properties (i.e. definable with only bounded quantification) are always preserved (for example, \lil{bSet 𝔹} thinks $\widecheck{\omega}$ is $\omega$).
 To show the independence of \(\CH\), it remains to construct two appropriate complete Boolean algebras \lil{𝔹} such that in \lil{bSet 𝔹}, the formula $\CH$ is true ($\top$) in one model and $\CH$ is false ($\bot$) in the other.
-This is precisely the task of forcing (\Cref{section:forcing}).
+This is precisely the task of forcing (\Cref{sect:forcing}).
 
 % To force the negation of the continuum hypothesis, we define Cantor space $2^{\aleph_2 \times \mathbb{N}}$ with its usual product topology (see TODO).
 % Then let $\B_{\mathsf{cohen}}$ be the regular open algebra of the Cantor space (a set $O$ is a regular open if $O$ is equal to the interior of the closure of $O$).
@@ -309,7 +309,11 @@ This is precisely the task of forcing (\Cref{section:forcing}).
 
 Traditional presentations of forcing, even with Boolean-valued models (e.g. \cite{bell2011set}, \cite{jech2013set}), are careful to stay within the foundations of $\mathsf{ZFC}$, emphasizing that all arguments may be performed internal to a model of $\mathsf{ZFC}$, etc. In order to formalize these set-theoretic arguments in a type-theoretic metatheory, it is important to separate their mathematical content from their metamathematical content. It is not immediately clear what parts of these arguments use their set-theoretic foundation in an essential way and require modification in the passage to type theory. Our formalization clarifies some of these questions.
 
-We use custom domain-specific tactics and automation throughout our formalization, notably a tactic library for simulating natural deduction proofs inside a complete Boolean algebra \Cref{section:metaprogramming}). This is another advantage of working in a proof assistant: the bookkeeping of Boolean truth-values, sometimes regarded as a tedious aspect of the Boolean-valued approach to forcing, can be hidden via automation.
+We use custom domain-specific tactics and automation throughout our formalization, notably a tactic library for simulating natural deduction proofs inside a complete Boolean algebra \Cref{sect:metaprogramming}). This is another advantage of working in a proof assistant: the bookkeeping of Boolean truth-values, sometimes regarded as a tedious aspect of the Boolean-valued approach to forcing, can be hidden via automation.
+
+\paragraph{Contributions}
+We have previously described a formalization of Cohen forcing and the unprovability of \(\CH\) \cite{DBLP:conf/itp/HanD19}. % note(jesse, October 19 2019, 12:32 PM): no point in talking about ourselves in the third person for the sake of anonymity, its already glaringly obvious it's us
+Our main contribution is a formalization of collapse forcing and the unprovability of \(\neg \CH\), completing the verification of the independence of \(\CH\). For reasons we will see in \Cref{sect:forcing}, the forcing argument for \(\CH\) requires far more set theory and is significantly harder to formalize than the forcing argument for \(\neg \CH\). Furthermore, we elaborate on parts of the formalization---such as our exact formulation of the \(\ZFC\) axioms and the steps we have taken to ensure that we have truly proved \(\CH\) independent from \(\ZFC\)---which were omitted from \cite{DBLP:conf/itp/HanD19}. Because we intend this text to be the canonical reference for the project, we also discuss Cohen forcing in \Cref{sect:forcing}.
 
 \paragraph{Sources}
 Our strategy for forcing \(\neg \CH\) is a synthesis of the proofs in the textbooks of Bell (\cite{bell2011set}, Chapter 2) and Manin (\cite{manin2009course}, Chapter 8).
@@ -321,14 +325,14 @@ We were unable to find a reference for a purely Boolean-valued account of forcin
 
 A large body of formalized set theory has been completed in Isabelle/ZF, led by Paulson and his collaborators \cite{paulson1996mechanizing, paulson1993set, paulson2002reflection}. Most relevantly, this includes a formalization of the relative consistency of the axiom of choice with $\mathsf{ZF}$ \cite{paulson2008relative}. Building on this, Gunther, Pagano, and Terraf have begun formalizing the basic ingredients of forcing \cite{gunther2018first, gunther2019mechanization}, taking the more conventional approach of generic extensions of countable transitive models.
 
-Our tactic library for Boolean-valued logic (\Cref{section:metaprogramming}) was inspired by work of Hudon \cite{Hudon2015TheUM} on Unit-B, using similar techniques to embed a proof language for temporal logic \cite{unitb}. A formalization of Cohen forcing and the unprovability of \(\CH\) was previously published by Han and van Doorn \cite{DBLP:conf/itp/HanD19}.
-% See also the Related Work (\Cref{section:related-work}).
+Our tactic library for Boolean-valued logic (\Cref{sect:metaprogramming}) was inspired by work of Hudon \cite{Hudon2015TheUM} on Unit-B, using similar techniques to embed a proof language for temporal logic \cite{unitb}.
+% See also the Related Work (\Cref{sect:related-work}).
 
 % \subparagraph*{Viewing the formalization}
 % The code blocks in this paper were taken directly from our formalization, but for the sake of readability, we sometimes omit or modify universe levels, type ascriptions, and casts. We refer the interested reader to our repository (see Supplemental Material on page 1) which contains a guide on compiling and navigating the source files of the project.
 
 \section{First-order logic}
-\label{section:fol}
+\label{sect:fol}
 
 The starting point for first-order logic is a \emph{language} of relation and function symbols.
 We represent a language as a pair of $\N$-indexed families of types, each of which is to be thought of as the collection of relation (resp. function) symbols stratified by arity:
@@ -338,7 +342,7 @@ structure Language : Type (u+1) :=
 (relations : ℕ → Type u)
 \end{lstlisting}
 \subsection{Terms, Formulae and Proofs}
-\label{subsection:fol:terms}
+\label{subsect:fol:terms}
 The main novelty of our implementation of first-order logic is the use of \emph{partially applied} terms and formulas, encoded in a parameterized inductive type where the $\N$ parameter measures the difference between the arity and the number of applications.
 The benefit of this is that it is impossible to produce an ill-formed term or formula, because type-correctness is equivalent to well-formedness.
 This eliminates the need for separate well-formedness proofs.
@@ -438,10 +442,10 @@ def substitution : Γ ⊢ A →
     (λ f, f[s // n]) '' Γ ⊢ A[s // n]
 \end{lstlisting}
 
-Besides Boolean-valued semantics (\Cref{section:boolean-semantics}), we also formalize ordinary first-order semantics, and our work includes a formalization of the completeness theorem using Henkin models.
+Besides Boolean-valued semantics (\Cref{sect:boolean-semantics}), we also formalize ordinary first-order semantics, and our work includes a formalization of the completeness theorem using Henkin models.
 
 \subsection{ZFC}
-\label{subsection:fol:zfc}
+\label{subsect:fol:zfc}
 % note(jesse, October 18 2019, 08:44 PM): compressed this section, which was a bit wordy
 
 Usually, the language of set theory has one binary relation symbol and no function symbols.
@@ -481,7 +485,7 @@ def CH_formula : formula L_ZFC' :=
 The substitution ensures that the inequality \lil{leq_f} is applied to the correct arguments, and \lil{⊔} is notation for disjunction.
 
 \section{Boolean-valued semantics}
-\label{section:boolean-semantics}
+\label{sect:boolean-semantics}
 A \textbf{complete Boolean algebra} is a Boolean algebra $\B$ with additional operations infimum $(\bigsqcap)$ and supremum $(\bigsqcup)$ of any subset of $\B$.
 We use $\sqcap, \sqcup, \implies, \top$, and $\bot$ to denote meet, join, material implication, top, and bottom. For more details on complete Boolean algebras, we refer the reader to the textbook of Halmos-Givant~\cite{givant2008introduction}.
 
@@ -532,9 +536,9 @@ theorem boolean_soundness {Γ : set (sentence L)}
 The proof is a straightforward structural induction.
 
 \section{Boolean-valued models of set theory}
-\label{section:bset}
+\label{sect:bset}
 \subsection{The Aczel encoding}
-\label{subsection:bset:aczel}
+\label{subsect:bset:aczel}
 Our starting point is the Aczel encoding of \(\mathsf{ZFC}\) (\cite{aczel1978type, aczel1986type, aczel1982type}) into dependent type theory.
 This was implemented in Coq by Werner \cite{werner1997sets}, and in Lean's \textsf{mathlib} by Carneiro \cite{mario1}.
 The idea is to take a type universe \lstinline{Type u} and imitate the cumulative hierarchy construction with an inductive type:
@@ -590,7 +594,7 @@ One can then define membership from equivalence and check that modulo extensiona
 % which we later verify is a \(\mathbb{B}\)-valued model of \(\ZFC\).
 
 \subsection{Boolean-valued sets}
-\label{subsection:bset:bset}
+\label{subsect:bset:bset}
 
 We now want to generalize \lil{pSet} to a Boolean-valued model of \(\ZFC\). We must give a
 \(\B\)-valued predicate interpreting the membership symbol \lil{∈}. We will encode this information by extending each \lil{⟨α,A⟩ : pSet} with an additional function \lil{B : α → 𝔹}, which has the effect of attaching a \emph{Boolean truth-value} to every member of \lil{⟨α,A⟩}:
@@ -634,7 +638,7 @@ def mem : bSet 𝔹 → bSet 𝔹 → 𝔹
 We remark that while standard treatments of Boolean-valued models of \(\ZFC\) mutually define equivalence and membership so that the axiom of extensionality follows definitionally (\cite{bell2011set}, \cite{hamkins2012well}), the induction principle given by the non-mutual definition is easier to work with in our formalization.
 
 \subsection{The fundamental theorem of forcing}
-\label{subsection:bset:fundamental-thm}
+\label{subsect:bset:fundamental-thm}
 The fundamental theorem of forcing for Boolean-valued models~\cite{hamkins2012well} states that for any complete Boolean algebra \lil{𝔹}, the type \lil{bSet 𝔹} forms a Boolean-valued model of $\mathsf{ZFC}$.
 
 Bell~\cite{bell2011set} gives an extremely detailed account of the verification of the $\mathsf{ZFC}$ axioms,
@@ -746,7 +750,7 @@ Since in general, \(\widecheck{\aleph_1}\) is \emph{not} what \lil{bSet 𝔹} th
 % TODO(jesse): add a note in the introduction on how Dana Scott was the first one to point out that the names could be taken at face value as a model of ZFC if one was willing to shift to a many-valued logic instead.
 
 
-\section{Forcing} \label{section:forcing}
+\section{Forcing} \label{sect:forcing}
 Our point of departure from conventional accounts of forcing with a poset \(\mathbb{P}\) over a countable transitive model \cite{kunen2014set, jech2013set}, which use a generic filter to ``evaluate'' the \lstinline{ℙ}-names to produce an ordinary model of \(\ZFC\), is to force with \emph{Boolean-valued models} of \(\ZFC\) instead.
 As first observed by Scott and Solovay \cite{scott-solovay}, this obviates the need for countable transitive models, generic filters, or the truth and definability lemmas, and allows us to work only with the \lstinline{𝔹}-names.
 % Comment: this would be much better in the introduction: we need to motivate why we use boolean valued models.
@@ -894,7 +898,7 @@ Because each \(A_{\eta}\) carries around the knowledge that \(f\) is a function 
 Since the lemma guarantees that each \(A_{\eta}\) is nonzero, the \(A_{\eta}\) form an uncountable antichain.
 Therefore, if \(\mathbb{B}\) has the CCC, there is a contradiction, so by \Cref{lemma-cohen-algebra-CCC}, we have forced \(\neg\mathsf{CH}\) in \lil{bSet 𝔹_cohen}.
 
-\subsection{Collapse forcing} \label{subsection:collapse}
+\subsection{Collapse forcing} \label{subsect:collapse}
 % note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
 
 Whereas Cohen forcing creates a new injection \(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\), we can use \emph{collapse forcing} to create a new surjection \(F : \aleph_1^{\mathbb{B}} \twoheadrightarrow \mathcal{P}(\omega)\).
@@ -949,7 +953,7 @@ Both surjectivity and totality of \(\chi_{\pi}\) require \emph{denseness argumen
 To finish demonstrating that \(\CH\) is true in \lil{bSet 𝔹_collapse}, it remains to check that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1\).
 There are two major obstacles. The first is that to even formally state the latter equality, we must construct \(\aleph_1^{\mathbb{B}}\) in \lil{bSet 𝔹}.
 (While the operation \lil{bv_powerset} (\Cref{def-powerset}) gives a construction of the internal powerset of any \lil{x : bSet 𝔹} (using \lil{𝔹}-valued indicator functions, for any \lil{𝔹}), \(\aleph_1^{\mathbb{B}}\) is only specified as the least ordinal greater than \(\omega\), and does not admit as direct a a construction.)
-We describe our construction of \(\aleph_1^{\mathbb{B}}\) (as the Hartogs number of \(\omega\)) in \Cref{subsection:forcing:aleph-1}.
+We describe our construction of \(\aleph_1^{\mathbb{B}}\) (as the Hartogs number of \(\omega\)) in \Cref{subsect:forcing:aleph-1}.
 
 Now we must ensure that no new countable ordinals are added to \(\aleph_1\) and that no new subset of \(\omega\) are added to \(\mathcal{P}(\omega)\) in the passage via \lil{check} from \lil{pSet} to \lil{bSet}. The second obstacle is reducing both statements to, and proving, the following lemma:
 
@@ -965,7 +969,7 @@ We describe our solution to this in \Cref{subsect:function-reflection}.
 
 % As with Cohen forcing, we will proceed by using \(\forall\)-\(\exists\) reflection to reflect functions from \(\omega\) to check-names back into \lil{pSet}, and then showing that the two required equalities follow from this.
 
-\subsection{Construction of $\aleph_1$} \label{subsection:forcing:aleph-1}
+\subsection{Construction of $\aleph_1$} \label{subsect:forcing:aleph-1}
 Instead of using the specification of \(\aleph_1^{\mathbb{B}}\) as the least ordinal larger than \(\omega\) with Cantor's theorem and using the well-foundedness of the ordinals to construct \(\aleph_1\),
 we opt for a direct construction of \(\aleph_1\), based on the well-known construction of \(\aleph_1\) as the \textbf{Hartogs number} of \(\omega\) \cite{hartogs1915problem}.
 
@@ -1055,7 +1059,7 @@ The intersection of this chain implies that \(g := \{(k, g_k)\}_{k \in \omega}\)
 
 % Construction of $\aleph_1$.
 
-\subsection{The independence of CH} \label{subsection:forcing:independence}
+\subsection{The independence of CH} \label{subsect:forcing:independence}
 
 % % TODO: describe our verification of the fundamental theorem of forcing
 
@@ -1122,7 +1126,7 @@ The formalization of Cohen forcing is actually much easier than the formalizatio
 % This is indeed more delicate than proving the corresponding combinatorial property on the forcing CH side, where we just observe that a countable union of countable partial functions is again a countable partial function, but after this point the rest of the Cohen forcing argument is very easy (I just checked and we actually don't use a denseness argument at all), while collapse forcing uses denseness in an essential way in multiple places.
 
 \section{Automation and metaprogramming}
-\label{section:metaprogramming}
+\label{sect:metaprogramming}
 
 A key feature of Lean is that it is its own metalanguage \cite{Ebner:2017:MFF:3136534.3110278}, allowing for seamless in-line definitions of custom tactics (and modifications of existing ones).
 This feature was an invaluable asset, as it allowed the rapid development of a custom tactic library for simulating natural-deduction style proofs in complete Boolean algebras (\Cref{subsect:natded}) and automating equality reasoning in those proofs (\Cref{subsect:bv-cc}).
@@ -1235,11 +1239,11 @@ example {w : bSet 𝔹} : (let ϕ :=
   in B_ext ϕ) := by simp
 \end{lstlisting}
 % \section{Related Work}
-% \label{section:related-work}
+% \label{sect:related-work}
 % Compare with other formalization on the consistency of CH. % do there exist any?
 
 \section{Conclusions}
-\label{section:conclusions}
+\label{sect:conclusions}
 
 % TODO(jesse, October 18 2019, 10:33 PM): rework conclusion
 
