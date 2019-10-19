@@ -243,16 +243,19 @@ Some of these simplifications were incorporated by Shoenfield \cite{shoenfield19
 While both approaches have essentially the same mathematical content (see e.g.\ \cite{kunen2014set, jech2013set, moore2019method}), there are several reasons why we chose Boolean-valued models for our formalization.
 
 The main reason is the directness of forcing with Boolean-valued models, which bypasses the need for the L\"owenheim-Skolem theorems, Mostowski collapse, countable transitive models, or genericity considerations for filters.
-Moreover, the theory of forcing with Boolean-valued models cleanly splits into several parts, allowing us formalize different components in parallel (e.g. a general theory of Boolean-valued semantics, a library for calculations in complete Boolean algebras, a construction of Boolean-valued models of set-theory) and later recombine them. % Some of these components include: a general theory of Boolean-valued semantics for first-order logic, a library for calculations inside complete Boolean algebras, and a construction of Boolean-valued models of set theory.
+The theory of forcing with Boolean-valued models also cleanly splits into several parts, allowing us formalize different components in parallel (e.g. a general theory of Boolean-valued semantics, a library for calculations in complete Boolean algebras, a construction of Boolean-valued models of set-theory) and later recombine them. In particular, out library for Boolean-valued semantics for first-order logic is completely general and can be reused for other formalization projects. Finally, our Boolean-valued models of set theory are inductive types generalizing the Aczel encoding of set theory into dependent type theory; consequently, the automatically-generated induction principle \emph{is} \(\in\)-induction, leading to cleaner proofs.
+% Some of these components include: a general theory of Boolean-valued semantics for first-order logic, a library for calculations inside complete Boolean algebras, and a construction of Boolean-valued models of set theory.
 
 % We made sure that the individual components of this formalization are reusable for other projects, e.g.\ to formalize the Boolean-valued semantics of stochastic $\lambda$-calculus~\cite{scott2014stochastic, bacci2018boolean}.
 
-Finally, we observed that our construction of Boolean-valued models of set theory (\Cref{sect:bset}) is amenable to structural induction. As with Coq, Lean is able to encode extremely complex objects and reason about their specifications using inductive types.
-However, the user must be careful to choose the encoding so that properties they wish to reason about are accessible by structural induction, which is the most natural mode of reasoning in the proof assistant.
-After observing (1) that the Aczel encoding of $\mathsf{ZFC}$ as an inductive type is essentially a special case of the recursive \emph{name} construction from forcing (\Cref{sect:bset}),
-and (2) that the automatically-generated induction principle for that inductive type \emph{is} $\in$-induction,
-it is easy to see that this encoding can be modified to produce a Boolean-valued model of set theory where, again, $\in$-induction comes for free.
-%TODO: maybe this is better in the main text. We can mention it briefly here.
+% Finally, we observed that our construction of Boolean-valued models of set theory (\Cref{sect:bset}) is amenable to structural induction. As with Coq, Lean is able to encode extremely complex objects and reason about their specifications using inductive types.
+% However, the user must be careful to choose the encoding so that properties they wish to reason about are accessible by structural induction, which is the most natural mode of reasoning in the proof assistant.
+% After observing (1) that the Aczel encoding of $\mathsf{ZFC}$ as an inductive type is essentially a special case of the recursive \emph{name} construction from forcing (\Cref{sect:bset}),
+% and (2) that the automatically-generated induction principle for that inductive type \emph{is} $\in$-induction,
+% it is easy to see that this encoding can be modified to produce a Boolean-valued model of set theory where, again, $\in$-induction comes for free.
+
+% TODO: maybe this is better in the main text. We can mention it briefly here.
+
 % \textbf{Amenability to structural induction.}
 % As with Coq, Lean is able to encode extremely complex objects and reason about their specifications using inductive types.
 % However, the user must be careful to choose the encoding so that properties they wish to reason about are accessible by structural induction, which is the most natural mode of reasoning in the proof assistant.
@@ -842,8 +845,9 @@ Our chosen encoding of the Cohen poset also made it easier to perform this ident
 
 To show that \(\B_{\mathsf{cohen}}\) has the CCC, we use a powerful combinatorial argument called the \emph{$\Delta$-system lemma}. A family $(A_i)_i$ of sets is called a \textbf{$\Delta$-system} if there is a set $r$, called the \textbf{root} such that whenever $i \ne j$ we have $A_i \cap A_j = r$.
 \begin{lemma}[$\Delta$-system lemma] \label{lemma:delta-system-lemma}
-  If we have an uncountable family of finite sets, there is an uncounbtable subfamily which forms a $\Delta$-system.
+  Any uncountable family of finite sets has an uncountable subfamily forming a $\Delta$-system.
 \end{lemma}
+% TODO: maybe talk about technical implementation of proof? even though we didn't need the full lemma, this was definitely an impressive technical feat of our formalization of Cohen forcing, and would constitute new material.
 We omit the proof, referring the interested reader to Kunen~\cite{kunen2014set} or the formalization.
 We use this to show the following theorem. We say that a topological space has the countable chain condition if every family of pairwise disjoint open sets is countable.
 \begin{thm}\label{thm:product-ccc}
