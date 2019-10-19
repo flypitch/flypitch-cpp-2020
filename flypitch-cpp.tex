@@ -268,24 +268,22 @@ The usual method to show that a statement is unprovable is to construct a model 
 The difference between Boolean-valued models and ordinary models is that the truth values in a Boolean-valued model \lil{M} live in a complete Boolean algebra \lil{(𝔹, ⊓, ⊔, ⨅, ⨆,⊥,⊤)}.
 This means that, e.g.\ equality is interpreted as a function \lil{eq : M → M → 𝔹} satisfying \lil{𝔹}-valued reflexivity, symmetry, and transitivity (for example, transitivity is formulated as \lil{∀ x y z, eq(x, y) ⊓ eq(y, z) ≤ eq(x, z)}).
 All interpretations of function symbols and relation symbols in \lil{M} must satisfy \lil{𝔹}-valued congruence lemmas with respect to equality.
-Our task is now to construct two Boolean-valued models of $\ZFC$, one where $\CH$ holds, and one where $\CH$ fails.
-We then apply the soundness theorem for Boolean-valued models to show that $\CH$ is independent from $\ZFC$.
+If we can construct two Boolean-valued models of $\ZFC$, one where $\CH$ holds, and one where $\CH$ fails, then we can apply the Boolean-valued soundness theorem to show that $\CH$ is independent from $\ZFC$.
 
-For any complete Boolean algebra $\mathbb{B}$ we can construct the type of $\mathbb{B}$-valued sets, or \lil{bSet 𝔹} (see \Cref{section:bset}).
+For any complete Boolean algebra $\mathbb{B}$ we implement the set-theoretic universe \(V^{\mathbb{B}}\) of \(\mathbb{B}\)-valued sets by generalizing the Aczel encoding of set theory (called \lil{pSet}, see \Cref{section:bset}), obtaining a type \lil{bSet 𝔹} of $\mathbb{B}$-valued sets. The fundamental theorem of forcing for Boolean-valued models \cite{hamkins2012well}, translated to our situation, then states that \lil{bSet 𝔹} is a \lil{𝔹}-valued model is \(\ZFC\).
 % An element of \lil{x : bSet 𝔹} has three components:
 % \begin{itemize}
 % \item An indexing type \lil{α : Type};
 % \item A function \lil{A : α → bSet 𝔹} pointing to the (possible) elements of \lil{x};
 % \item A \lil{𝔹}-valued predicate \lil{B : α → 𝔹} which expresses that \lil{A a ∈ x} has truth value (at least) \lil{B a}.
 % \end{itemize}
-Now the fundamental theorem of forcing states that \lil{bSet 𝔹} forms a Boolean-valued model of $\ZFC$.
-\lil{bSet 𝔹} is a generalization of the Aczel encoding of set theory \cite{aczel1978type}, which is called \lil{pSet} in Lean.
-In this encoding, the third component is missing.
-We can also interpret \lil{pSet} as \lil{bSet unit}, where \lil{unit} is the trivial Boolean algebra (with $\top=\bot$).
+% The fundamental theorem of forcing \cite{hamkins2012well} states that \lil{bSet 𝔹} forms a Boolean-valued model of $\ZFC$.
+% \lil{bSet 𝔹} is a generalization of the Aczel encoding of set theory \cite{aczel1978type}, which is called \lil{pSet} in Lean.
+% % In this encoding, the third component is missing.
+% We can also interpret \lil{pSet} as \lil{bSet unit}, where \lil{unit} is the trivial Boolean algebra (with $\top=\bot$).
 
-The properties of \lil{bSet 𝔹} vary wildly depending on the choice of the complete Boolean algebra \lil{𝔹}.
-There is always a map \lil{check : pSet → bSet 𝔹}, $x \mapsto \widecheck{x}$; in general, $\widecheck{x}$ might have different properties than $x$, but \(\Delta_0\) properties (i.e. definable with only bounded quantification) are always preserved (for example, \lil{bSet 𝔹} thinks $\widecheck{\omega}$ is $\omega$).
-We now have to choose two appropriate complete Boolean algebras \lil{𝔹} such that in \lil{bSet 𝔹}, the formula $\CH$ is true ($\top$) in one model and $\CH$ is false ($\bot$) in the other.
+The properties of \lil{bSet 𝔹} can vary wildly depending on the choice of the complete Boolean algebra \lil{𝔹}. There is always a map \lil{check : pSet → bSet 𝔹}, $x \mapsto \widecheck{x}$; in general, $\widecheck{x}$ might have different properties than $x$, but \(\Delta_0\) properties (i.e. definable with only bounded quantification) are always preserved (for example, \lil{bSet 𝔹} thinks $\widecheck{\omega}$ is $\omega$).
+To show the independence of \(\CH\), it remains to construct two appropriate complete Boolean algebras \lil{𝔹} such that in \lil{bSet 𝔹}, the formula $\CH$ is true ($\top$) in one model and $\CH$ is false ($\bot$) in the other.
 This is precisely the task of forcing (\Cref{section:forcing}).
 
 % To force the negation of the continuum hypothesis, we define Cantor space $2^{\aleph_2 \times \mathbb{N}}$ with its usual product topology (see TODO).
@@ -309,7 +307,7 @@ This is precisely the task of forcing (\Cref{section:forcing}).
 % In the resulting model \lil{bSet 𝔹} we can construct a surjection \(F : \aleph_1 \twoheadrightarrow \mathcal{P}(\omega)\). (TODO) (see TODO)
 % This depends on \(\sigma\)-closedness (TODO).
 
-Traditional presentations of forcing, even with Boolean-valued models (e.g. \cite{bell2011set}, \cite{jech2013set}), are careful to stay within the foundations of $\mathsf{ZFC}$, emphasizing that all arguments may be performed internal to a model of $\mathsf{ZFC}$, etc. In order to formalize these set-theoretic arguments in a type-theoretic metatheory, it is important to separate their mathematical content from their metamathematical content. It is not immediately clear what parts of these arguments use their set-theoretic foundation in an essential way and require modification in the passage to set theory. Our formalization clarifies some of these questions.
+Traditional presentations of forcing, even with Boolean-valued models (e.g. \cite{bell2011set}, \cite{jech2013set}), are careful to stay within the foundations of $\mathsf{ZFC}$, emphasizing that all arguments may be performed internal to a model of $\mathsf{ZFC}$, etc. In order to formalize these set-theoretic arguments in a type-theoretic metatheory, it is important to separate their mathematical content from their metamathematical content. It is not immediately clear what parts of these arguments use their set-theoretic foundation in an essential way and require modification in the passage to type theory. Our formalization clarifies some of these questions.
 
 We use custom domain-specific tactics and automation throughout our formalization, notably a tactic library for simulating natural deduction proofs inside a complete Boolean algebra \Cref{section:metaprogramming}). This is another advantage of working in a proof assistant: the bookkeeping of Boolean truth-values, sometimes regarded as a tedious aspect of the Boolean-valued approach to forcing, can be hidden via automation.
 
@@ -446,12 +444,12 @@ Besides Boolean-valued semantics (\Cref{section:boolean-semantics}), we also for
 \label{subsection:fol:zfc}
 % note(jesse, October 18 2019, 08:44 PM): compressed this section, which was a bit wordy
 
-Usually, the language \(\mathcal{L}_{\ZFC}\) of set theory has one binary relation symbol and no function symbols.
-To make the language easier to work with, and to concisely formulate the continuum hypothesis, we extend \(\ZFC\) with the following function symbols: the empty set \(\varnothing\), ordered pairing \(({-},{-})\), the natural numbers \(\omega\), power set \(\mathcal{P}({-})\) and union \(\bigcup({-})\).
+Usually, the language of set theory has one binary relation symbol and no function symbols.
+To make the language easier to work with, and to concisely formulate the continuum hypothesis, we conservatively extend \(\ZFC\) with the following function symbols: the empty set \(\varnothing\), ordered pairing \(({-},{-})\), the natural numbers \(\omega\), power set \(\mathcal{P}({-})\) and union \(\bigcup({-})\).
 % This gives a conservative extension of the regular theory of ZFC, because they are all definable.
 % As part of our future work, we want to formalize these facts, so that we actually prove the independence of the continuum hypothesis in a language with only one non-logical symbol. % move to future work
 
-What we call \(\ZFC\) comprises the axioms of extensionality and regularity, Zorn's lemma, the strong axiom of collection, and axioms characterizing the additional function symbols.
+What we call \(\ZFC\) comprises the axioms of extensionality and regularity, Zorn's lemma, the strong axiom of collection, and axioms characterizing the new symbols (\(\varnothing\), \((-,-)\), \(\omega\), \(\mathcal{P}(-)\), \(\bigcup(-)\)).
 Notably, we specify ordered pairs by enforcing \lil{∀ x y z w, (x,y) = (z,w) ↔ x = z ∧ y = w} (the usual axiom of pairing is derivable from the existing axioms), and we extend the axiom of infinity with a specification of \lil{ω} as the least limit ordinal.
 
 % %
@@ -522,7 +520,7 @@ If $\varphi$ is a sentence, the realization in a structure is just a element of 
 
 Since the truth values in a Boolean-valued model live inside the Boolean algebra $\B$ instead of just being true or false, we have to take a little care when stating the soundness theorem for Boolean-valued models.
 Usually, a soundness theorem states something like ``if $\varphi$ is provable from hypotheses in $\Gamma$ then in every model where $\Gamma$ holds, $\varphi$ also holds.''
-With Boolean truth-values, we need instead state it as an inequality of truth values. This motivates the following definition
+With Boolean truth-values, we need instead state it as an inequality of truth values. % This motivates the following definition
 \begin{defn}
 We say that a set of sentences $\Gamma$ \emph{forces a sentence} $\varphi$, written $\Gamma \models_{\B}\varphi$, if for all non-empty $\B$-valued structures $M$ we have $\big(\bigsqcap_{\psi\in\Gamma}\big \llbracket \psi \rrbracket_M)\le\llbracket \varphi \rrbracket_M$.
 \end{defn}
@@ -562,7 +560,7 @@ def equiv : pSet → pSet → Prop
   (∀b, ∃a, equiv (A a) (B b))
 \end{lstlisting}
 
-We can then define membership from equivalence and check that modulo extensional equivalence, \lstinline{pSet} is a model of \(\mathsf{ZFC}\).
+One can then define membership from equivalence and check that modulo extensional equivalence, \lstinline{pSet} is a model of \(\mathsf{ZFC}\).
 
 % \paragraph{Two roads to \lstinline{bSet}}
 % We describe two ways by which one can start at the ordinary model of \(\mathsf{ZFC}\) \lstinline{pSet} and end with a Boolean-valued model \lstinline{bSet}.
@@ -595,21 +593,21 @@ We can then define membership from equivalence and check that modulo extensional
 \label{subsection:bset:bset}
 
 We now want to generalize \lil{pSet} to a Boolean-valued model of \(\ZFC\). We must give a
-\(\B\)-valued predicate interpreting membership \lil{∈}. We will encode this information by extending each \lil{⟨α,A⟩ : pSet} with an additional function \lil{B : α → 𝔹}, which has the effect of attaching a \emph{Boolean truth-value} to every member of \lil{⟨α,A⟩}:
+\(\B\)-valued predicate interpreting the membership symbol \lil{∈}. We will encode this information by extending each \lil{⟨α,A⟩ : pSet} with an additional function \lil{B : α → 𝔹}, which has the effect of attaching a \emph{Boolean truth-value} to every member of \lil{⟨α,A⟩}:
 \begin{lstlisting}
 inductive bSet (𝔹 : Type u)
     [complete_boolean_algebra 𝔹] : Type (u+1)
 | mk (α : Type u) (A : α → bSet)
     (B : α → 𝔹) : bSet
 \end{lstlisting}
-The predicate \lil{B} expresses that \lil{A a ∈ ⟨α, A, B⟩} has truth value (at least) \lil{B i}.
+The \lil{𝔹}-valued predicate \lil{B} expresses that \lil{A a ∈ ⟨α, A, B⟩} has truth value (at least) \lil{B i}.
 
 One can also be led to this construction by considering the recursive \emph{name}-construction from forcing, a key ingredient to building forcing extensions. Let \(\mathbb{P}\) be a poset. From e.g. (Kunen \cite{kunen2014set}, Definition IV.2.5):
 \begin{defn}
   A set \(\tau\) is a \(\mathbb{P}\)-name iff \(\tau\) is a relation and for all \(\langle  \sigma, p\rangle \in \tau\) we have that \(\sigma\) is a \(\mathbb{P}\)-name and \(p \in \mathbb{P}\).
 \end{defn}
 
-In particular, if \(\mathbb{P}\) is the singleton poset, then a \(\mathbb{P}\)-name is a set of \(\mathbb{P}\)-names, in the same way that a term of type \lstinline{pSet} is a type-indexed collection of terms of type \lstinline{pSet}. Reversing this observation, we can replace \(\mathbb{P}\) with a complete Boolean algebra \(\mathbb{B}\) and generalize the definition of \lstinline{pSet.mk} with a third field, so that as in the case of \(\mathbb{P}\)-names, every element of a set is assigned an element (a ``Boolean truth-value'') of \(\mathbb{B}\), again giving us \lil{bSet 𝔹}. Thus, \lil{bSet 𝔹} should be thought of as the type of \lil{𝔹}-names
+In particular, if \(\mathbb{P}\) is the singleton poset, then a \(\mathbb{P}\)-name is merely a set of \(\mathbb{P}\)-names, in the same way that a term of type \lstinline{pSet} is a type-indexed collection of terms of type \lstinline{pSet}. Reversing this observation, we can replace \(\mathbb{P}\) with a complete Boolean algebra \(\mathbb{B}\) and generalize the definition of \lstinline{pSet.mk} with a third field, so that as in the case of \(\mathbb{P}\)-names, every element of a set is assigned an element (a ``Boolean truth-value'') of \(\mathbb{B}\), again giving us \lil{bSet 𝔹}. Thus, \lil{bSet 𝔹} should be thought of as the type of \lil{𝔹}-names
 
 % \begin{lstlisting}
 % inductive bSet {𝔹 : Type u) : Type (u+1)
@@ -652,7 +650,7 @@ This gives a nice definition of powerset:
   \[\text{ \lstinline{set_of_indicator χ :=} }\langle \alpha \to \B, (\lambda\; \chi, \widetilde{\chi}),\ (\lambda\;\chi, \widetilde{\chi} \subseteq^B x)\rangle.\]
 \end{defn}
 
-In particular, this gives an easy implemention of the axiom of comprehension (not just for interpretations of formulas, but for any \(\mathbb{B}\)-valued predicate on \lil{bSet 𝔹} satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma):
+In particular, this gives an easy implemention of the axiom of comprehension (not just for interpretations of formulas, but for any \(\mathbb{B}\)-valued predicate on \lil{bSet 𝔹} satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma): \label{def-comprehension}
 
 \begin{lstlisting}
 def subset.mk {u} (χ : u.type → 𝔹) : bSet 𝔹 :=
@@ -699,16 +697,16 @@ It also uses the \emph{maximum principle}, which allows existentially quantified
 \end{defn}
 
 \subparagraph*{Ordinals in \lil{bSet 𝔹}}
-The treatment of ordinals in \lil{mathlib} associates a class of ordinals to every type universe, defined as isomorphism classes of well-ordered types, and includes interfaces for both well-founded and transfinite recursion. Lean's ordinals may be represented inside \lil{pSet} by defining a map \lil{ordinal.mk : ordinal → pSet} via transfinite recursion (by indexing the von Neumann construction of ordinals). In pseudocode,
+The treatment of ordinals in \lil{mathlib} associates a class of ordinals to every type universe, defined as isomorphism classes of well-ordered types. Lean's ordinals may be represented inside \lil{pSet} by defining a map \lil{ordinal.mk : ordinal → pSet} via transfinite recursion (indexing the von Neumann construction of ordinals). In pseudocode,
 \begin{lstlisting}
 def ordinal.mk : ordinal → pSet
 | 0 := ∅
-| succ ξ := pSet.succ (ordinal.mk ξ) -- (mk ξ ∪ {mk ξ})
+| succ ξ := pSet.succ (ordinal.mk ξ)
+            -- i.e. (mk ξ ∪ {mk ξ})
 | is_limit ξ := ⋃ η < ξ, (ordinal.mk η)
 \end{lstlisting}
-Alternately, for any model \(M\) of \(\ZFC\), we can define the class \(\operatorname{Ord}(M)\) as the collection of transitive sets which are well-ordered by their membership relation.
 
-Composing \lil{ordinal.mk} by \lil{check} yields a map \lil{ordinal → bSet 𝔹}.
+Working internally to any model \(M\) of \(\ZFC\), we can define the class \(\operatorname{Ord}(M)\) as the collection of transitive sets which are well-ordered by their membership relation. While \lil{ordinal.mk} actually induces an order-isomorphism of \lil{pSet}'s ordinals with Lean's ordinals, \lil{check ∘ ordinal.mk : ordinal → bSet 𝔹} generally fails to surject onto \lil{bSet 𝔹}'s ordinals (in general, these are mixtures of checked ordinals).
 % To define ordinals, we can define a map \lil{ordinal.mk : ordinal → pSet} by transfinite recursion.
 % If we compose this map with \lil{check} we get the ordinals in \lil{bSet 𝔹}.
 % In particular, we get the least infinite ordinal \lil{ω : bSet 𝔹}, which witnesses the axiom of infinity.
@@ -836,7 +834,7 @@ Recalling that $\leq$ in $\B$ is subset-inclusion, we see that this is essential
 Our chosen encoding of the Cohen poset also made it easier to perform this identification when formalizing this proof.
 
 To show that \(\B_{\mathsf{cohen}}\) has the CCC, we use a powerful combinatorial argument called the \emph{$\Delta$-system lemma}. A family $(A_i)_i$ of sets is called a \textbf{$\Delta$-system} if there is a set $r$, called the \textbf{root} such that whenever $i \ne j$ we have $A_i \cap A_j = r$.
-\begin{lemma}[$\Delta$-system lemma]
+\begin{lemma}[$\Delta$-system lemma] \label{lemma:delta-system-lemma}
   If we have an uncountable family of finite sets, there is an uncounbtable subfamily which forms a $\Delta$-system.
 \end{lemma}
 We omit the proof, referring the interested reader to Kunen~\cite{kunen2014set} or the formalization.
@@ -986,7 +984,7 @@ That \(A\) surjects onto countable ordinals reduces to the fact that order-isomo
 
 \paragraph{Implementation details}
 In the formalization, this strategy is implemented in three stages.
-First, the axiom of comprehension is applied to \(\mathcal{P}(\omega \times \omega)\) to produce (what \lil{bSet 𝔹} thinks is) the collection of all relations \(R\) on \(\omega\) such that there exists an ordinal \(\eta\) and an injection \(f : \eta \hookrightarrow \omega\) such that \(R\) is the image of \(\eta\)'s membership relation under \(f\).
+First, the axiom of comprehension (\Cref{def-comprehension}) is applied to \(\mathcal{P}(\omega \times \omega)\) to produce (what \lil{bSet 𝔹} thinks is) the collection of all relations \(R\) on \(\omega\) such that there exists an ordinal \(\eta\) and an injection \(f : \eta \hookrightarrow \omega\) such that \(R\) is the image of \(\eta\)'s membership relation under \(f\).
 This combines steps \(1\) and \(2\) and produces a set \lil{a1'_aux}. Then we \emph{modify} the indexing function \lil{a1'_aux.func} (by using the maximum principle, as described in step \(3\)) to point from \(R\) to a chosen witness \(\eta_R\) for \(R\), producing \lil{a1'}.
 Finally, since the ordinals \(0\) and \(1\) both have empty membership relations, it is unprovable in Lean whether \lil{a1'} contains one or the other, so we add both manually, producing \lil{a1 :=} \(\aleph_1^{\mathbb{B}}\).
 We remark that our construction does not use specific properties of \(\omega\) and easily generalizes to construct the successor cardinal of any infinite set.
@@ -1052,36 +1050,74 @@ Recursively applying this lemma, obtain values \(g_0, \dots, g_n, \dots\) such t
 The intersection of this chain implies that \(g := \{(k, g_k)\}_{k \in \omega}\) is the required lift of \(f\). For general \(\mathbb{B}\), this intersection might be \(\bot\), but because \lil{𝔹_collapse} is \(\sigma\)-closed, we can shrink each term of the above chain into a dense suborder \(\mathcal{D}\) such that all downward \(\omega\)-indexed chains in \(\mathcal{D}\) have nonzero intersection, so the intersection of the chain is indeed nonzero.
 \end{proof}
 
-\paragraph{Concluding remarks}
- - In Cohen forcing, unlike collapse forcing, constructing the new function required no denseness arguments at all. However, proving the required combinatorial property on \(\mathbb{B}\) was more delicate than just observing that a union of countable partial functions is again countable.
-
-% TODO(jesse): reorganize and put into other sections
-% To prove that the regular open algebra RO (2^(aleph_2 x omega)) for Cohen forcing has the CCC, a much more direct argument suffices. Given an antichain of regular opens, shrink them to basic clopens, which can then be identified with finite partial functions (p_i : aleph_2 x omega -> 2). Disjointness is equivalent to the finite partial functions all disagreeing with each other at some point. It suffices to show that for every n : N that there are only finitely many p_i of cardinality n. It's easy to see this for n = 1, and at the induction step, fix some p* and towards a contradiction if there are infinitely many, then we can use the pigeonhole principle to get an infinite subfamily (q_i) which disagree with p* at the same point. Then the (q_i) agree at that point, so that point can be removed, contradicting the induction hypothesis.
-
-% This is indeed more delicate than proving the corresponding combinatorial property on the forcing CH side, where we just observe that a countable union of countable partial functions is again a countable partial function, but after this point the rest of the Cohen forcing argument is very easy (I just checked and we actually don't use a denseness argument at all), while collapse forcing uses denseness in an essential way in multiple places.
-
-
 
 % partial functions in Lean, introduce the collapsing boolean algebra, show omega-closedness.
 
 % Construction of $\aleph_1$.
 
 \subsection{The independence of CH} \label{subsection:forcing:independence}
+
+% % TODO: describe our verification of the fundamental theorem of forcing
+
+% \paragraph{The fundamental theorem of forcing}
+% % TODO
+
+% \paragraph{The independence of CH}
+After verifying that the (shallow) interpretations of \(\mathsf{CH}\) and \(\neg \mathsf{CH}\) are \(\top\) in \lil{bSet 𝔹_collapse} and \lil{bSet 𝔹_cohen}, we construct deeply-embedded Boolean-valued \lil{L_ZFC}-structures \lil{V 𝔹_collapse} and \lil{V 𝔹_cohen} on top of \lil{bSet 𝔹_collapse} and \lil{bSet 𝔹_cohen}. Completing the fundamental theorem of forcing is merely a matter of checking that the deeply-embedded first-order formulas for the axioms of \(\ZFC\) are correctly interpreted as their shallow counterparts, which were proven separately to be \(\top\). Finally, we verify that the deeply-embedded interpretations of \lil{CH_formula} coincide with the shallow interpretations of \(\mathsf{CH}\).
+
+As we have already observed, an easy consequence of Boolean-valued soundness is that a formula is unprovable if its negation has a model. Thus, we have:
+
 \begin{lstlisting}
-theorem CH_unprovable_from_ZFC : ¬ (ZFC' ⊢' CH_sentence) :=
-unprovable_of_model_neg (V 𝔹_cohen) fundamental_theorem_of_forcing
-  (nontrivial.bot_lt_top) V_𝔹_cohen_models_neg_CH
+lemma unprovable_of_model_neg {T : Theory L} {f : sentence L} (S : bStructure L 𝔹)
+  (H_model : ⊤ ⊩[S] T) [H_nonempty : nonempty S]
+  {Γ : 𝔹} (H_nonzero : (⊥ : 𝔹) < Γ) (H : Γ ⊩[S] ∼f) : ¬ (T ⊢' f)
 
-theorem neg_CH_unprovable_from_ZFC : ¬ (ZFC' ⊢' ∼CH_sentence) :=
-unprovable_of_model_neg (V 𝔹_collapse) fundamental_theorem_of_forcing
-  (nontrivial.bot_lt_top) (by {rw forced_in_not, from V_𝔹_collapse_models_CH})
+lemma V_𝔹_cohen_models_neg_CH : ⊤ ⊩[V 𝔹_cohen] ∼CH_formula
 
-def independent {L : Language} (T : Theory L) (f : sentence L) : Prop :=
-¬ (T ⊢' f ∨ T ⊢' ∼f)
-
-theorem independence_of_CH : independent ZFC' CH_sentence :=
-by finish[independent, CH_unprovable_from_ZFC, neg_CH_unprovable_from_ZFC]
+lemma V_𝔹_collapse_models_CH : ⊤ ⊩[V 𝔹_collapse] CH_formula
 \end{lstlisting}
+
+\noindent Combining these results yields
+
+\begin{lstlisting}
+theorem CH_unprv : ¬ (ZFC ⊢' CH_formula)
+
+theorem neg_CH_unprv : ¬ (ZFC ⊢' ∼CH_formula)
+\end{lstlisting}
+
+\noindent and the independence of CH follows.
+
+\begin{lstlisting}
+def independent {L : Language} (T : Theory L)
+  (f : sentence L) : Prop := ¬ T ⊢' f ∨ ¬ T ⊢' ∼f
+
+theorem independence_of_CH : independent ZFC CH_f :=
+by finish [independent, CH_unprv, neg_CH_unprv]
+\end{lstlisting}
+% \begin{lstlisting}
+% theorem CH_unprovable_from_ZFC : ¬ (ZFC' ⊢' CH_sentence) :=
+% unprovable_of_model_neg (V 𝔹_cohen) fundamental_theorem_of_forcing
+%   (nontrivial.bot_lt_top) V_𝔹_cohen_models_neg_CH
+
+% theorem neg_CH_unprovable_from_ZFC : ¬ (ZFC' ⊢' ∼CH_sentence) :=
+% unprovable_of_model_neg (V 𝔹_collapse) fundamental_theorem_of_forcing
+%   (nontrivial.bot_lt_top) (by {rw forced_in_not, from V_𝔹_collapse_models_CH})
+
+% def independent {L : Language} (T : Theory L) (f : sentence L) : Prop :=
+% ¬ (T ⊢' f ∨ T ⊢' ∼f)
+
+% theorem independence_of_CH : independent ZFC' CH_sentence :=
+% by finish[independent, CH_unprovable_from_ZFC, neg_CH_unprovable_from_ZFC]
+% \end{lstlisting}
+
+\paragraph{Concluding remarks}
+The formalization of Cohen forcing is actually much easier than the formalization of collapse forcing. In Cohen forcing, unlike collapse forcing, constructing the new function (and actually the entire forcing argument) required no denseness arguments at all. This is because in order to force \(\neg \CH\), we only had to ensure there was some infinite cardinality between \(\omega\) and \(\mathcal{P}(\omega)\), whereas to force \(\CH\), we had to determine the exact cardinality of \(\widecheck{\aleph_1}\) to be \(\aleph_1\). However, proving that \(\mathbb{B}_{\mathsf{cohen}}\) has the CCC is more delicate than just observing that a union of countable partial functions is again countable. While the \(\Delta\)-system lemma (\Cref{lemma:delta-system-lemma})
+
+% TODO(jesse): reorganize and put into other sections
+% To prove that the regular open algebra RO (2^(aleph_2 x omega)) for Cohen forcing has the CCC, a much more direct argument suffices. Given an antichain of regular opens, shrink them to basic clopens, which can then be identified with finite partial functions (p_i : aleph_2 x omega -> 2). Disjointness is equivalent to the finite partial functions all disagreeing with each other at some point. It suffices to show that for every n : N that there are only finitely many p_i of cardinality n. It's easy to see this for n = 1, and at the induction step, fix some p* and towards a contradiction if there are infinitely many, then we can use the pigeonhole principle to get an infinite subfamily (q_i) which disagree with p* at the same point. Then the (q_i) agree at that point, so that point can be removed, contradicting the induction hypothesis.
+
+% This is indeed more delicate than proving the corresponding combinatorial property on the forcing CH side, where we just observe that a countable union of countable partial functions is again a countable partial function, but after this point the rest of the Cohen forcing argument is very easy (I just checked and we actually don't use a denseness argument at all), while collapse forcing uses denseness in an essential way in multiple places.
+
 \section{Automation and metaprogramming}
 \label{section:metaprogramming}
 
@@ -1104,7 +1140,7 @@ or slightly less trivially, the following example where the goal is attainable b
 (a ⟹ b) ⊓ (b ⟹ c) ≤ a ⟹ c
 \end{lstlisting}
 In this last example, even if one has a lemma which concludes \lil{a ⟹ b ⊓ a ≤ b}, one must perform tedious reasoning modulo the associativity and commutativity of \(\sqcap\) to apply it.
-Our solution is to piggyback on top of the tactic monad's AC-invariant handling of hypotheses in the tactic state, by applying the \textbf{Yoneda lemma} for posets, which we formulate as
+Our solution is to piggyback on top of the tactic monad's AC-invariant handling of hypotheses in the tactic state, by applying the \textbf{Yoneda lemma} for posets:
 \label{poset-yoneda}
 \begin{lstlisting}
 lemma poset_yoneda {β} [partial_order β] {a b : β}
@@ -1120,7 +1156,7 @@ by {tidy_context, assumption}
   H_right_right_left_right : Γ ≤ a
   ⊢ Γ ≤ a  -/
 \end{lstlisting}
-Above, \lil{tidy_context} combines an application of this lemma with a call to the simplifier to split hypotheses of the form \lstinline{Γ ≤ a₁ ⊓ a₂ ⊓ ... aₙ} into \lstinline{Γ ≤ a₁, Γ ≤ a₂, ..., Γ ≤ aₙ}.
+Above, \lil{tidy_context} combines an application of \lil{poset_yoneda} with a call to the simplifier to split hypotheses of the form \lstinline{Γ ≤ a₁ ⊓ a₂ ⊓ ... aₙ} into \lstinline{Γ ≤ a₁, Γ ≤ a₂, ..., Γ ≤ aₙ}.
 With more custom tactics and coercions to simulate natural deduction proof steps in \(\mathbb{B}\), our second example is handled just as easily:
 \begin{lstlisting}
 example {𝔹} [complete_boolean_algebra 𝔹]
@@ -1129,7 +1165,7 @@ example {𝔹} [complete_boolean_algebra 𝔹]
   by {tidy_context, bv_imp_intro Ha,
       exact a_1_right (a_1_left Ha)}
 \end{lstlisting}
-Compare this with a more conventional proof, where we have the deduction theorem and modus ponens available as lemmas:
+Compare this with a more conventional proof, where we even have the deduction theorem and modus ponens available as lemmas:
 \begin{lstlisting}
 example {β : Type*} [complete_boolean_algebra β] {a b c : β} :
  ( a ⟹ b ) ⊓ ( b ⟹ c ) ≤ a ⟹ c :=
@@ -1195,12 +1231,14 @@ example {w : bSet 𝔹} : (let ϕ :=
   λ x, ⨅ z, z ∈ᴮ w ⊓ z ⊆ᴮ x ⊓ x ⊆ᴮ z
   in B_ext ϕ) := by simp
 \end{lstlisting}
-\section{Related Work}
-\label{section:related-work}
-Compare with other formalization on the consistency of CH.
+% \section{Related Work}
+% \label{section:related-work}
+% Compare with other formalization on the consistency of CH. % do there exist any?
 
 \section{Conclusions}
 \label{section:conclusions}
+
+% TODO(jesse, October 18 2019, 10:33 PM): rework conclusion
 
 % TODO(jesse): polish, and maybe move to a footnote in the introduction?
 This paper describes a successful completion of the Flypitch project, giving the first formalization of the independence of the continuum hypothesis.
@@ -1209,7 +1247,15 @@ and this is the 95-th formalized result of that list.
 
 \subsection{Future Work}
 
-%TODO(jesse): polish
+% TODO(jesse): polish
+
+% talk about L
+% talk about proof transfer using the completeness theorem
+% talk about proof transfer from mm0
+% talk about how metaprogramming is really kind of a hack to replay proofs
+% should have uniform way to treat Δ₀ proof transfer by _reflection_
+% more intelligent way of handling congruence lemmas
+
 This formalization consists of a reusable library which can be used for future formalizations in first-order logic, model theory and set theory.
 We have just scratched the surface of modern set theory with this formalization, and it would be interesting to formalize some more modern results.
 In this section we will focus only on results directly related to the results in our paper.
