@@ -349,7 +349,7 @@ structure Language : Type (u+1) :=
 (functions : ℕ → Type u)
 (relations : ℕ → Type u)
 \end{lstlisting}
-\subsection{Terms, Formulae and Proofs}
+\subsection{Terms, Formulas and Proofs}
 \label{subsect:fol:terms}
 The main novelty of our implementation of first-order logic is the use of \emph{partially applied} terms and formulas, encoded in a parameterized inductive type where the $\N$ parameter measures the difference between the arity and the number of applications.
 The benefit of this is that it is impossible to produce an ill-formed term or formula, because type-correctness is equivalent to well-formedness.
@@ -528,7 +528,7 @@ For this, we need to know the free variables in \lil{t}.
 To do this conveniently with de Bruijn variables, we say that a (pre)term \lil{t} is \emph{bounded by \lil{l}} if all free variables are less than \lil{l} (i.e. all variables under \lil{k} quantifiers are less than \lil{k+l}).
 Given \lil{t : preterm n} which is bounded by \lil{l}, and a realization \lil{v : vector M l} of the free variables, we define the realization $\llbracket t \rrbracket_M^v : M^n \to M$ by structural recursion on $t$.
 
-For a formula $\varphi$ we do the same: we define bounded (pre)formulae, and define an realization $\llbracket \varphi \rrbracket_M^v : M^n \to \B$ by structural recursion.
+For a formula $\varphi$ we do the same: we define bounded (pre)formulas, and define an realization $\llbracket \varphi \rrbracket_M^v : M^n \to \B$ by structural recursion.
 If $\varphi$ is a sentence, the realization in a structure is just a element of the Boolean algebra: $\llbracket \varphi \rrbracket_M : \B$.
 
 Since the truth values in a Boolean-valued model live inside the Boolean algebra $\B$ instead of just being true or false, we have to take a little care when stating the soundness theorem for Boolean-valued models.
