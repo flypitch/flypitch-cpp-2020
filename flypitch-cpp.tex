@@ -911,6 +911,8 @@ Because each \(A_{\eta}\) carries around the knowledge that \(f\) is a function 
 Since the lemma guarantees that each \(A_{\eta}\) is nonzero, the \(A_{\eta}\) form an uncountable antichain.
 Therefore, if \(\mathbb{B}\) has the CCC, there is a contradiction, so by \Cref{lemma-cohen-algebra-CCC}, we have forced \(\neg\mathsf{CH}\) in \lil{bSet 𝔹_cohen}.
 
+In our formalization, we actually prove a more general version of this argument, replacing \(\aleph_1\) and \(\aleph_2\) with any two infinite regular cardinals \(\kappa_1 < \kappa_2\).
+
 \subsection{Collapse forcing} \label{subsect:collapse}
 % note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
 
@@ -919,7 +921,9 @@ Similarly to Cohen forcing, the strategy is to pick \lil{𝔹} such that there i
 To show that \(\widetilde{F}\) suffices to force \(\CH\), we must verify that our choice of \(\mathbb{B}\) is \(\sigma\)-closed.
 %
 
-The formalization of Cohen forcing is actually much easier than the formalization of collapse forcing. In Cohen forcing, unlike collapse forcing, constructing the new function (and actually the entire forcing argument) required no density arguments at all. This is because in order to force \(\neg \CH\), we only had to ensure there was some infinite cardinality between \(\omega\) and \(\mathcal{P}(\omega)\), whereas to force \(\CH\), we had to determine the exact cardinality of \(\widecheck{\aleph_1}\) to be \(\aleph_1\). However, proving that \(\mathbb{B}_{\mathsf{cohen}}\) has the CCC is more delicate than just observing that a union of countable partial functions is again countable.
+The formalization of collapse forcing is actually much more involved than the formalization of Cohen forcing. In Cohen forcing, we have to do relatively little work inside of \lil{bSet 𝔹} itself besides proving basic properties of functions. The difficulty is concentrated in proving and applying the CCC, which mostly happens in the metatheory. Moreover, constructing the new function (and the rest of the argument) required no density arguments at all. This is because in order to force \(\neg \CH\), we only had to ensure there was \emph{some} infinite cardinality between \(\omega\) and \(\mathcal{P}(\omega)\) (we did not determine exactly which internal aleph number \(\widecheck{\aleph_1}\) is in \lil{bSet 𝔹}).
+
+However, to force \(\CH\), the quantifiers are flipped and now we must exclude \emph{all} cardinalities between \(\omega\) and \(\mathcal{P}(\omega)\). From cleverly choosing \(\mathbb{B}\), the best we will be able to do is to construct a surjection \(\pi : \widecheck{\aleph_1} \twoheadrightarrow \widecheck{\mathcal{P}(\omega)}\), and we are forced to prove that \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\) and \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\). This means we must define and construct \(\aleph_1^{\mathbb{B}}\), entailing, for example, the development of the theory of ordinals internal to \lstinline{bSet 𝔹}. There are too many details like this to list, but we note that FOO (REPLACE ME) lines of code about the internal structure of \lstinline{bSet 𝔹} alone were added during the formalization of collapse forcing, compared to BAR (REPLACE ME) lines of code in the original development.
 
 % \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\), and that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega).\)
 % Both equalities follow from being able to lift functions \(\omega \to \widecheck{y}\) to functions \(\omega \to y\);
@@ -1065,7 +1069,7 @@ lemma AE_of_check_func_check (x y : pSet.{u}) {f : bSet 𝔹} {Γ : 𝔹}
     ∃ (j : y.type ) (Γ' : 𝔹) (H_nonzero' : ⊥ < Γ') (H_le : Γ' ≤ Γ),
       Γ' ≤ (is_func' x̌ y̌ f) ∧ Γ' ≤ (pair (x.func i)̌  (y.func j)̌ ) ∈ᴮ f :=
 \end{lstlisting}
-Recursively applying this lemma, obtain values \(g_0, \dots, g_n, \dots\) such that
+Recursively applying this lemma, we obtain \(g_0, \dots, g_n, \dots\) such that
 
 \[\bot < \dots < D_p \sqcap \left(\bigsqcap_{k \leq n} ((k, g_k) \in^{\mathbb{B}} f)\right) < \cdots < D_p \sqcap (0 , g_0) \in^{\mathbb{B}} f\]
 
