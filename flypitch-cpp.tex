@@ -1012,8 +1012,7 @@ That \(A\) surjects onto countable ordinals reduces to the fact that order-isomo
 In the formalization, this strategy is implemented in three stages.
 First, the axiom of comprehension (\Cref{def-comprehension}) is applied to \(\mathcal{P}(\omega \times \omega)\) to produce (what \lil{bSet 𝔹} thinks is) the collection of all relations \(R\) on \(\omega\) such that there exists an ordinal \(\eta\) and an injection \(f : \eta \hookrightarrow \omega\) such that \(R\) is the image of \(\eta\)'s membership relation under \(f\).
 This combines steps \(1\) and \(2\) and produces a set \lil{a1'_aux}. Then we \emph{modify} the indexing function \lil{a1'_aux.func} (by using the maximum principle, as described in step \(3\)) to point from \(R\) to a chosen witness \(\eta_R\) for \(R\), producing \lil{a1'}.
-Finally, since the ordinals \(0\) and \(1\) both have empty membership relations, it is unprovable in Lean whether \lil{a1'} contains one or the other, so we add both manually, producing \lil{a1 :=} \(\aleph_1^{\mathbb{B}}\).
-We remark that our construction does not use specific properties of \(\omega\) and easily generalizes to construct the successor cardinal of any infinite set.
+Finally, since the ordinals \(0\) and \(1\) both have empty membership relations, it is unprovable in Lean whether \lil{a1'} contains one or the other, so we add both manually, producing \lil{a1 :=} \(\aleph_1^{\mathbb{B}}\). Our implementation differs from the usual construction of Hartogs numbers by \emph{starting} with the sub-well-orders of \(\omega\), rather than taking the class of countable ordinals and showing this is actually a set by identifying them with sub-well-orders of \(\omega\). In this way we avoided performing a smallness argument, at the cost of using the axiom of choice to select witnesses. We remark that our construction does not use specific properties of \(\omega\) and easily generalizes to construct the successor cardinal of any infinite set.
 
 % TODO(jesse): maybe describe the interesting technical caveat about why external choice on the indexing types is not enough to finish the construction
 
@@ -1055,11 +1054,11 @@ f ∈ᴮ functions ω y̌
   ≤ ⨆ (g : bSet 𝔹),
       g ∈ᴮ (functions omega y)̌  ⊓ g =ᴮ f
 \end{lstlisting}
-  and by a density argument, it suffices to show that for every principal open \(D_p\),
+  and by a density argument, it suffices to show that for every principal open \(D_p\), for \(D := D_p \cap f \in^{\B} \mathsf{functions}\ \omega \ \widecheck{y}\),
 \begin{lstlisting}
-⊥ < (⋃ g, D_p ⊓ g ∈ᴮ (functions omega y)̌  ⊓ g =ᴮ f)
+⊥ < (⋃ g, D ⊓ g ∈ᴮ (functions omega y)̌  ⊓ g =ᴮ f)
 \end{lstlisting}
-  It suffices to construct a single function \(g : \omega \to y\) such that \(\bot < D_p \sqcap \widecheck{g} = f\).
+  It suffices to construct a single function \(g : \omega \to y\) such that \(\bot < D \sqcap \widecheck{g} = f\).
   As with Cohen forcing, we will reflect a Boolean-valued \(\forall\)-\(\exists\) statement into the metatheory, and then use a combinatorial property of \lil{𝔹_collapse} to strengthen it.
   The following lemma is true for general \(\mathbb{B}\):
 \begin{lstlisting}
@@ -1071,11 +1070,12 @@ lemma AE_of_check_func_check (x y : pSet.{u}) {f : bSet 𝔹} {Γ : 𝔹}
 \end{lstlisting}
 Recursively applying this lemma, we obtain \(g_0, \dots, g_n, \dots\) such that
 
-\[\bot < \dots < D_p \sqcap \left(\bigsqcap_{k \leq n} ((k, g_k) \in^{\mathbb{B}} f)\right) < \cdots < D_p \sqcap (0 , g_0) \in^{\mathbb{B}} f\]
+\[\bot < \dots < D \sqcap \left(\bigsqcap_{k \leq n} ((k, g_k) \in^{\mathbb{B}} f)\right) < \cdots < D \sqcap (0 , g_0) \in^{\mathbb{B}} f\]
 
 The intersection of this chain implies that \(g := \{(k, g_k)\}_{k \in \omega}\) is the required lift of \(f\). For general \(\mathbb{B}\), this intersection might be \(\bot\), but because \lil{𝔹_collapse} is \(\sigma\)-closed, we can shrink each term of the above chain into a dense suborder \(\mathcal{D}\) such that all downward \(\omega\)-indexed chains in \(\mathcal{D}\) have nonzero intersection, so the intersection of the chain is indeed nonzero.
 \end{proof}
 
+Implementing this argument was one of the most technical parts of our formalization. At each step of the construction of the downwards chain, we must recursively apply a \(\forall\)-\(\exists\) statement and use the axiom of choice to select two witnesses (with four side conditions), which are then used to simultaneously construct the downwards chain and the function \lstinline{g : pSet}. This was implemented as a monolithic recursive function defined using Lean's equation compiler, with the required parts separated afterwards.
 
 % partial functions in Lean, introduce the collapsing boolean algebra, show omega-closedness.
 
@@ -1275,6 +1275,8 @@ Interestingly, we never needed to use transfinite recursion while developing ele
 % talk about L
 Our consistency proof of \(\CH\) is very different from the traditional proof, due to G\"odel, which shows that the constructible universe \(\mathsf{L}\) satisfies \(\mathsf{GCH}\). An obvious path to constructing \(\mathsf{L}\) is to define the definable powerset operation with an inductive predicate on \lil{pSet} whose constructors encode the nine G\"odel operations, and to then build the constructible hierarchy by transfinite recursion. It is interesting to consider whether there is a definition of \(\mathsf{L}\) in the same spirit as \lil{pSet} which completely avoids transfinite induction.
 
+We also want to formalize the consistency of our extension of \(\mathsf{ZFC}\) by definable function sybmols, so that $\CH$ is independent of the usual presentation of $\ZFC$ in the language \(\{\in\}\). Furthermore, while formulas implemented with de Bruijn indices enjoy pleasant theoretical properties for the purposes of a formalization, they are difficult to write and debug by hand. It should be possible with Lean's metaprogramming to write a custom parser from named variables.
+
 % talk about proof transfer using the completeness theorem
 % talk about how metaprogramming is really kind of a hack to replay proofs
 % talk about proof transfer from mm0
@@ -1302,10 +1304,6 @@ Besides \(\mathsf{L}\), the consistency of $\mathsf{GCH}$ can also be shown by a
 % We could generalize it to the consistency of $\mathfrak{c}=\aleph_\alpha$, for any cardinal $\aleph_\alpha$ with uncountable cofinality.
 % Or more generally, we could formalize
 An interesting challenge could be Easton's theorem, which states that on regular cardinals the function $\kappa\mapsto 2^\kappa$ can be any monotone function that doesn't contradicts K\"onig's Theorem ($\kappa<\cf(2^\kappa)$)~\cite{easton1970powers}.
-
-We want to formalize that extending a language by definable constant and function symbols is conservative.
-This would show that $\CH$ is independent of the usual presentation of $\ZFC$, in the language with only one relation symbol.
-Furthermore, it would be nice to have a better parser and printer for sentences in first-order logic, since writing them by hand is pretty painful with de Bruijn variables.
 
 Our work only marks the beginning of an integration of formal methods with modern set theory. Since Cohen, increasingly sophisticated forcing arguments have been used to produce a vast hierarchy of independence and relative consistency results. The challenge to proof engineers is to develop libraries and automation that can uniformly handle them, so that the manipulation of forcing notions and forcing extensions in a proof assistant becomes as routine as manipulating objects in an algebraic hierarchy is today. One place to start would be to develop a good interface for forcing with posets and for transferring arguments along the equivalence to Boolean-valued models. One could develop a typeclass hierarchy of combinatorial conditions on forcing notions, and similarly for the relative consistency strengths of extensions to \(\ZFC\). As the next challenge to formalizers, we propose the classical result of Shelah \cite{shelah1974infinite} on the independence of Whitehead's problem, which combines multiple relative consistency results (any of which would be a worthwhile formalization project) to resolve a conjecture in abstract algebra.
 
