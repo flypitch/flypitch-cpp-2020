@@ -457,29 +457,22 @@ Besides Boolean-valued semantics (\Cref{sect:boolean-semantics}), we also formal
 
 Usually, the language of set theory has one binary relation symbol and no function symbols.
 To make the language easier to work with, and to concisely formulate the continuum hypothesis, we conservatively extend \(\ZFC\) with the following function symbols: the empty set \(\varnothing\), ordered pairing \(({-},{-})\), the natural numbers \(\omega\), power set \(\mathcal{P}({-})\) and union \(\bigcup({-})\).
-% This gives a conservative extension of the regular theory of ZFC, because they are all definable.
+This gives a conservative extension of the regular theory of ZFC, because these function symbols are all definable.
 % As part of our future work, we want to formalize these facts, so that we actually prove the independence of the continuum hypothesis in a language with only one non-logical symbol. % move to future work
 
-What we call \(\ZFC\) comprises the axioms of extensionality and regularity, Zorn's lemma, the strong axiom of collection, and axioms characterizing the new symbols (\(\varnothing\), \((-,-)\), \(\omega\), \(\mathcal{P}(-)\), \(\bigcup(-)\)).
-Notably, we specify ordered pairs by enforcing \lil{∀ x y z w, (x,y) = (z,w) ↔ x = z ∧ y = w} (the usual axiom of pairing is derivable from the existing axioms), and we extend the axiom of infinity with a specification of \lil{ω} as the least limit ordinal.
+What we call \(\ZFC\) comprises the axioms of extensionality and regularity, Zorn's lemma, the strong axiom of collection, and axioms characterizing the new symbols (\(\varnothing\), \((-,-)\), \(\omega\), \(\mathcal{P}(-)\), \(\bigcup(-)\)). We will explain some of these axioms in more detail here.
 
-% %
-% % eight axioms and a strong version of the axiom schema of collection.
-% % Five of the axioms characterize the function symbols we added.
-% % The axioms of empty set, and powerset are similar to the usual formulation, except that we use the function symbols explicitly.
-% % % note: avoid contractions in academic papers
-% % We don't uniquely characterize ordered pairs, but specify the equality on ordered pairs:
-% % \[(x,y)=(z,w) \iff x = z \wedge y = w.\]
-% We don't have the usual axiom of pairing, but this axiom is derivable from the other axioms.
-% Our version of the axiom of infinity is a bit different to the usual axiom of infinity, which only specifies that there is an infinite set. Instead, we specify $\omega$ as the least limit ordinal.
-
-% In addition to the axioms characterizing the function symbols, we have the axioms of extensionality and regularity and Zorn's lemma.
-% Our version of Zorn's lemma is states that any non-empty collection of sets closed under unions of $\in$-chains has a maximal element.
-% Finally, the axiom schema of collection we use states that for every formula \(\varphi(x,y,\vec p)\) we have the axiom stating that if \(\varphi(x,y,\vec p)\) is a total relation with parameters \(\vec p\), then its image is a set:
-% \begin{gather*}
-% \forall p \forall u, (\forall x \in u, \exists y, \varphi(x,y,p)) \Rightarrow\\
-% (\exists v, \forall w, w \in v \iff \exists z \in u, \varphi(z,w,p)).
-% \end{gather*}
+We don't uniquely characterize ordered pairs, but specify the equality on ordered pairs:
+\[\forall x\ y\ z\ w, (x,y)=(z,w) \leftrightarrow x = z \wedge y = w.\]
+We don't have the usual axiom of pairing, but this axiom is derivable from the other axioms.
+Our version of the axiom of infinity states that $\omega$ as the least limit ordinal.
+Our version of Zorn's lemma is states that any non-empty collection of sets closed under unions of $\in$-chains has a maximal element.
+Finally, the axiom schema of collection we use states that for every formula \(\varphi(x,y,\vec p)\) we have the axiom stating that if \(\varphi(x,y,\vec p)\) is a total relation with parameters \(\vec p\), then its image is a set:
+\begin{gather*}
+\forall \vec p \forall A, (\forall x \in A, \exists y, \varphi(x,y,p)) \Rightarrow\\
+\exists B, (\forall x \in A, \exists y \in B, \varphi(x,y,p)) \wedge
+(\forall y \in B, \exists x \in A, \varphi(x,y,p)).
+\end{gather*}
 
 Our formulation of \(\CH\) states that there is no ordinal between \(\omega\) and \(\mathcal{P}(\omega)\). It is defined to be the sentence
 \[\CH:=\forall x, \Ord(x) \Rightarrow x \le \omega \vee \mathcal{P}(\omega) \le x,\]
@@ -497,28 +490,14 @@ A \textbf{complete Boolean algebra} is a Boolean algebra $\B$ with additional op
 We use $\sqcap, \sqcup, \implies, \top$, and $\bot$ to denote meet, join, material implication, top, and bottom. For more details on complete Boolean algebras, we refer the reader to the textbook of Halmos-Givant~\cite{givant2008introduction}.
 
 \begin{defn}\label{def:boolean-valued-structure}
-  Fix a language $L$ and a complete Boolean algebra $\B$. A \textbf{$\B$-valued structure} is a type $M$ with realizations of all functions and relations in the language and a $\B$-valued congruence relation for equality. More precisely, it is an instance of the following structure:
-  \begin{lstlisting}
-structure bStructure (L : Language.{u}) :=
-(carrier : Type u)
-(fun_map {n} : L.functions n →
-    vector carrier n → carrier)
-(rel_map {n} : L.relations n →
-    vector carrier n → 𝔹)
-(eq : carrier → carrier → 𝔹)
-(eq_refl (x) : eq x x = ⊤)
-(eq_symm (x y) : eq x y = eq y x)
-(eq_trans (x y z) : eq x y ⊓ eq y z ≤ eq x z)
-(fun_congr {n} (f : L.functions n)
-    (x y : vector carrier n) :
-    ⨅(map2 eq x y) ≤
-    eq (fun_map f x) (fun_map f y))
-(rel_congr {n} (R : L.relations n)
-    (x y : vector carrier n) :
-    ⨅(map2 eq x y) ⊓ rel_map R x ≤
-    rel_map R y)
-\end{lstlisting}
-Here ``\lstinline{⨅(map2 eq x y)}'' means ``the infimum of the list whose $i$-th entry is \lil{eq (x[i]) (y[i])}''.
+  Fix a language $L$ and a complete Boolean algebra $\B$. A \textbf{$\B$-valued structure} (or \lil{bStructure L 𝔹}) is a type $M$ equipped with the following.
+  \begin{itemize}
+    \item for every $n$-ary function symbol in a map $M^n \to M$;
+    \item for every $n$-ary relation symbol a map $M^n \to \B$;
+    \item a function ${\approx}:M\to M\to\B$ that is a Boolean valued congruence relation. This means that e.g.\
+    $x\approx y\sqcap y\approx z\le x\approx z$ and that \[\bigsqcap_i x_i\approx y_i \le f(\vec x)\approx f(\vec y).\]
+    There are similar conditions for reflexivity, symmetry and congruence for relation symbols.
+  \end{itemize}
 \end{defn}
 
 Given a preterm \lil{t} in the language, we can realize it in any $\B$-valued structure $M$.
@@ -939,8 +918,6 @@ Now the following result follows immediately from \Cref{thm:product-ccc} and the
   \(\B_{\mathsf{cohen}}\) has the CCC.
 \end{lemma}
 
-% TODO(floris) brief remarks about why formalizing \Cref{lemma:delta-system-lemma:general} is impressive
-
 \subsection{Collapse forcing} \label{subsect:collapse}
 % note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
 
@@ -1185,7 +1162,7 @@ similarly, given an indexed family \lil{a : I → 𝔹}, the equivalence \lstinl
 
 Difficulties arise when the statements to be proved become only slightly more complicated. Consider the following example, which should be  ``\lil{by assumption}'':
 \begin{lstlisting}
-  ∀ a b c d e f g: 𝔹,
+  ∀ a b c d e f g : 𝔹,
     (d ⊓ e) ⊓ (f ⊓ g ⊓ ((b ⊓ a) ⊓ c)) ≤ a
 \end{lstlisting}
 or slightly less trivially, the following example where the goal is attainable by ``implication introduction and \emph{modus ponens}''
