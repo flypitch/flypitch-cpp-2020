@@ -232,7 +232,7 @@ The independence of \(\CH\) has also been an open formalization problem. Since 2
 In this paper we describe the successful completion of the Flypitch project\footnote{\url{https://flypitch.github.io}} (\textbf{F}ormal\textbf{ly} \textbf{p}roving the \textbf{i}ndependence of \textbf{t}he \textbf{c}ontinuum \textbf{h}ypothesis).
 We formalize forcing with Boolean-valued models, and use Cohen forcing to construct a Boolean-valued model of \(\ZFC\) where \(\CH\) is false, and a \(\sigma\)-closed forcing to construct a Boolean-valued model of \(\ZFC\) where \(\CH\) is true. We then combine this with a deep embedding of first-order logic, including a proof system and the axioms of \(\ZFC\), to verify that \(\CH\) is neither provable nor disprovable from \(\ZFC\).
 
-Our formalization\footnote{\url{https://github.com/flypitch/flypitch}} is written in the Lean 3 theorem prover, building on top of \textsf{mathlib}~\cite{mathlib}. % TODO(after review): update reference
+Our formalization\footnote{\url{https://github.com/flypitch/flypitch}} uses the Lean 3 theorem prover, building on top of \textsf{mathlib}~\cite{mathlib}. % TODO(after review): update reference
 Lean is an interactive proof assistant under active development at Microsoft Research~\cite{de2015lean, ullrich2019counting}.
 It implements the Calculus of Inductive Constructions and has a similar metatheory to Coq, adding definitional proof irrelevance, quotient types, and a noncomputable choice principle.
 Our formalization makes as much use of the expressiveness of Lean's dependent type theory as possible, using constructions which are impossible or unwieldy to encode in HOL, let alone ZF.
@@ -312,7 +312,8 @@ To show the independence of \(\CH\), it remains to construct two appropriate com
 
 Traditional presentations of forcing, even with Boolean-valued models (e.g. \cite{bell2011set}, \cite{jech2013set}), are careful to stay within the foundations of $\ZFC$, emphasizing that all arguments may be performed internal to a model of $\ZFC$, etc. In order to formalize these set-theoretic arguments in a type-theoretic metatheory, it is important to separate their mathematical content from their metamathematical content. It is not immediately clear what parts of these arguments use their set-theoretic foundation in an essential way and require modification in the passage to type theory. Our formalization clarifies some of these questions.
 
-We use custom domain-specific tactics and automation throughout our formalization, notably a tactic library for simulating natural deduction proofs inside a complete Boolean algebra \Cref{sect:metaprogramming}). This reveals another advantage of working in a proof assistant: the bookkeeping of Boolean truth-values, sometimes regarded as a tedious aspect of the Boolean-valued approach to forcing, can be automated away.
+We use custom domain-specific tactics and various forms of automation throughout our formalization, notably a tactic library for simulating natural deduction proofs inside a complete Boolean algebra \Cref{sect:metaprogramming}).
+This reveals another advantage of working in a proof assistant: the bookkeeping of Boolean truth-values, sometimes regarded as a tedious aspect of the Boolean-valued approach to forcing, can be automated away.
 
 \paragraph{Contributions}
 An earlier paper \cite{DBLP:conf/itp/HanD19} describes a formalization of Cohen forcing and the unprovability of \(\CH\). In order to keep our presentation self-contained, % , some of the material discussed in \cite{DBLP:conf/itp/HanD19}
@@ -470,8 +471,8 @@ Our version of the axiom of infinity states that $\omega$ is the least limit ord
 Our version of Zorn's lemma is states that any non-empty collection of sets closed under unions of $\in$-chains has a maximal element.
 Finally, the axiom schema of collection we use states that for every formula \(\varphi(x,y,\vec p)\) we have the axiom stating that if \(\varphi(x,y,\vec p)\) is a total relation with parameters \(\vec p\), then its image is a set:
 \begin{gather*}
-\forall \vec p \forall A, (\forall x \in A, \exists y, \varphi(x,y,p)) \Rightarrow\\
-\exists B, (\forall x \in A, \exists y \in B, \varphi(x,y,p)) \wedge
+\forall \vec p\; A, (\forall x \in A, \exists y, \varphi(x,y,p)) \Rightarrow \exists B, \\
+(\forall x \in A, \exists y \in B, \varphi(x,y,p)) \wedge
 (\forall y \in B, \exists x \in A, \varphi(x,y,p)).
 \end{gather*}
 
@@ -671,19 +672,10 @@ For example, if \lil{x : bSet 𝔹} and \lil{ϕ} is a \lil{𝔹}-valued predicat
  % TODO: expand, if we have room
 
 After we verify the (shallow) statements of all the axioms in \lil{bSet 𝔹}, the last step is to construct a \(\mathbb{B}\)-valued \lil{L_ZFC}-structure, called \lil{V 𝔹}, on \lil{bSet 𝔹}, and check that the interpretations of the axioms are \(\top\). This amounts to proving that the deeply embedded statements correspond to the shallowly embedded statements. This is trivial for the axioms, since it is true by reflexivity, but takes more work for the axiom scheme of collection. This proves the following theorem.
-
 \begin{lstlisting}
 theorem fundamental_theorem_of_forcing :
   ⊤ ⊩[V 𝔹] ZFC
 \end{lstlisting}
-
-% \begin{thm}[Fundamental Theorem of Forcing]
-%   For any complete Boolean algebra $\B$ the model $M = \text{\lil{bSet 𝔹}}$ models $\ZFC$, i.e.\ $\llbracket \ZFC \rrbracket_M=\top$.
-% \end{thm}
-% \subparagraph*{The smallness of \ $\B$}
-% We end this section by remarking that the ``smallness'' of $\B$ (or more precisely, the fact that $\B$ lives in the same universe of types out of which \lil{bSet 𝔹} is being built) is essential in making \lstinline{bSet 𝔹} a model of $\ZFC$.
-% It is required for extracting the witness needed for the maximum principle, and is also required to even define the powerset operation, because the underlying type of the powerset is the function type of all maps into \lstinline{𝔹}.
-
 \subsection{Ordinals}
 \begin{defn}\label{def:check}
   We define the canonical map \lil{check : pSet → bSet 𝔹} by
@@ -707,7 +699,7 @@ def ordinal.mk : ordinal → pSet
             -- i.e. (mk ξ ∪ {mk ξ})
 | is_limit ξ := ⋃ η < ξ, (ordinal.mk η)
 \end{lstlisting}
-Working internally to any model \(M\) of \(\ZFC\), we can define the class \(\operatorname{Ord}(M)\) as the collection of transitive sets which are well-ordered by their membership relation. While \lil{ordinal.mk} actually induces an order-isomorphism of \lil{pSet}'s ordinals with Lean's ordinals, \lil{check ∘ ordinal.mk : ordinal → bSet 𝔹} generally fails to surject onto \lil{bSet 𝔹}'s ordinals (in general, these are mixtures of checked ordinals).
+Working internally to any model \(M\) of \(\ZFC\), we can define the class \(\operatorname{Ord}(M)\) as the collection of transitive sets which are well-ordered by their membership relation. While \lil{ordinal.mk} actually induces an order-isomorphism of \lil{pSet}'s ordinals with Lean's ordinals, the map \[\text{\lil{check ∘ ordinal.mk : ordinal → bSet 𝔹}}\] generally fails to surject onto \lil{bSet 𝔹}'s ordinals (in general, these are mixtures of checked ordinals).
 % To define ordinals, we can define a map \lil{ordinal.mk : ordinal → pSet} by transfinite recursion.
 % If we compose this map with \lil{check} we get the ordinals in \lil{bSet 𝔹}.
 % In particular, we get the least infinite ordinal \lil{ω : bSet 𝔹}, which witnesses the axiom of infinity.
@@ -869,8 +861,7 @@ Suppose that there is a surjection \(\widecheck{\aleph_1} \twoheadrightarrow \wi
 Applying this lemma to \(x := \widecheck{\aleph_1}\), \(y := \widecheck{\aleph_2}\), we obtain a \(\forall\)-\(\exists\) statement in the metatheory to which we can apply Lean's axiom of choice to produce a function \(g : \aleph_2 \to \aleph_1\).
 Since externally, we know that \(\aleph_1 \prec \aleph_2\), it follows from the infinite pigeonhole principle that \(g\) must have an uncountable fiber over some \(\nu < \aleph_1\).
 For every \(\eta \in g^{-1}(\{\nu\})\), let \(A_{\eta}\) be the element of \(\B_{\mathsf{cohen}}\) given by the lemma, i.e.
-\[A_{\eta} := \text{\lil{(is_func f) ⊓ (pair (ℵ₁.func ν)̌  (ℵ₂.func η)̌  ∈ᴮ f)}}\]
-
+\[\text{\lil{(is_func f) ⊓ (pair (ℵ₁.func ν)̌  (ℵ₂.func η)̌  ∈ᴮ f)}}.\]
 Because each \(A_{\eta}\) has as a conjunct the knowledge that \(f\) is a function, for \(\eta_1 \neq \eta_2\), \(A_{\eta_1}\) and \(A_{\eta_2}\) are incompatible, i.e. \(A_{\eta_1} \sqcap A_{\eta_2} = \bot\).
 Since the lemma guarantees that each \(A_{\eta}\) is nonzero, the \(A_{\eta}\) form an uncountable antichain.
 Therefore, if \(\mathbb{B}\) has the CCC, there is a contradiction. By \Cref{lemma:cohen-algebra-CCC}, \(\neg\mathsf{CH}\) is forced true in \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{cohen}}\).
@@ -965,7 +956,9 @@ However, to force \(\CH\), the quantifiers are flipped and now we must exclude \
 \begin{remark}
   As an implementation detail, in the formalization we \emph{define} \(\mathbb{P}_{\mathsf{collapse}}\) to be the countable partial functions (in \lil{Type u}) between \lil{(ordinal.mk (aleph one) : pSet).type} and \lil{(powerset omega : pSet).type}, so that \\
   \(\mathbb{B}_{\mathsf{collapse}}\)-valued indicator functions on
-  \lil{ordinal.mk (aleph one) : pSet).type × (powerset omega : pSet).type}
+  \begin{gather*}\text{\lil{ordinal.mk (aleph one) : pSet).type ×}}\\
+   \text{\lil{(powerset omega : pSet).type}}
+  \end{gather*}
   are definitionally equal to \(\mathbb{B}_{\mathsf{collapse}}\)-valued indicator functions on the underlying types of \lil{check (ordinal.mk (aleph one))} and \lil{check (powerset omega)}.
 \end{remark}
 
@@ -994,7 +987,7 @@ We show this in \Cref{subsect:function-reflection} by proving that we can reflec
 
 % As with Cohen forcing, we will proceed by using \(\forall\)-\(\exists\) reflection to reflect functions from \(\omega\) to check-names back into \lil{pSet}, and then showing that the two required equalities follow from this.
 
-\subsection{Construction of $\aleph_1$} \label{subsect:forcing:aleph-1}
+\subsection{Construction of \texorpdfstring{$\aleph_1$}{aleph 1}} \label{subsect:forcing:aleph-1}
 Instead of using the specification of \(\aleph_1^{\mathbb{B}}\) as the least ordinal larger than \(\omega\) with Cantor's theorem and using the well-foundedness of the ordinals to construct \(\aleph_1\),
 we opt for a direct construction of \(\aleph_1\), based on the well-known construction of \(\aleph_1\) as the \textbf{Hartogs number} of \(\omega\) \cite{hartogs1915problem}.
 
@@ -1085,7 +1078,9 @@ Recursively applying this lemma, we obtain \(g_0, \dots, g_n, \dots\) such that
 
 \[D \sqcap (0 , g_0) \in^{\mathbb{B}} f > \cdots > D \sqcap \left(\bigsqcap_{k \leq n} ((k, g_k) \in^{\mathbb{B}} f)\right) > \cdots > \bot. \]
 
-The intersection of this chain implies that \(g := \{(k, g_k)\}_{k \in \omega}\) is the required lift of \(f\). For general \(\mathbb{B}\), this intersection might be \(\bot\), but because \(\mathbb{B}_{\mathsf{collapse}}\) is \(\sigma\)-closed, we can shrink each term of the above chain into a dense suborder \(\mathcal{D}\) such that all downward \(\omega\)-indexed chains in \(\mathcal{D}\) have nonzero intersection, so the intersection of the chain is indeed nonzero.
+The intersection of this chain implies that \(g := \{(k, g_k)\}_{k \in \omega}\) is the required lift of \(f\).
+For general \(\mathbb{B}\), this intersection might be \(\bot\), but because \(\mathbb{B}_{\mathsf{collapse}}\) is \(\sigma\)-closed,
+we can shrink each term of the above chain into a dense suborder \(\mathcal{D}\) such that all downward \(\omega\)-indexed chains in \(\mathcal{D}\) have nonzero intersection, so the intersection of the chain is indeed nonzero.
 \end{proof}
 
 Implementing this argument was one of the most technical parts of our formalization. At each step of the construction of the downwards chain, we must recursively apply a \(\forall\)-\(\exists\) statement and use the axiom of choice to select two witnesses (with four side conditions), which are then used to simultaneously construct the downwards chain and the function \lstinline{g : pSet}. This was implemented as a monolithic recursive function defined using Lean's equation compiler, with the required parts separated afterwards.
@@ -1131,7 +1126,7 @@ by finish [independent, CH_unprv, neg_CH_unprv]
 A key feature of Lean is that it is its own metalanguage \cite{Ebner:2017:MFF:3136534.3110278}, allowing for seamless in-line definitions of custom tactics (and modifications of existing ones).
 This feature was an invaluable asset, as it allowed the rapid development of a custom tactic library for simulating natural-deduction style proofs in complete Boolean algebras (\Cref{subsect:natded}) and automating equality reasoning in those proofs (\Cref{subsect:bv-cc}).
 
-\subsection{Simulating natural deduction proofs in \(\mathbb{B}\)} \label{subsect:natded}
+\subsection{Simulating natural deduction proofs in \texorpdfstring{\(\mathbb{B}\)}{B}} \label{subsect:natded}
 As stressed by Scott \cite{scott2008algebraic}, ``A main point ... is that the well-known algebraic characterizations of [complete Heyting algebras] and [complete Boolean algebras] exactly mimic the rules of deduction in the respective logics.''
 Indeed, that is really why the Boolean-valued soundness theorem (see \Cref{boolean-soundness}) is true. One thinks of the \lil{≤} symbol in an inequality of Boolean truth-values as a turnstile in a proof state:
 the conjuncts on the left as a list of assumptions in context, and the quantity on the right as the goal.
@@ -1222,7 +1217,8 @@ example {x₁ y₁ x₂ y₂ : bSet 𝔹} {Γ}
   (H₁ : Γ ≤ x₁ ∈ᴮ y₁) (H₂ : Γ ≤ x₁ =ᴮ x₂)
   (H₂ : Γ ≤ y₁ =ᴮ y₂) : Γ ≤ x₂ ∈ᴮ y₂ := by bv_cc
 \end{lstlisting}
-\paragraph{Discharging congruence lemmas via \texttt{simp}} \label{subsect:B-ext} Rewriting along \(\mathbb{B}\)-valued equality is the same as rewriting in the appropriate setoid parametrized by the current context \(\Gamma\), % cut? entire paragraph
+\paragraph{Discharging congruence lemmas via \texttt{simp}} \label{subsect:B-ext}
+Rewriting along \(\mathbb{B}\)-valued equality is the same as rewriting in the appropriate setoid parametrized by the current context \(\Gamma\), % cut? entire paragraph
 so that the motive must satisfy an appropriate \emph{congruence lemma} \lil{h_congr} with respect to the equivalence relation:
 \begin{lstlisting}
 lemma bv_rw {x y : bSet 𝔹} {Γ : 𝔹}
