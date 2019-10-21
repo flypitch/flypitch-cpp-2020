@@ -921,9 +921,9 @@ In the formalization, the fact that the type of ordinals is a large type, i.e.\ 
 The reason is that the proof in Kunen heavily uses sets of ordinals, and taking their order types, but in Lean this would involve calculating in both \lstinline"ordinal.{u}" and \lstinline"ordinal.{u+1}".
 Instead, we frequently work with well-orders of a given order type, instead sets of ordinals, to do all computations in \lstinline"ordinal.{u}".
 
-Lastly, one have to take care to formulate the $\Delta$-system so that $\{A_i\}_i$ is an indexed families, instead of a collections of sets.
+Lastly, one must take care to formulate the $\Delta$-system so that $\{A_i\}_i$ is an indexed families, instead of a collections of sets.
 \Cref{thm:product-ccc} below doesn't follow conveniently from the $\Delta$-system lemma if it is formulated with a collection of sets.
-Kunen is somewhat ambiguous which version it uses.
+\cite{kunen2014set} is somewhat ambiguous which version is used.
 
 Note that setting \(\kappa = \omega\) and \(\theta = \aleph_1\) in \Cref{lemma:delta-system-lemma:general} yields:
 \begin{lemma}\label{lemma:delta-system-lemma:simple}
