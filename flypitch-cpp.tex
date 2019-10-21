@@ -1,5 +1,5 @@
 %% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
-\documentclass[sigplan,10pt,review, cleveref, anonymous]{acmart}
+\documentclass[sigplan,10pt,review, anonymous]{acmart}
 
 \usepackage{cleveref}
 
@@ -824,7 +824,7 @@ where we equip $2^{\aleph_2 \times \mathbb{N}}$ with the usual product space top
 def ι : ℙ_cohen → 𝔹_cohen :=
 λ p, {S | p.ins ⊆ S ∧ p.out ⊆ - S}
 \end{lstlisting}
-That is, we send each \lil{c : ℙ_cohen} to all subsets satisfying the specification given by \lil{c}. This is clopen, hence regular.
+That is, we send each \(c : \mathbb{P}_{\mathsf{cohen}}\) to all subsets satisfying the specification given by \lil{c}. This is clopen, hence regular.
 \end{defn}
 
 Crucially, the image of this embedding is a dense suborder of \(\mathbb{B}_{\mathsf{cohen}}\).
@@ -867,7 +867,7 @@ For every \(\eta \in g^{-1}(\{\nu\})\), let \(A_{\eta}\) be the element of \(\B_
 
 Because each \(A_{\eta}\) has as a conjunct the knowledge that \(f\) is a function, for \(\eta_1 \neq \eta_2\), \(A_{\eta_1}\) and \(A_{\eta_2}\) are incompatible, i.e. \(A_{\eta_1} \sqcap A_{\eta_2} = \bot\).
 Since the lemma guarantees that each \(A_{\eta}\) is nonzero, the \(A_{\eta}\) form an uncountable antichain.
-Therefore, if \(\mathbb{B}\) has the CCC, there is a contradiction. By \Cref{lemma:cohen-algebra-CCC}, \(\neg\mathsf{CH}\) is forced true in \lil{bSet 𝔹_cohen}.
+Therefore, if \(\mathbb{B}\) has the CCC, there is a contradiction. By \Cref{lemma:cohen-algebra-CCC}, \(\neg\mathsf{CH}\) is forced true in \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{cohen}}\).
 
 In our formalization, we actually prove a more general version of this argument, replacing \(\aleph_1\) and \(\aleph_2\) with any two infinite regular cardinals \(\kappa_1 < \kappa_2\).
 
