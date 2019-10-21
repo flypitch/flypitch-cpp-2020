@@ -884,40 +884,55 @@ Therefore, if \(\mathbb{B}\) has the CCC, there is a contradiction. By \Cref{lem
 
 In our formalization, we actually prove a more general version of this argument, replacing \(\aleph_1\) and \(\aleph_2\) with any two infinite regular cardinals \(\kappa_1 < \kappa_2\).
 
-\paragraph{CCC and the \(\Delta\)-system lemma} To show that \(\B_{\mathsf{cohen}}\) has the CCC, we formalize and then apply a general result in transfinite combinatorics called the \emph{$\Delta$-system lemma}. Though only briefly mentioned in \cite{DBLP:conf/itp/HanD19}, this was one of the most involved parts of our formalization of Cohen forcing, as it required significant extensions to the treatment of set theory in \texttt{mathlib}. The details of the full argument are too technical to give here. Instead, we first give an elementary proof that \(\B_{\mathsf{cohen}}\) has the CCC, the key ideas of which are vastly generalized by the \(\Delta\)-system lemma (\Cref{lemma:delta-system-lemma:general}).
+\paragraph{CCC and the \(\Delta\)-system lemma}
+To show that \(\B_{\mathsf{cohen}}\) has the CCC, we formalize and then apply a general result in transfinite combinatorics called the \emph{$\Delta$-system lemma}.
+Though only briefly mentioned in \cite{DBLP:conf/itp/HanD19}, this was one of the most involved parts of our formalization of Cohen forcing, as it was a technical result in infinitary combinatorics, highlighting the robust library of cardinals and ordinals \texttt{mathlib}.
+The details of the full argument are too technical to give here, so we omit the proofs in this section.
+% Instead, we first give an elementary proof that \(\B_{\mathsf{cohen}}\) has the CCC, the key ideas of which are vastly generalized by the \(\Delta\)-system lemma (\Cref{lemma:delta-system-lemma:general}).
 
+% \begin{proof}
+% Given an antichain of regular opens, shrink them to basic clopens, which can then be identified with finite partial functions \((p_i : \aleph_2 \times \omega \to 2)_i\). Disjointness is equivalent to the finite partial functions all disagreeing with each other at some point. It suffices to show that for every \(n : \N\), there are only finitely many \(p_i\) of cardinality \(n\). It's easy to see this for \(n = 1\), and at the induction step, fix some \(p^*\); towards a contradiction, if there is an infinite family of cardinality \(n+1\), then we can use the pigeonhole principle to get an infinite subfamily \((q_i)\) which disagree with \(p^*\) at a point \(x\). Then the \((q_i)\) agree at \(x\), so \(x\) can be removed, contradicting the induction hypothesis.
+% \end{proof}
+
+%This style of argument can be refined to prove the far more general \(\Delta\)-system lemma; this is how it was implemented in our formalization.
+A family $(A_i)_i$ of sets is called a \textbf{$\Delta$-system} if there is a set $r$, called the \textbf{root} such that whenever $i \ne j$ we have $A_i \cap A_j = r$.
+We write $c^{<\kappa}$ for the supremum of $c^\rho$ for $\rho<\kappa$.
+
+\begin{lemma}[\(\Delta\)-system lemma (Theorem 1.6, \cite{kunen2014set})]\label{lemma:delta-system-lemma:general}
+  Let \(\kappa\) be an infinite cardinal and let \(\theta > \kappa\) be regular,
+  such that for all \(\alpha < \theta$ we have $\alpha^{<\kappa} < \theta\).
+  For any family \(\{A_i\}_{i\in I}\) such that \(|I| \geq \theta\) and for all \(i\), \(|A_i| < \kappa\),
+  there is a subfamily of size \(\theta\) which forms a \(\Delta\)-system.
+\end{lemma}
+The formalization closely follows the proof given in Kunen \cite[Chapter 2, Theorem 1.6]{kunen2014set}.
+The proof involves tricky reasoning steps involving ordinals, which are common in infinitary combinatorics.
+It starts by assuming that without loss of generality $\bigcup_i A_i\subseteq\theta$, so that all the $A_i$ are well-ordered, and by assuming that all $A_i$ have the same order-type.
+These simplifying assumptions are harder to formalize, because that involves actually proving the general case from the special case.
+It also involves defining a sequence by transfinite recursion, while simultaneously proving that the sequence has certain properties (lies below $\theta$).
+
+In the formalization, the fact that the type of ordinals is a large type, i.e.\ lives one universe level higher than the types it is built from, causes difficulties.
+The reason is that the proof in Kunen heavily uses sets of ordinals, and taking their order types, but in Lean this would involve calculating in both \lstinline"ordinal.{u}" and \lstinline"ordinal.{u+1}".
+Instead, we frequently work with well-orders of a given order type, instead sets of ordinals, to do all computations in \lstinline"ordinal.{u}".
+
+Lastly, one have to take care to formulate the $\Delta$-system so that $\{A_i\}_i$ is an indexed families, instead of a collections of sets.
+\Cref{thm:product-ccc} below doesn't follow conveniently from the $\Delta$-system lemma if it is formulated with a collection of sets.
+Kunen is somewhat ambiguous which version it uses.
+
+Note that setting \(\kappa = \omega\) and \(\theta = \aleph_1\) in \Cref{lemma:delta-system-lemma:general} yields:
+\begin{lemma}\label{lemma:delta-system-lemma:simple}
+  Any uncountable family of finite sets has an uncountable subfamily forming a $\Delta$-system.
+\end{lemma}
+To apply this lemma to show that \(\B_{\mathsf{cohen}}\) has the CCC, we prove the following property about necessary and sufficient conditions for a product space to have the CCC. The proof can be found in \cite{DBLP:conf/itp/HanD19}.
+We say that a topological space has the CCC if every family of pairwise disjoint open sets is countable.
+\begin{thm}\label{thm:product-ccc}
+  For any family $(X_i)_{i\in I}$ of topological spaces, $\prod_{i\in I} X_i$ has the CCC if for every finite $J\subseteq I$, the product $\prod_{i\in J} X_i$ has the CCC.
+\end{thm}
+Now the following result follows immediately from \Cref{thm:product-ccc} and the observation that $2^J$ has the CCC if $J$ is finite.
 \begin{lemma}\label{lemma:cohen-algebra-CCC}
   \(\B_{\mathsf{cohen}}\) has the CCC.
 \end{lemma}
 
-\begin{proof}
-Given an antichain of regular opens, shrink them to basic clopens, which can then be identified with finite partial functions \((p_i : \aleph_2 \times \omega \to 2)_i\). Disjointness is equivalent to the finite partial functions all disagreeing with each other at some point. It suffices to show that for every \(n : \N\), there are only finitely many \(p_i\) of cardinality \(n\). It's easy to see this for \(n = 1\), and at the induction step, fix some \(p^*\); towards a contradiction, if there is an infinite family of cardinality \(n+1\), then we can use the pigeonhole principle to get an infinite subfamily \((q_i)\) which disagree with \(p^*\) at a point \(x\). Then the \((q_i)\) agree at \(x\), so \(x\) can be removed, contradicting the induction hypothesis.
-\end{proof}
-
-This style of argument can be refined to prove the far more general \(\Delta\)-system lemma; this is how it was implemented in our formalization. A family $(A_i)_i$ of sets is called a \textbf{$\Delta$-system} if there is a set $r$, called the \textbf{root} such that whenever $i \ne j$ we have $A_i \cap A_j = r$.
-
-\begin{lemma}[\(\Delta\)-system lemma (Theorem 1.6, \cite{kunen2014set})]\label{lemma:delta-system-lemma:general}
-  Let \(\kappa\) be an infinite cardinal and let \(\theta > \kappa\) be regular, such that \(\forall \alpha < \theta, \alpha^{<\kappa} < \theta\). For any family \(\mathcal{A} := (A_i)\) such that \(\#\mathcal{A} \geq \theta\) and for all \(i\), \(\#A_i < \kappa\), there is a subfamily of size \(\theta\) which forms a \(\Delta\)-system.
-\end{lemma}
-
-To apply this lemma to showing \(\B_{\mathsf{cohen}}\) has the CCC, we formalized the following results,  which required us to significantly extend the treatment of product topological spaces in \texttt{mathlib}. First, note that setting \(\kappa = \omega\) and \(\theta = \aleph_1\) in \Cref{lemma:delta-system-lemma:general} yields:
-% First, we explain how we use a special case of the full \(\Delta\)-system lemma to show \(\B_{\mathsf{cohen}}\) has the CCC.
-\begin{lemma}\label{lemma:delta-system-lemma:simple}
-  Any uncountable family of finite sets has an uncountable subfamily forming a $\Delta$-system.
-\end{lemma}
-% TODO: maybe talk about technical implementation of proof? even though we didn't need the full lemma, this was definitely an impressive technical feat of our formalization of Cohen forcing, and would constitute new material.
-% We omit the proof, referring the interested reader to Kunen \cite{kunen2014set} or the formalization.
-We say that a topological space has the CCC if every family of pairwise disjoint open sets is countable.
-\begin{thm}\label{thm:product-ccc}
-  For any family $(X_i)_{i\in I}$ of topological spaces, $\prod_{i\in I} X_i$ has the CCC if for every finite $J\subseteq I$, the product $\prod_{i\in J} X_i$ has the CCC.
-  \end{thm}
-  \begin{proof}
-  Let \(\{U_k\}\) be an uncountable family of pairwise disjoint opens of $\prod_{i\in I} X_i$. By shrinking $U_k$, we may assume $U_k$ is a basic open of the form $\prod_{i\in F_k} U_{k,i} \times \prod_{i \not\in F_k} X_i$ for some finite $F_k\subseteq I$ and $U_{k,i}\neq X_i$ open in $X_i$. The $(F_k)_k$ form a uncountable family of finite sets, so by \Cref{lemma:delta-system-lemma:simple} we know that there is an uncountable family $K$ of indices such that $(F_k)_{k\in K}$ forms a $\Delta$-system with root $J$. Taking the projections $\pi(U_k)$ onto $\prod_{i\in J}X_i$ for $k\in K$, we obtain an uncountable disjoint family of opens in $\prod_{i\in J}X_i$, a contradiction.
-\end{proof}
-
-\Cref{lemma:cohen-algebra-CCC} follows immediately from \Cref{thm:product-ccc} and the observation that $2^J$ has the CCC if $J$ is finite.
-
-TODO(floris) brief remarks about why formalizing \Cref{lemma:delta-system-lemma:general} is impressive
+% TODO(floris) brief remarks about why formalizing \Cref{lemma:delta-system-lemma:general} is impressive
 
 \subsection{Collapse forcing} \label{subsect:collapse}
 % note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
