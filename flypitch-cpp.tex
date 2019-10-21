@@ -497,7 +497,7 @@ The substitution ensures that the inequality \lil{leq_f} is applied to the corre
 A \textbf{complete Boolean algebra} is a Boolean algebra $\B$ with additional operations infimum $(\bigsqcap)$ and supremum $(\bigsqcup)$ of any subset of $\B$.
 We use $\sqcap, \sqcup, \implies, \top$, and $\bot$ to denote meet, join, material implication, top, and bottom. For more details on complete Boolean algebras, we refer the reader to the textbook of Halmos-Givant~\cite{givant2008introduction}.
 
-\begin{defn}\label{def-boolean-valued-structure}
+\begin{defn}\label{def:boolean-valued-structure}
   Fix a language $L$ and a complete Boolean algebra $\B$. A \textbf{$\B$-valued structure} is a type $M$ with realizations of all functions and relations in the language and a $\B$-valued congruence relation for equality. More precisely, it is an instance of the following structure:
   \begin{lstlisting}
 structure bStructure (L : Language.{u}) :=
@@ -654,14 +654,14 @@ Although most of the argument is routine, we describe some aspects of \lil{bSet 
 
 Notably, we can define subsets of a set \lil{x : bSet 𝔹} by just modifying \lil{x.bval}.
 This gives a nice definition of powerset:
-\begin{defn} \label{def-powerset}
+\begin{defn} \label{def:powerset}
   Fix a $\B$-valued set \lil{x = ⟨α, A, b⟩} and \lil{χ : α → 𝔹} be a function.
   We can define the $\B$-valued set $\widetilde{\chi}$ as \lil{⟨α, A, χ⟩}.
   The \textbf{powerset} $\mathcal{P}(x)$ of $x$ is defined to be the \lil{𝔹}-valued set
   \[\text{ \lstinline{set_of_indicator χ :=} }\langle \alpha \to \B, (\lambda\; \chi, \widetilde{\chi}),\ (\lambda\;\chi, \widetilde{\chi} \subseteq^B x)\rangle.\]
 \end{defn}
 
-In particular, this gives an easy implemention of the axiom of comprehension (not just for interpretations of formulas, but for any \(\mathbb{B}\)-valued predicate on \lil{bSet 𝔹} satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma): \label{def-comprehension}
+In particular, this gives an easy implemention of the axiom of comprehension (not just for interpretations of formulas, but for any \(\mathbb{B}\)-valued predicate on \lil{bSet 𝔹} satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma): \label{def:comprehension}
 \begin{lstlisting}
 def subset.mk {u} (χ : u.type → 𝔹) : bSet 𝔹 :=
 set_of_indicator (λ i, χ i ⊓ (u.bval i))
@@ -696,7 +696,7 @@ It also uses the \emph{maximum principle}, which allows existentially quantified
 % It is required for extracting the witness needed for the maximum principle, and is also required to even define the powerset operation, because the underlying type of the powerset is the function type of all maps into \lstinline{𝔹}.
 
 % \subparagraph*{Check-names}
-\begin{defn}\label{def-check}
+\begin{defn}\label{def:check}
   We define the canonical map \lil{check : pSet → bSet 𝔹} by
   \begin{lstlisting}
   def check : pSet → bSet 𝔹
@@ -775,7 +775,7 @@ This requires a careful study of how truth-values are calculated in \lil{bSet �
 and ultimately reduces to an analysis of how truth-values of \(\forall\)-\(\exists\) statements in \lil{bSet 𝔹} can be \emph{reflected back} to \lil{Type u}, and a verification of a combinatorial condition on \lil{𝔹}.
 
 \subsection{Regular open algebras}
-\begin{defn}\label{def-regular-open-algebra}
+\begin{defn}\label{def:regular-open-algebra}
   Let $X$ be a topological space, and for any open set $U$, let $U^{\perp}$ denote the complement of the closure of $U$.
   The \textbf{regular open algebra} of a topological space $X$, written $\operatorname{RO}(X)$, is the collection of all open sets $U$ such that $U = (U^\perp)^\perp$, or equivalently such that
   $U$ is equal to the interior of the closure of $U$.
@@ -784,27 +784,27 @@ and ultimately reduces to an analysis of how truth-values of \(\forall\)-\(\exis
 
 While forcing conditions usually present themselves as a poset instead of a complete Boolean algebra, any forcing poset can be represented as the dense suborder of a regular open algebra \cite{moore2019method}.
 
-\begin{defn}\label{def-dense-suborder}
+\begin{defn}\label{def:dense-suborder}
   A \textbf{dense suborder} of \(\B\) is a subset \(\mathbb{P} \subseteq \B\) satisfying the following conditions: (1) for all \(p \in \mathbb{P}\), \(\bot < p\); (2) for all \(\bot < b \in \B\), there exists a \(p \in \mathbb{P}\) such that \(p \leq b\).
 \end{defn}
 
 We will use the following combinatorial conditions on \(\mathbb{B}\) in our forcing arguments:
 
-\begin{defn}\label{def-ccc}
+\begin{defn}\label{def:ccc}
 We say that $\B$ has the \textbf{countable chain condition} (CCC) if every antichain $\mathcal{A} : I \to \B$ (i.e. an indexed collection of elements $\mathcal{A} = \{a_i\}_i$ such that whenever $i \neq j, a_i \sqcap a_j = \bot$) has a countable image.
 \end{defn}
 
-\begin{defn}\label{def-sigma-closed}
+\begin{defn}\label{def:sigma-closed}
 We say that \(\B\) is \textbf{\(\sigma\)-closed} if there exists a dense suborder \(\mathbb{P}\) of \(\B\) such that every \(\omega\)-indexed downwards chain \(p_0 \geq \cdots \geq p_n \cdots\) in \(\mathbb{P}\) has a lower bound \(p_{\omega}\) in \(\mathbb{P}\).
 \end{defn}
 
 \subsection{Cohen forcing}
 
-As we have already seen in \Cref{def-powerset}, we construct the powerset of a \lil{𝔹}-valued set \lstinline{u : bSet 𝔹} using \lil{𝔹}-valued indicator functions \lil{χ : u.type → 𝔹}.
+As we have already seen in \Cref{def:powerset}, we construct the powerset of a \lil{𝔹}-valued set \lstinline{u : bSet 𝔹} using \lil{𝔹}-valued indicator functions \lil{χ : u.type → 𝔹}.
 The basic strategy of Cohen forcing is to choose \lil{𝔹} such that for every \(\nu : \aleph_2\), there is a canonical indicator function (a ``Cohen real'') \(\chi_{\nu} : \omega \to \mathbb{B}\).
 This is an external function (a member of a function type of \lstinline{Type u}) which descends to an injective function \(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\) in \lil{bSet 𝔹}.
 
-To show that the injection \(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\)  suffices to negate \(\CH\), we will show that if \lil{𝔹} has the CCC, then \(\omega \prec \widecheck{\aleph_1} \prec \widecheck{\aleph_2}\), where $x\prec y$ means that there is no surjection from a subset of $x$ to $y$. We then ensure that \lil{𝔹} has this property.
+To show that the injection \(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\)  suffices to negate \(\CH\), we will show that if \lil{𝔹} has the CCC, then \(\omega \prec \widecheck{\aleph_1} \prec \widecheck{\aleph_2}\), where $x\prec y$ means that there is no surjection from a subset of $x$ to $y$. We then ensure that \lil{𝔹} has this property by applying a powerful combinatorial argument called the \emph{\(\Delta\)-system lemma}.
 % We also show that if \lil{𝔹} satisfies the CCC, then
 % \(\omega \prec \widecheck{\aleph_1} \prec \widecheck{\aleph_2}\),
 % where $x\prec y$ means that there is no surjection from a subset of $x$ to $y$.
@@ -841,36 +841,13 @@ That is, we send each \lil{c : ℙ_cohen} to all subsets satisfying the specific
 \end{defn}
 
 Crucially, the image of this embedding is a dense suborder of \(\mathbb{B}_{\mathsf{cohen}}\).
-Recalling that $\leq$ in $\B$ is subset-inclusion, we see that this is essentially because the image of $\iota : \mathbb{P}_{\mathsf{cohen}} \to \B_{\mathsf{cohen}}$ \emph{is} the standard basis for the product topology.
-Our chosen encoding of the Cohen poset also made it easier to perform this identification when formalizing this proof.
-
-To show that \(\B_{\mathsf{cohen}}\) has the CCC, we use a powerful combinatorial argument called the \emph{$\Delta$-system lemma}. A family $(A_i)_i$ of sets is called a \textbf{$\Delta$-system} if there is a set $r$, called the \textbf{root} such that whenever $i \ne j$ we have $A_i \cap A_j = r$.
-\begin{lemma}[$\Delta$-system lemma] \label{lemma:delta-system-lemma}
-  Any uncountable family of finite sets has an uncountable subfamily forming a $\Delta$-system.
-\end{lemma}
-% TODO: maybe talk about technical implementation of proof? even though we didn't need the full lemma, this was definitely an impressive technical feat of our formalization of Cohen forcing, and would constitute new material.
-We omit the proof, referring the interested reader to Kunen \cite{kunen2014set} or the formalization.
-We use this to show the following theorem. We say that a topological space has the countable chain condition if every family of pairwise disjoint open sets is countable.
-\begin{thm}\label{thm:product-ccc}
-  If we have a family $(X_i)_{i\in I}$ of topological spaces, then $\prod_{i\in I} X_i$ has the countable chain condition if for every finite $J\subseteq I$ the product $\prod_{i\in J} X_i$ has the countable chain condition.
-  \end{thm}
-  \begin{proof}
-  For the proof, suppose we had an uncountable family of pairwise disjoint open subsets $U_k$ of $\prod_{i\in I} X_i$. By shrinking $U_k$, we may assume that each $U_k$ is a basic open set of the form $\prod_{i\in F_k} U_{k,i} \times \prod_{i \not\in F_k} X_i$ for some finite set $F_k\subseteq I$ and $U_{k,i}\neq X_i$ open in $X_i$. Now the $(F_k)_k$ form a uncountable family of finite sets, so by the $\Delta$-system lemma we know that there is an uncountable family $K$ of indices such that $(F_k)_{k\in K}$ forms a $\Delta$-system with root $J$. Now we can take the projections $\pi(U_k)$ onto $\prod_{i\in J}X_i$ for $k\in K$. We can show this forms an uncountable disjoint family of opens in $\prod_{i\in J}X_i$, contradicting the assumption.
-\end{proof}
-\begin{lemma}\label{lemma-cohen-algebra-CCC}
-  \(\B_{\mathsf{cohen}}\) has the CCC.
-\end{lemma}
-\begin{proof}
-  It suffices to show that the topological space $2^{\aleph_2 \times \mathbb{N}}$ has the countable chain condition, which follows immediately from \Cref{thm:product-ccc} and the observation that $2^J$ has the countable chain condition if $J$ is finite.
-\end{proof}
-
-\begin{defn}\label{def:principal-open}
-  Let $\nu : \aleph_2$. For any $n : \N$, the collection of all subsets of $\aleph_2 \times \N$ which contain $(\nu, n)$ is a regular open of $2^{\aleph_2 \times \N}$, called the \textbf{principal open} $\mathbf{P}_{(\nu, n)}$ over $(\nu, n)$.
-\end{defn}
+This is essentially because the image of $\iota : \mathbb{P}_{\mathsf{cohen}} \to \B_{\mathsf{cohen}}$ \emph{is} the standard basis for the product topology.
+Our chosen encoding of the Cohen poset also made it easier to perform this identification.
 
 \begin{defn}\label{def:cohen-real}
-  Let $\nu : \aleph_2$. We associate to $\nu$ the $\B$-valued indicator function $\chi_{\nu} : \N \to \B$ defined by $\chi_{\nu}(n) := \mathbf{P}_{(\nu, n)}$.
-  By \Cref{def-powerset}, each \(\chi_{\nu}\) induces a new $\B$-valued subset $\widetilde{\chi_{\nu}} \subseteq \widecheck{\N}$. We call $\widetilde{\chi_{\nu}}$ a \textbf{Cohen real}.
+  Let $\nu : \aleph_2$. For any $n : \N$, the collection of all subsets of $\aleph_2 \times \N$ which contain $(\nu, n)$ is a regular open of $2^{\aleph_2 \times \N}$, denoted $\mathbf{P}_{(\nu, n)}$.
+Thus, we associate to $\nu$ the $\B$-valued indicator function $\chi_{\nu} : \N \to \B$ defined by $\chi_{\nu}(n) := \mathbf{P}_{(\nu, n)}$.
+  By \Cref{def:powerset}, each \(\chi_{\nu}\) induces a new $\B$-valued subset $\widetilde{\chi_{\nu}} \subseteq \widecheck{\N}$. We call $\widetilde{\chi_{\nu}}$ a \textbf{Cohen real}.
 \end{defn}
 \Cref{def:cohen-real} gives us an $\aleph_2$-indexed family of Cohen reals.
 Converting this data into an injective function from \(\widecheck{\aleph_2}\) to $\mathcal{P}(\mathbb{N})$ inside \lil{bSet 𝔹} requires some care.
@@ -879,10 +856,9 @@ One must check that $\nu \mapsto \widetilde{\chi_{\nu}}$ is externally injective
 % Our custom tactics and automation for reasoning inside $\B$ made this latter task significantly easier than it would have been otherwise. We refer the interested reader to our formalization for details.
 
 %By definition, our newly-constructed injection gives that \(\widecheck{\aleph_2} \preceq \mathcal{P}(\omega)\).
-To finish negating \(\mathsf{CH}\), it suffices to show that
-\[\omega \prec \widecheck{\aleph_1} \prec \widecheck{\aleph_2}.\]
+To finish negating \(\mathsf{CH}\), it suffices to show that \(\omega \prec \widecheck{\aleph_1} \prec \widecheck{\aleph_2}\),
 i.e. that there is no surjection \(\widecheck{\omega} \twoheadrightarrow \widecheck{\aleph_1}\) and no surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\).
-We will prove the latter claim; an identical argument can be used to show the former claim.
+We describe how we proved the latter claim; an identical argument can be used to show the former.
 
 The strategy of the proof is to assume that there is a surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\aleph_2}\).
 This surjectivity assumption is a Boolean-valued \(\forall\)-\(\exists\) statement about check-names, and we will \emph{reflect} it into the metatheory, producing a \(\forall\)-\(\exists\) statement about the non-checked counterparts in \lil{pSet}.
@@ -902,11 +878,46 @@ Since externally, we know that \(\aleph_1 \prec \aleph_2\), it follows from the 
 For every \(\eta \in g^{-1}(\{\nu\})\), let \(A_{\eta}\) be the element of \(\B_{\mathsf{cohen}}\) given by the lemma, i.e.
 \[A_{\eta} := \text{\lil{(is_func f) ⊓ (pair (ℵ₁.func ν)̌  (ℵ₂.func η)̌  ∈ᴮ f)}}\]
 
-Because each \(A_{\eta}\) carries around the knowledge that \(f\) is a function as a conjunct, for \(\eta_1 \neq \eta_2\), \(A_{\eta_1}\) and \(A_{\eta_2}\) are incompatible, i.e. \(A_{\eta_1} \sqcap A_{\eta_2} = \bot\).
+Because each \(A_{\eta}\) has as a conjunct the knowledge that \(f\) is a function, for \(\eta_1 \neq \eta_2\), \(A_{\eta_1}\) and \(A_{\eta_2}\) are incompatible, i.e. \(A_{\eta_1} \sqcap A_{\eta_2} = \bot\).
 Since the lemma guarantees that each \(A_{\eta}\) is nonzero, the \(A_{\eta}\) form an uncountable antichain.
-Therefore, if \(\mathbb{B}\) has the CCC, there is a contradiction, so by \Cref{lemma-cohen-algebra-CCC}, we have forced \(\neg\mathsf{CH}\) in \lil{bSet 𝔹_cohen}.
+Therefore, if \(\mathbb{B}\) has the CCC, there is a contradiction. By \Cref{lemma:cohen-algebra-CCC}, \(\neg\mathsf{CH}\) is forced true in \lil{bSet 𝔹_cohen}.
 
 In our formalization, we actually prove a more general version of this argument, replacing \(\aleph_1\) and \(\aleph_2\) with any two infinite regular cardinals \(\kappa_1 < \kappa_2\).
+
+\paragraph{CCC and the \(\Delta\)-system lemma} To show that \(\B_{\mathsf{cohen}}\) has the CCC, we formalize and then apply a general result in transfinite combinatorics called the \emph{$\Delta$-system lemma}. Though only briefly mentioned in \cite{DBLP:conf/itp/HanD19}, this was one of the most involved parts of our formalization of Cohen forcing, as it required significant extensions to the treatment of set theory in \texttt{mathlib}. The details of the full argument are too technical to give here. Instead, we first give an elementary proof that \(\B_{\mathsf{cohen}}\) has the CCC, the key ideas of which are vastly generalized by the \(\Delta\)-system lemma (\Cref{lemma:delta-system-lemma:general}).
+
+\begin{lemma}\label{lemma:cohen-algebra-CCC}
+  \(\B_{\mathsf{cohen}}\) has the CCC.
+\end{lemma}
+
+\begin{proof}
+Given an antichain of regular opens, shrink them to basic clopens, which can then be identified with finite partial functions \((p_i : \aleph_2 \times \omega \to 2)_i\). Disjointness is equivalent to the finite partial functions all disagreeing with each other at some point. It suffices to show that for every \(n : \N\), there are only finitely many \(p_i\) of cardinality \(n\). It's easy to see this for \(n = 1\), and at the induction step, fix some \(p^*\); towards a contradiction, if there is an infinite family of cardinality \(n+1\), then we can use the pigeonhole principle to get an infinite subfamily \((q_i)\) which disagree with \(p^*\) at a point \(x\). Then the \((q_i)\) agree at \(x\), so \(x\) can be removed, contradicting the induction hypothesis.
+\end{proof}
+
+This style of argument can be refined to prove the far more general \(\Delta\)-system lemma; this is how it was implemented in our formalization. A family $(A_i)_i$ of sets is called a \textbf{$\Delta$-system} if there is a set $r$, called the \textbf{root} such that whenever $i \ne j$ we have $A_i \cap A_j = r$.
+
+\begin{lemma}[\(\Delta\)-system lemma (Theorem 1.6, \cite{kunen2014set})]\label{lemma:delta-system-lemma:general}
+  Let \(\kappa\) be an infinite cardinal and let \(\theta > \kappa\) be regular, such that \(\forall \alpha < \theta, \alpha^{<\kappa} < \theta\). For any family \(\mathcal{A} := (A_i)\) such that \(\#\mathcal{A} \geq \theta\) and for all \(i\), \(\#A_i < \kappa\), there is a subfamily of size \(\theta\) which forms a \(\Delta\)-system.
+\end{lemma}
+
+To apply this lemma to showing \(\B_{\mathsf{cohen}}\) has the CCC, we formalized the following results,  which required us to significantly extend the treatment of product topological spaces in \texttt{mathlib}. First, note that setting \(\kappa = \omega\) and \(\theta = \aleph_1\) in \Cref{lemma:delta-system-lemma:general} yields:
+% First, we explain how we use a special case of the full \(\Delta\)-system lemma to show \(\B_{\mathsf{cohen}}\) has the CCC.
+\begin{lemma}\label{lemma:delta-system-lemma:simple}
+  Any uncountable family of finite sets has an uncountable subfamily forming a $\Delta$-system.
+\end{lemma}
+% TODO: maybe talk about technical implementation of proof? even though we didn't need the full lemma, this was definitely an impressive technical feat of our formalization of Cohen forcing, and would constitute new material.
+% We omit the proof, referring the interested reader to Kunen \cite{kunen2014set} or the formalization.
+We say that a topological space has the CCC if every family of pairwise disjoint open sets is countable.
+\begin{thm}\label{thm:product-ccc}
+  For any family $(X_i)_{i\in I}$ of topological spaces, $\prod_{i\in I} X_i$ has the CCC if for every finite $J\subseteq I$, the product $\prod_{i\in J} X_i$ has the CCC.
+  \end{thm}
+  \begin{proof}
+  Let \(\{U_k\}\) be an uncountable family of pairwise disjoint opens of $\prod_{i\in I} X_i$. By shrinking $U_k$, we may assume $U_k$ is a basic open of the form $\prod_{i\in F_k} U_{k,i} \times \prod_{i \not\in F_k} X_i$ for some finite $F_k\subseteq I$ and $U_{k,i}\neq X_i$ open in $X_i$. The $(F_k)_k$ form a uncountable family of finite sets, so by \Cref{lemma:delta-system-lemma:simple} we know that there is an uncountable family $K$ of indices such that $(F_k)_{k\in K}$ forms a $\Delta$-system with root $J$. Taking the projections $\pi(U_k)$ onto $\prod_{i\in J}X_i$ for $k\in K$, we obtain an uncountable disjoint family of opens in $\prod_{i\in J}X_i$, a contradiction.
+\end{proof}
+
+\Cref{lemma:cohen-algebra-CCC} follows immediately from \Cref{thm:product-ccc} and the observation that $2^J$ has the CCC if $J$ is finite.
+
+TODO(floris) brief remarks about why formalizing \Cref{lemma:delta-system-lemma:general} is impressive
 
 \subsection{Collapse forcing} \label{subsect:collapse}
 % note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
@@ -922,9 +933,9 @@ However, to force \(\CH\), the quantifiers are flipped and now we must exclude \
 
 % \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\), and that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega).\)
 % Both equalities follow from being able to lift functions \(\omega \to \widecheck{y}\) to functions \(\omega \to y\);
-% this will follow from ensuring our choice of \(\mathbb{B}\) is \(\sigma\)-closed (\Cref{def-sigma-closed}).
+% this will follow from ensuring our choice of \(\mathbb{B}\) is \(\sigma\)-closed (\Cref{def:sigma-closed}).
 
-\begin{defn}\label{def-collapse-poset}
+\begin{defn}\label{def:collapse-poset}
   We define \lstinline{ℙ_collapse} to be the poset of countable partial functions \(\aleph_1 \to \mathcal{P}(\omega)\).
   The principal open sets
   \[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \hspace{2mm} | \hspace{2mm} g \text{ extends } p\} , \hspace{3mm} p \in \mathbb{P}_{\mathsf{collapse}}\]
@@ -933,7 +944,7 @@ However, to force \(\CH\), the quantifiers are flipped and now we must exclude \
   \[\B_{\mathsf{collapse}} := \operatorname{RO}\left(\mathcal{P}(\omega)^{\aleph_1}, \tau\right).\]
 \end{defn}
 
-\begin{lemma}\label{lemma-collapse-algebra-sigma-closed}
+\begin{lemma}\label{lemma:collapse-algebra-sigma-closed}
   % Note to Floris: currently, sigma-closed is defined to be a property of complete Boolean algebras, namely that they possess a sigma-closed (in the usual sense) dense suborder
   \(\B_{\mathsf{collapse}}\) is \(\sigma\)-closed.
 \end{lemma}
@@ -969,12 +980,12 @@ Both surjectivity and totality of \(\chi_{\pi}\) require \emph{density arguments
 
 To finish demonstrating that \(\CH\) is true in \lil{bSet 𝔹_collapse}, it remains to check that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1\).
 There are two major obstacles. The first is that to even formally state the latter equality, we must construct \(\aleph_1^{\mathbb{B}}\) in \lil{bSet 𝔹}.
-(While the operation \lil{bv_powerset} (\Cref{def-powerset}) gives a construction of the internal powerset of any \lil{x : bSet 𝔹} (using \lil{𝔹}-valued indicator functions, for any \lil{𝔹}), \(\aleph_1^{\mathbb{B}}\) is only specified as the least ordinal greater than \(\omega\), and does not admit as direct a a construction.)
+(While the operation \lil{bv_powerset} (\Cref{def:powerset}) gives a construction of the internal powerset of any \lil{x : bSet 𝔹} (using \lil{𝔹}-valued indicator functions, for any \lil{𝔹}), \(\aleph_1^{\mathbb{B}}\) is only specified as the least ordinal greater than \(\omega\), and does not admit as direct a a construction.)
 We describe our construction of \(\aleph_1^{\mathbb{B}}\) (as the Hartogs number of \(\omega\)) in \Cref{subsect:forcing:aleph-1}.
 
 Now we must ensure that no new countable ordinals are added to \(\aleph_1\) and that no new subsets of \(\omega\) are added to \(\mathcal{P}(\omega)\) in the passage via \lil{check} from \lil{pSet} to \lil{bSet}. The second obstacle is reducing both statements to, and proving, the following lemma:
 
-\begin{lemma}\label{lemma-function-reflect-suffices}
+\begin{lemma}\label{lemma:function-reflect-suffices}
   Let \(\mathbb{B}\) be a complete Boolean algebra, and suppose that for every \lil{y : pSet}, and every \lil{f : bSet 𝔹} such that \lil{bSet 𝔹} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\), there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹} models that \(\widecheck{g} = f\).
   Then \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\).
 \end{lemma}
@@ -1005,15 +1016,17 @@ That \(A\) surjects onto countable ordinals reduces to the fact that order-isomo
 
 \paragraph{Implementation details}
 In the formalization, this strategy is implemented in three stages.
-First, the axiom of comprehension (\Cref{def-comprehension}) is applied to \(\mathcal{P}(\omega \times \omega)\) to produce (what \lil{bSet 𝔹} thinks is) the collection of all relations \(R\) on \(\omega\) such that there exists an ordinal \(\eta\) and an injection \(f : \eta \hookrightarrow \omega\) such that \(R\) is the image of \(\eta\)'s membership relation under \(f\).
+First, the axiom of comprehension (\Cref{def:comprehension}) is applied to \(\mathcal{P}(\omega \times \omega)\) to produce (what \lil{bSet 𝔹} thinks is) the collection of all relations \(R\) on \(\omega\) such that there exists an ordinal \(\eta\) and an injection \(f : \eta \hookrightarrow \omega\) such that \(R\) is the image of \(\eta\)'s membership relation under \(f\).
 This combines steps \(1\) and \(2\) and produces a set \lil{a1'_aux}. Then we \emph{modify} the indexing function \lil{a1'_aux.func} (by using the maximum principle, as described in step \(3\)) to point from \(R\) to a chosen witness \(\eta_R\) for \(R\), producing \lil{a1'}.
-Finally, since the ordinals \(0\) and \(1\) both have empty membership relations, it is unprovable in Lean whether \lil{a1'} contains one or the other, so we add both manually, producing \lil{a1 :=} \(\aleph_1^{\mathbb{B}}\). Our implementation differs from the usual construction of Hartogs numbers by \emph{starting} with the sub-well-orders of \(\omega\), rather than taking the class of countable ordinals and showing this is actually a set by identifying them with sub-well-orders of \(\omega\). In this way we avoided performing a smallness argument, at the cost of using the axiom of choice to select witnesses. We remark that our construction does not use specific properties of \(\omega\) and easily generalizes to construct the successor cardinal of any infinite set.
+Finally, since the ordinals \(0\) and \(1\) both have empty membership relations, it is unprovable in Lean whether \lil{a1'} contains one or the other, so we add both manually, producing \lil{a1 :=} \(\aleph_1^{\mathbb{B}}\).
+
+Our implementation differs from the usual construction of Hartogs numbers by \emph{starting} with the sub-well-orders of \(\omega\), rather than taking the class of countable ordinals and showing this is actually a set by identification with sub-well-orders of \(\omega\). In this way we avoided performing a smallness argument, at the cost of using the axiom of choice to select witnesses. We remark that our construction does not use specific properties of \(\omega\) and easily generalizes to construct the successor cardinal of any infinite set. Instead of using membership \((<)\), we could have used membership-or-equality \((\leq)\) instead, which would circumvent the requirement to add \(0\) and \(1\), but this would increase the complexity of the proof elsewhere.
 
 % TODO(jesse): maybe describe the interesting technical caveat about why external choice on the indexing types is not enough to finish the construction
 
 \subsection{Function reflection} \label{subsect:function-reflection}
 
-\begin{proof}[Proof of \Cref{lemma-function-reflect-suffices}.]
+\begin{proof}[Proof of \Cref{lemma:function-reflect-suffices}.]
   % Observe that by definition of \(\aleph_1\), we have that for every ordinal \(\eta\), \(\eta < \aleph_1\) if and only if there exists a surjection \(\omega \twoheadrightarrow \eta\) (equivalently, there is an injection \(\eta \hookrightarrow \omega\)). Also, \(\mathcal{P}(\omega) \simeq \widecheck{2}^{\widecheck{\omega}}\) (in \(\mathsf{ZF}\)).
 
   To see that \(\widecheck{\aleph_1} \subseteq \aleph_1^{\mathbb{B}}\), let \(x\) be an arbitrary element of \(\widecheck{\aleph_1}\).
@@ -1033,9 +1046,9 @@ Finally, since the ordinals \(0\) and \(1\) both have empty membership relations
   and then apply the assumption to an arbitrary element of \(\widecheck{2}^{\widecheck{\omega}}\).
 \end{proof}
 
-It remains to show that \lil{𝔹_collapse} fulfills the assumptions of \Cref{lemma-function-reflect-suffices}.
+It remains to show that \lil{𝔹_collapse} fulfills the assumptions of \Cref{lemma:function-reflect-suffices}.
 
-\begin{lemma}\label{lemma-function-reflect}
+\begin{lemma}\label{lemma:function-reflect}
   For every \lil{ y : pSet}, and every \lil{f : bSet 𝔹_collapse} such that \lil{bSet 𝔹_collapse} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\),
   there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹_collapse} models that \(\widecheck{g} = f\).
 \end{lemma}
