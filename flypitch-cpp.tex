@@ -1079,8 +1079,9 @@ Recursively applying this lemma, we obtain \(g_0, \dots, g_n, \dots\) such that
 
 \[D \sqcap (0 , g_0) \in^{\mathbb{B}} f > \cdots > D \sqcap \left(\bigsqcap_{k \leq n} ((k, g_k) \in^{\mathbb{B}} f)\right) > \cdots > \bot. \]
 
-The intersection of this chain implies that \(g := \{(k, g_k)\}_{k \in \omega}\) is the required lift of \(f\).
-For general \(\mathbb{B}\), this intersection might be \(\bot\), but because \(\mathbb{B}_{\mathsf{collapse}}\) is \(\sigma\)-closed,
+The lower bound of this chain implies that the required lift of \(f\) is
+\(g := \{(k, g_k)\}_{k \in \omega}\).
+For general \(\mathbb{B}\), this lower bound might be \(\bot\), but because \(\mathbb{B}_{\mathsf{collapse}}\) is \(\sigma\)-closed,
 we can shrink each term of the above chain into a dense suborder \(\mathcal{D}\) such that all downward \(\omega\)-indexed chains in \(\mathcal{D}\) have nonzero intersection, so the intersection of the chain is indeed nonzero.
 \end{proof}
 
@@ -1161,7 +1162,7 @@ by { tidy_context, assumption }
   H_right_right_left_right : Γ ≤ a
   ⊢ Γ ≤ a  -/
 \end{lstlisting}
-Above, \lil{tidy_context} combines an application of \lil{poset_yoneda} with a call to the simplifier to split hypotheses of the form \lstinline{Γ ≤ a₁ ⊓ a₂ ⊓ ... aₙ} into \lstinline{Γ ≤ a₁, Γ ≤ a₂, ..., Γ ≤ aₙ}.
+In this example, \lil{tidy_context} combines an application of \lil{poset_yoneda} with a call to the simplifier to split hypotheses of the form \lstinline{Γ ≤ a₁ ⊓ a₂ ⊓ ... aₙ} into \lstinline{Γ ≤ a₁, Γ ≤ a₂, ..., Γ ≤ aₙ}.
 % Compare this with a more conventional proof, where we even have the deduction theorem and modus ponens available as lemmas: % cut?
 % \begin{lstlisting}
 % example {β : Type*} [complete_boolean_algebra β]
@@ -1199,7 +1200,7 @@ However, we felt the benefits of doing so in our formalization would have been m
 \subsection{Boolean-valued equality reasoning}
 
 \paragraph{Congruence closure on quotient types} \label{subsect:bv-cc}
-Another benefit of applying \hyperref[poset-yoneda]{\lstinline{poset_yoneda}} and using context variables \(\Gamma\) throughout the formalization is that this approach exposes a canonical family of setoids on \lil{bSet 𝔹} induced by \lil{𝔹}-valued equality:
+Another benefit of applying the lemma \hyperref[poset-yoneda]{\lstinline{poset_yoneda}} and using context variables \(\Gamma\) throughout the formalization is that this approach exposes a canonical family of setoids on \lil{bSet 𝔹} induced by \lil{𝔹}-valued equality:
 for every \(\Gamma : \mathbb{B}\) the relation \(\lambda\; x \; y, \Gamma \leq x =^{\mathbb{B}} y\) is an equivalence relation on \lil{bSet 𝔹} (the larger \(\Gamma\) is, the finer the equivalence relation).
 
 Since Lean natively supports quotient types, then as soon as e.g. all (Boolean-valued) existentials have been split and the only task remaining is to perform equality reasoning,
@@ -1218,8 +1219,8 @@ example {x₁ y₁ x₂ y₂ : bSet 𝔹} {Γ}
   (H₁ : Γ ≤ x₁ ∈ᴮ y₁) (H₂ : Γ ≤ x₁ =ᴮ x₂)
   (H₂ : Γ ≤ y₁ =ᴮ y₂) : Γ ≤ x₂ ∈ᴮ y₂ := by bv_cc
 \end{lstlisting}
-\paragraph{Discharging congruence lemmas via \texttt{simp}} \label{subsect:B-ext}
-Rewriting along \(\mathbb{B}\)-valued equality is the same as rewriting in the appropriate setoid parametrized by the current context \(\Gamma\), % cut? entire paragraph
+\paragraph{Discharging congruence lemmas} \label{subsect:B-ext}
+Rewriting along a \(\mathbb{B}\)-valued equality is the same as rewriting in the appropriate setoid parametrized by the current context \(\Gamma\), % cut? entire paragraph
 so that the motive must satisfy an appropriate \emph{congruence lemma} \lil{h_congr} with respect to the equivalence relation:
 \begin{lstlisting}
 lemma bv_rw {x y : bSet 𝔹} {Γ : 𝔹}
@@ -1262,8 +1263,13 @@ Furthermore, while formulas with de Bruijn indices enjoy pleasant theoretical pr
 % talk about proof transfer from mm0
 % should have uniform way to treat Δ₀ proof transfer by _reflection_
 % more intelligent way of handling congruence lemmas
-While our custom automation saved a considerable amount of work, much of it is only an approximation to a more principled approach by \emph{reflection}. The natural deduction and equality reasoning tactics in \Cref{subsect:natded} and \Cref{subsect:bv-cc} make it easier to manually replay a first-order proof of a theorem of \(\ZFC\) in \lil{bSet 𝔹}, but the Boolean-valued soundness theorem automatically performs this replay for a deeply-embedded first-order proof tree. Ideally, automation would reify a \(\mathbb{B}\)-valued goal to the corresponding first-order statement, discharge it by an ATP, encode the solution in our deeply-embedded proof system, then apply soundness. Alternately, one could perform proof transfer via the completeness theorem, proving a first-order goal in an arbitrary ordinary model of \(\ZFC\) first % (where the additional complexity of \(\mathbb{B}\)-valued semantics is hidden from Lean's automation)
-, then applying \(\mathbb{B}\)-valued soundness to the proof tree gotten by completeness. The advantage to this approach is that a proof would only be computed once, then reused in any model, ordinary or \(\mathbb{B}\)-valued, whereas in our formalization, we occasionally had to prove the same statement separately in \lil{pSet} and \lil{bSet 𝔹}.
+Although our custom automation saved a considerable amount of work, much of it is only an approximation to a more principled approach by \emph{reflection}.
+The natural deduction and equality reasoning tactics in \Cref{subsect:natded} and \Cref{subsect:bv-cc} make it easier to manually replay a first-order proof of a theorem of \(\ZFC\) in \lil{bSet 𝔹},
+but the Boolean-valued soundness theorem automatically performs this replay for a deeply-embedded first-order proof tree.
+Ideally, automation would reify a \(\mathbb{B}\)-valued goal to the corresponding first-order statement, discharge it by an ATP, encode the solution in our deeply-embedded proof system, then apply soundness.
+Alternately, one could perform proof transfer via the completeness theorem, proving a first-order goal in an arbitrary ordinary model of \(\ZFC\) first% (where the additional complexity of \(\mathbb{B}\)-valued semantics is hidden from Lean's automation)
+, then applying \(\mathbb{B}\)-valued soundness to the proof tree gotten by completeness.
+The advantage to this approach is that a proof would only be computed once, then reused in any model, ordinary or \(\mathbb{B}\)-valued, whereas in our formalization, we occasionally had to prove the same statement separately in \lil{pSet} and \lil{bSet 𝔹}.
 
 
 
