@@ -1013,7 +1013,7 @@ That \(A\) surjects onto countable ordinals reduces to the fact that order-isomo
 
 \paragraph{Implementation details}
 In the formalization, this strategy is implemented in three stages.
-First, the axiom of comprehension (\Cref{def:comprehension}) is applied to \(\mathcal{P}(\omega \times \omega)\) to produce (what \lil{bSet 𝔹} thinks is) the collection of all relations \(R\) on \(\omega\) such that there exists an ordinal \(\eta\) and an injection \(f : \eta \hookrightarrow \omega\) such that \(R\) is the image of \(\eta\)'s membership relation under \(f\).
+First, the axiom of comprehension (\Cref{def:comprehension}) is applied to \(\mathcal{P}(\omega \times \omega)\) to produce (what \lil{bSet 𝔹} thinks is) the collection of all relations \(R\) on \(\omega\) such that \(B(R)\) holds.
 This combines steps \(1\) and \(2\) and produces a set \lil{a1'_aux}. Then we \emph{modify} the indexing function \lil{a1'_aux.func} (by using the maximum principle, as described in step \(3\)) to point from \(R\) to a chosen witness \(\eta_R\) for \(R\), producing \lil{a1'}.
 Finally, since the ordinals \(0\) and \(1\) both have empty membership relations, it is unprovable in Lean whether \lil{a1'} contains one or the other, so we add both manually, producing \(\aleph_1^{\mathbb{B}}\).
 
