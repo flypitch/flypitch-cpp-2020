@@ -454,7 +454,6 @@ Besides Boolean-valued semantics (\Cref{sect:boolean-semantics}), we also formal
 
 \subsection{ZFC}
 \label{subsect:fol:zfc}
-% note(jesse, October 18 2019, 08:44 PM): compressed this section, which was a bit wordy
 
 Usually, the language of set theory has one binary relation symbol and no function symbols.
 To make the language easier to work with, and to concisely formulate the continuum hypothesis, we conservatively extend \(\ZFC\) with the following function symbols: the empty set \(\varnothing\), ordered pairing \(({-},{-})\), the natural numbers \(\omega\), power set \(\mathcal{P}({-})\) and union \(\bigcup({-})\).
@@ -669,8 +668,14 @@ lemma bSet_axiom_of_comprehension {Γ : 𝔹} : Γ ≤ ⨆ y, y ⊆ᴮ x ⊓ ⨅
 % \subparagraph*{The axiom of choice}
 Following Bell, we verify Zorn's lemma in \lil{bSet 𝔹}.
 As is the case with \lil{pSet}, establishing Zorn's lemma requires the use of a choice principle from the metatheory.
-This was the most involved part of our verification of the fundamental theorem of forcing, and relies on the technical tool of \emph{mixtures}, which allow sequences of $\B$-valued sets to be ``averaged'' into new ones.
-It also uses the \emph{maximum principle} \cite{hamkins2012well}, which allows existentially quantified statements to be instantiated without changing their truth-value (so is essentially the axiom of choice). % TODO: expand, if we have room
+This was the most involved part of our verification of the fundamental theorem of forcing, and relies on the technical tool of \emph{mixtures}, which allow sequences of $\B$-valued sets to be ``averaged'' into new ones. Using mixtures, one derives the \emph{maximum principle}, which allows existentially quantified statements to be instantiated without changing their truth-value (so is essentially the axiom of choice):
+\begin{lstlisting}
+lemma maximum_principle (ϕ : bSet 𝔹 → 𝔹)
+(h_congr : B_ext ϕ) : ∃ u, (⨆(x:bSet 𝔹), ϕ x) = ϕ u
+\end{lstlisting}
+For example, if \lil{x : bSet 𝔹} and \lil{ϕ} is a \lil{𝔹}-valued predicate, if we have that \lil{⊤ ≤ ⨆ j : x.type, ϕ x}, there may not actually be some \lil{j : x.type} which attains that supremum. However, the maximum principle ensures that a witness can be constructed via mixtures.
+
+ % TODO: expand, if we have room
 
 % \subparagraph*{The smallness of \ $\B$}
 % We end this section by remarking that the ``smallness'' of $\B$ (or more precisely, the fact that $\B$ lives in the same universe of types out of which \lil{bSet 𝔹} is being built) is essential in making \lstinline{bSet 𝔹} a model of $\ZFC$.
