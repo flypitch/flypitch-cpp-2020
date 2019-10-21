@@ -512,10 +512,13 @@ For a formula $\varphi$ we do the same: we define bounded (pre)formulas, and def
 If $\varphi$ is a sentence, the realization in a structure is just a element of the Boolean algebra: $\llbracket \varphi \rrbracket_M : \B$.
 
 Since the truth values in a Boolean-valued model live inside the Boolean algebra $\B$ instead of just being true or false, we have to take a little care when stating the soundness theorem for Boolean-valued models.
-Usually, a soundness theorem states something like ``if $\varphi$ is provable from hypotheses in $\Gamma$ then in every model where $\Gamma$ holds, $\varphi$ also holds.''
+Usually, a soundness theorem states something like ``if $\varphi$ is provable from hypotheses in $C$ then in every model where $C$ holds, $\varphi$ also holds.''
 With Boolean truth-values, this is instead stated as an inequality of truth values. % This motivates the following definition
 \begin{defn}
-We say that a set of sentences $\Gamma$ \emph{forces a sentence} $\varphi$, written $\Gamma \models_{\B}\varphi$, if for all non-empty $\B$-valued structures $M$ we have $\big(\bigsqcap_{\psi\in\Gamma}\big \llbracket \psi \rrbracket_M)\le\llbracket \varphi \rrbracket_M$.
+For $\Gamma : \B$ and a $\B$-valued structure $M$ we say that
+\textbf{$\Gamma$ forces a sentence $\varphi$ in $M$}, written $\Gamma \Vdash_M \varphi$ if
+$\Gamma \le \llbracket \varphi \rrbracket_M$.
+We say that a set of sentences $C$ \textbf{models} $\varphi$, written $C \models_{\B}\varphi$, if for all non-empty $\B$-valued structures $M$ we have $\big(\bigsqcap_{\psi\in C}\big \llbracket \psi \rrbracket_M)\Vdash_M \varphi$.
 \end{defn}
 Using this definition, we can now state the Boolean-valued soundness theorem: \label{boolean-soundness}
 \begin{lstlisting}
@@ -1100,10 +1103,10 @@ We now verify that the deeply-embedded interpretations of \lil{CH_formula} coinc
 
 As we have already observed, an easy consequence of Boolean-valued soundness is that a formula is unprovable if its negation has a model. Thus, we have:
 \begin{lstlisting}
-lemma unprovable_of_model_neg {T : Theory L} {f : sentence L} (S : bStructure L 𝔹)
-  (H_model : ⊤ ⊩[S] T) [H_nonempty : nonempty S]
+lemma unprovable_of_model_neg {C : Theory L} {f : sentence L} (S : bStructure L 𝔹)
+  (H_model : ⊤ ⊩[S] C) [H_nonempty : nonempty S]
   {Γ : 𝔹} (H_nonzero : (⊥ : 𝔹) < Γ)
-  (H : Γ ⊩[S] ∼f) : ¬ (T ⊢' f)
+  (H : Γ ⊩[S] ∼f) : ¬ (C ⊢' f)
 
 lemma V_𝔹_cohen_models_neg_CH :
   ⊤ ⊩[V 𝔹_cohen] ∼CH_formula
