@@ -680,8 +680,8 @@ It also uses the \emph{maximum principle} \cite{hamkins2012well}, which allows e
 \begin{defn}\label{def:check}
   We define the canonical map \lil{check : pSet → bSet 𝔹} by
   \begin{lstlisting}
-  def check : pSet → bSet 𝔹
-  | ⟨α,A⟩ := ⟨α, check ∘ A, (λ a, ⊤)⟩
+def check : pSet → bSet 𝔹
+| ⟨α,A⟩ := ⟨α, check ∘ A, (λ a, ⊤)⟩
   \end{lstlisting}
   We write $\widecheck{x}$ for \lil{check x}, and call it a \emph{check-name}.
   % We call members of the image of \lil{check} \emph{check-names}, %\footnote{This terminology is standard, c.f. \cite{hamkins2012well, moore2019method}.}
@@ -1163,8 +1163,8 @@ similarly, given an indexed family \lil{a : I → 𝔹}, the equivalence \lstinl
 
 Difficulties arise when the statements to be proved become only slightly more complicated. Consider the following example, which should be  ``\lil{by assumption}'':
 \begin{lstlisting}
-  ∀ a b c d e f g : 𝔹,
-    (d ⊓ e) ⊓ (f ⊓ g ⊓ ((b ⊓ a) ⊓ c)) ≤ a
+∀ a b c d e f g : 𝔹,
+  (d ⊓ e) ⊓ (f ⊓ g ⊓ ((b ⊓ a) ⊓ c)) ≤ a
 \end{lstlisting}
 or slightly less trivially, the following example where the goal is attainable by ``implication introduction and \emph{modus ponens}''
 \begin{lstlisting}
@@ -1212,10 +1212,10 @@ But now, in order for the user to continue the pretense that they are merely doi
 ---which is extremely tedious to do by hand, but easy to automate.
 This is done by the tactic \lil{bv_imp_intro}:
 \begin{lstlisting}
-  example {a b c : 𝔹} :
-   (a ⟹ b) ⊓ (b ⟹ c) ≤ a ⟹ c :=
-    by { tidy_context, bv_imp_intro Ha,
-         exact a_1_right (a_1_left Ha) }
+example {a b c : 𝔹} :
+  (a ⟹ b) ⊓ (b ⟹ c) ≤ a ⟹ c :=
+  by { tidy_context, bv_imp_intro Ha,
+        exact a_1_right (a_1_left Ha) }
 \end{lstlisting}
 
 It would have been possible to go further and even write a custom tactic state,
