@@ -722,7 +722,7 @@ We summarize the relationship between the three ``large'' types currently in pla
 
 We adopt the convention to spell out the name of Lean ordinals and cardinals, and use (checked) Hebrew letters for their (Boolean-valued) set-theoretic counterparts, e.g.
 \begin{lstlisting}
-check (ordinal.mk (aleph 1)) = check (ℵ₁) = ℵ₁̌ 
+check (ordinal.mk (aleph 1)) = check (ℵ₁) = ℵ₁̌
 \end{lstlisting}
 % with respect to the above diagram, we have:
 % \[
@@ -1180,7 +1180,7 @@ lemma poset_yoneda {β} [partial_order β] {a b : β}
 With a little custom automation, our first example nearly becomes ``\lil{by assumption}''
 \begin{lstlisting}
 example {a b c d e f g : 𝔹} :
-  (d ⊓ e) ⊓ (f ⊓ g ⊓((b ⊓ a)⊓ c)) ≤ a :=
+  (d ⊓ e) ⊓ (f ⊓ g ⊓ ((b ⊓ a) ⊓ c)) ≤ a :=
 by { tidy_context, assumption }
 /-  Goal state before `assumption`:
   [...]
@@ -1189,35 +1189,34 @@ by { tidy_context, assumption }
   ⊢ Γ ≤ a  -/
 \end{lstlisting}
 Above, \lil{tidy_context} combines an application of \lil{poset_yoneda} with a call to the simplifier to split hypotheses of the form \lstinline{Γ ≤ a₁ ⊓ a₂ ⊓ ... aₙ} into \lstinline{Γ ≤ a₁, Γ ≤ a₂, ..., Γ ≤ aₙ}.
-With more custom tactics and coercions to simulate natural deduction proof steps in \(\mathbb{B}\), our second example is handled just as easily:
-\begin{lstlisting}
-example {𝔹} [complete_boolean_algebra 𝔹]
- {a b c : 𝔹} :
- ( a ⟹ b ) ⊓ ( b ⟹ c ) ≤ a ⟹ c :=
-  by { tidy_context, bv_imp_intro Ha,
-       exact a_1_right (a_1_left Ha) }
-\end{lstlisting}
-Compare this with a more conventional proof, where we even have the deduction theorem and modus ponens available as lemmas: % cut?
-\begin{lstlisting}
-example {β : Type*} [complete_boolean_algebra β]
-  {a b c : β} :
- ( a ⟹ b ) ⊓ ( b ⟹ c ) ≤ a ⟹ c :=
-begin
-  rw [ ← deduction, inf_comm, ← inf_assoc ],
-  transitivity b ⊓ (b ⟹ c),
-    { refine le_inf _ _,
-      { apply inf_le_left_of_le, rw inf_comm,
-        apply mp },
-      { apply inf_le_right_of_le, refl }},
-    { rw inf_comm, apply mp }
-end
-\end{lstlisting}
+% Compare this with a more conventional proof, where we even have the deduction theorem and modus ponens available as lemmas: % cut?
+% \begin{lstlisting}
+% example {β : Type*} [complete_boolean_algebra β]
+%   {a b c : β} :
+%  ( a ⟹ b ) ⊓ ( b ⟹ c ) ≤ a ⟹ c :=
+% begin
+%   rw [ ← deduction, inf_comm, ← inf_assoc ],
+%   transitivity b ⊓ (b ⟹ c),
+%     { refine le_inf _ _,
+%       { apply inf_le_left_of_le, rw inf_comm,
+%         apply mp },
+%       { apply inf_le_right_of_le, refl }},
+%     { rw inf_comm, apply mp }
+% end
+% \end{lstlisting}
 One use-case where automation is crucial is context specialization.
 For example, suppose that after preprocessing with \lstinline{poset_yoneda}, the goal is \lstinline{Γ ≤ (a ⟹ b)}, and one would like to apply implication introduction,
 adding \lstinline{Γ ≤ a} to the context and reducing the goal to \lstinline{Γ ≤ b}. However, the deduction theorem only lets us rewrite the goal to \lstinline{Γ ⊓ a ≤ b}, and we can only add \lstinline{Γ ⊓ a ≤ a} to the context.
 So we can introduce the implication after all, but at the cost of specializing the context \lstinline{Γ} to the smaller context \lstinline{Γ' := Γ ⊓ a}.
 But now, in order for the user to continue the pretense that they are merely doing first-order logic, this change of variables must be propagated to the rest of the assumptions % which may still be of the form \lstinline{Γ ≤ _}
 ---which is extremely tedious to do by hand, but easy to automate.
+This is done by the tactic \lil{bv_imp_intro}:
+\begin{lstlisting}
+  example {a b c : 𝔹} :
+   (a ⟹ b) ⊓ (b ⟹ c) ≤ a ⟹ c :=
+    by { tidy_context, bv_imp_intro Ha,
+         exact a_1_right (a_1_left Ha) }
+\end{lstlisting}
 
 It would have been possible to go further and even write a custom tactic state,
 as was done for temporal logic in Unit-B \cite{Hudon2015TheUM} or for Lean's SMT-mode framework,
