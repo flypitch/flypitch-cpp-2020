@@ -649,10 +649,9 @@ This gives a nice definition of powerset:
 
 In particular, this gives an easy implemention of the axiom of comprehension (not just for interpretations of formulas, but for any \(\mathbb{B}\)-valued predicate on \lil{bSet 𝔹} satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma): \label{def:comprehension} % TODO(jesse, October 21 2019, 02:20 PM): while cutting, maybe omit everything except variables and bSet_axiom_of_comprehension
 \begin{lstlisting}
-variables (ϕ : bSet 𝔹 → 𝔹) (x : bSet 𝔹)
-  (H_congr : B_ext ϕ)
-
-lemma bSet_axiom_of_comprehension {Γ : 𝔹} : Γ ≤ ⨆ y, y ⊆ᴮ x ⊓ ⨅ z, z ∈ᴮ y ⇔ (z ∈ᴮ x ⊓ ϕ z)
+lemma bSet_axiom_of_comprehension (ϕ : bSet 𝔹 → 𝔹) (x : bSet 𝔹)
+  (H_congr : B_ext ϕ) {Γ : 𝔹} :
+  Γ ≤ ⨆ y, y ⊆ᴮ x ⊓ ⨅ z, z ∈ᴮ y ⇔ (z ∈ᴮ x ⊓ ϕ z)
 \end{lstlisting}
 % \begin{lstlisting}
 % def subset.mk {u} (χ : u.type → 𝔹) : bSet 𝔹 :=
@@ -672,7 +671,7 @@ lemma bSet_axiom_of_comprehension {Γ : 𝔹} : Γ ≤ ⨆ y, y ⊆ᴮ x ⊓ ⨅
 % \end{lstlisting}
 Following Bell, we verify Zorn's lemma in \lil{bSet 𝔹}.
 As is the case with \lil{pSet}, establishing Zorn's lemma requires the use of a choice principle from the metatheory.
-This was the most involved part of our verification of the fundamental theorem of forcing, and relies on the technical tool of \emph{mixtures}, which allow sequences of $\B$-valued sets to be ``averaged'' into new ones. Using mixtures, one derives the \emph{maximum principle}, which allows existentially quantified statements to be instantiated without changing their truth-value (so is essentially the axiom of choice):
+This was the hardest part of our verification of the fundamental theorem of forcing, and relies on the technical tool of \emph{mixtures}, which allow sequences of $\B$-valued sets to be ``averaged'' into new ones. Using mixtures, one derives the \emph{maximum principle}, which allows existentially quantified statements to be instantiated without changing their truth-value (so is essentially the axiom of choice):
 \begin{lstlisting}
 lemma maximum_principle (ϕ : bSet 𝔹 → 𝔹)
 (h_congr : B_ext ϕ) : ∃ u, (⨆(x:bSet 𝔹), ϕ x) = ϕ u
@@ -698,7 +697,7 @@ def check : pSet → bSet 𝔹
   These are also known as \emph{canonical names}, as they are the canonical representation of standard two-valued sets inside a Boolean-valued model of set theory.\footnote{We were pleased to discover Lean's support for custom notation allowed us to declare the Unicode modifier character \texttt{U+030C} ($\widecheck{\hspace{1mm}}$) as a postfix operator for \texttt{check}.}
 \end{defn}
 
-In general, $\widecheck{x}$ might have different properties than $x$, but \(\Delta_0\) properties (i.e. those definable with only bounded quantification) are always preserved. Importantly, \lil{bSet 𝔹} thinks $\widecheck{\omega}$ is $\omega$. Notably, \lil{ω : pSet} is defined separately from \lil{ordinal.mk omega} (see below) as the finite von Neumann ordinals indexed by $\mathbb{N}$, so the underlying types of \lil{ω : pSet} and \lil{ω : bSet 𝔹} are definitionally equal to \(\mathbb{N}\).
+In general, $\widecheck{x}$ might have different properties than $x$, but \(\Delta_0\) properties (i.e. those definable with only bounded quantification) are always preserved. Importantly, \lil{bSet 𝔹} thinks $\widecheck{\omega}$ is $\omega$. Notably, \lil{ω : pSet} is defined separately from \lil{ordinal.mk omega} (see below) as the finite von Neumann ordinals indexed by $\mathbb{N}$, so the underlying types of \(\omega\) and \(\widecheck{\omega}\) are exactly \(\N\). % \lil{ω : pSet} and \lil{ω : bSet 𝔹} are definitionally equal to \(\mathbb{N}\).
 
 % \paragraph{Ordinals in \lil{bSet 𝔹}}\label{subpara:ordinals}
 The treatment of ordinals in \lil{mathlib} associates a class of ordinals to every type universe, defined as isomorphism classes of well-ordered types. Lean's ordinals may be represented inside \lil{pSet} by defining a map \lil{ordinal.mk : ordinal → pSet} via transfinite recursion (indexing the von Neumann construction of ordinals). In pseudocode,
@@ -1115,24 +1114,20 @@ lemma unprovable_of_model_neg {C : Theory L}
   (H_model : ⊤ ⊩[S] C) [H_nonempty : nonempty S]
   {Γ : 𝔹} (H_nonzero : (⊥ : 𝔹) < Γ)
   (H : Γ ⊩[S] ∼f) : ¬ (C ⊢' f)
-
 lemma V_𝔹_cohen_models_neg_CH :
   ⊤ ⊩[V 𝔹_cohen] ∼CH_formula
-
 lemma V_𝔹_collapse_models_CH :
   ⊤ ⊩[V 𝔹_collapse] CH_formula
 \end{lstlisting}
 \noindent Combining these results yields
 \begin{lstlisting}
 theorem CH_unprv : ¬ (ZFC ⊢' CH_formula)
-
 theorem neg_CH_unprv : ¬ (ZFC ⊢' ∼CH_formula)
 \end{lstlisting}
 \noindent and the independence of CH follows.
 \begin{lstlisting}
-def independent (T : Theory L) (f : sentence L) : Prop :=
+def independent (T : Theory L) (f : sentence L) :=
 ¬ T ⊢' f ∧ ¬ T ⊢' ∼f
-
 theorem independence_of_CH : independent ZFC CH_f :=
 by finish [independent, CH_unprv, neg_CH_unprv]
 \end{lstlisting}
@@ -1266,7 +1261,7 @@ example {w : bSet 𝔹} :
 % This problem is problem 24 on Wiedijk's list ``Formalizing 100 theorems''~\cite{wiedijk100theorems},
 % and this is the 95-th formalized result of that list.
 
-Interestingly, we never used transfinite recursion for developing elementary set theory in \lil{pSet} and \lil{bSet 𝔹}. Indeed, the prevalence of transfinite recursion in traditional presentations of set theory is only a consequence of the use of transfinite recursion in the traditional definitions of \(V\) and \(V^{\mathbb{B}}\). By instead encoding \(V\) and \(V^{\mathbb{B}}\) as inductive types which expose \(\in\)-induction as their native induction principle, we completely eliminate transfinite induction this part of our formalization. % cut?
+Interestingly, we never used transfinite recursion for developing elementary set theory in \lil{pSet} and \lil{bSet 𝔹}. Indeed, the prevalence of transfinite recursion in traditional presentations of set theory is only a consequence of the use of transfinite recursion in the traditional definitions of \(V\) and \(V^{\mathbb{B}}\). By instead encoding \(V\) and \(V^{\mathbb{B}}\) as inductive types which expose \(\in\)-induction as their native induction principle, we completely eliminate transfinite induction from this part of our formalization. % cut?
 
 % talk about L
 Our consistency proof of \(\CH\) is very different from the traditional proof, due to G\"odel, which shows that the constructible universe \(\mathsf{L}\) satisfies \(\mathsf{GCH}\). An obvious path to constructing \(\mathsf{L}\) is to define the definable powerset operation with an inductive predicate on \lil{pSet} whose constructors encode the nine G\"odel operations, and to then build the constructible hierarchy by transfinite recursion. It is interesting to consider whether there is a definition of \(\mathsf{L}\) in the same spirit as \lil{pSet} which completely avoids transfinite induction.
