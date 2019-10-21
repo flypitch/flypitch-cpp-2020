@@ -450,7 +450,6 @@ def weakening : Γ ⊆ Δ → Γ ⊢ A → Δ ⊢ A
 def substitution : Γ ⊢ A →
     (λ f, f[s // n]) '' Γ ⊢ A[s // n]
 \end{lstlisting}
-
 Besides Boolean-valued semantics (\Cref{sect:boolean-semantics}), we also formalize ordinary first-order semantics, and our work includes a formalization of the completeness theorem using Henkin models.
 
 \subsection{ZFC}
@@ -572,7 +571,6 @@ def equiv : pSet → pSet → Prop
 | ⟨α,A⟩ ⟨β,B⟩ := (∀a, ∃b, equiv (A a) (B b)) ∧
   (∀b, ∃a, equiv (A a) (B b))
 \end{lstlisting}
-
 One can then define membership from equivalence and check that modulo extensional equivalence, \lstinline{pSet} is a model of \(\ZFC\).
 
 % \paragraph{Two roads to \lstinline{bSet}}
@@ -606,7 +604,7 @@ One can then define membership from equivalence and check that modulo extensiona
 \label{subsect:bset:bset}
 
 We now want to generalize \lil{pSet} to a Boolean-valued model of \(\ZFC\). We must give a
-\(\B\)-valued predicate interpreting the membership symbol \lil{∈}. We will encode this information by extending each \lil{⟨α,A⟩ : pSet} with an additional function \lil{B : α → 𝔹}, which has the effect of attaching a \emph{Boolean truth-value} to every member of \lil{⟨α,A⟩}:
+\(\B\)-valued predicate interpreting the membership symbol \lil{∈}. We will encode this information by extending each \lil{⟨α,A⟩ : pSet} with an additional function \lil{B : α → 𝔹}, which has the effect of attaching a \emph{Boolean truth-value} to every element of \lil{⟨α,A⟩}:
 \begin{lstlisting}
 inductive bSet (𝔹 : Type u)
     [complete_boolean_algebra 𝔹] : Type (u+1)
@@ -620,7 +618,8 @@ One can also be led to this construction by considering the recursive \emph{name
   A set \(\tau\) is a \(\mathbb{P}\)-name iff \(\tau\) is a relation and for all \(\langle  \sigma, p\rangle \in \tau\) we have that \(\sigma\) is a \(\mathbb{P}\)-name and \(p \in \mathbb{P}\).
 \end{defn}
 
-In particular, if \(\mathbb{P}\) is the singleton poset, then a \(\mathbb{P}\)-name is merely a set of \(\mathbb{P}\)-names, in the same way that a term of type \lstinline{pSet} is a type-indexed collection of terms of type \lstinline{pSet}. Reversing this observation, we can replace \(\mathbb{P}\) with a complete Boolean algebra \(\mathbb{B}\) and generalize the definition of \lstinline{pSet.mk} with a third field, so that as in the case of \(\mathbb{P}\)-names, every element of a set is assigned an element (a ``Boolean truth-value'') of \(\mathbb{B}\), again giving us \lil{bSet 𝔹}. Thus, \lil{bSet 𝔹} should be thought of as the type of \lil{𝔹}-names
+In particular, if \(\mathbb{P}\) is the singleton poset, then a \(\mathbb{P}\)-name is merely a set of \(\mathbb{P}\)-names, in the same way that a term of type \lstinline{pSet} is a type-indexed collection of terms of type \lstinline{pSet}.
+Reversing this observation, we can replace \(\mathbb{P}\) with a complete Boolean algebra \(\mathbb{B}\) and generalize the definition of \lstinline{pSet.mk} with a third field, so that as in the case of \(\mathbb{P}\)-names, every element of a set is assigned an element (a ``Boolean truth-value'') of \(\mathbb{B}\), again giving us \lil{bSet 𝔹}. Thus, \lil{bSet 𝔹} should be thought of as the type of \lil{𝔹}-names.
 
 % \begin{lstlisting}
 % inductive bSet {𝔹 : Type u) : Type (u+1)
@@ -643,7 +642,6 @@ It is now easy to define $\B$-valued membership, which we denote by \lil{∈ᴮ}
 def mem : bSet 𝔹 → bSet 𝔹 → 𝔹
 | x ⟨α, A, B⟩ := ⨆a, B a ⊓ x =ᴮ A a
 \end{lstlisting}
-
 We remark that while standard treatments of Boolean-valued models of \(\ZFC\) mutually define equivalence and membership so that the axiom of extensionality follows definitionally (\cite{bell2011set}, \cite{hamkins2012well}), the induction principle given by the non-mutual definition is easier to work with in our formalization.
 
 \subsection{The fundamental theorem of forcing}
@@ -664,7 +662,6 @@ This gives a nice definition of powerset:
 \end{defn}
 
 In particular, this gives an easy implemention of the axiom of comprehension (not just for interpretations of formulas, but for any \(\mathbb{B}\)-valued predicate on \lil{bSet 𝔹} satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma): \label{def-comprehension}
-
 \begin{lstlisting}
 def subset.mk {u} (χ : u.type → 𝔹) : bSet 𝔹 :=
 set_of_indicator (λ i, χ i ⊓ (u.bval i))
@@ -681,7 +678,6 @@ lemma mem_comprehend_iff : ∀ {z} {Γ},
 
 lemma bSet_axiom_of_comprehension {Γ : 𝔹} : Γ ≤ ⨆ y, y ⊆ᴮ x ⊓ ⨅ z, z ∈ᴮ y ⇔ (z ∈ᴮ x ⊓ ϕ z)
 \end{lstlisting}
-
 % \subparagraph*{The axiom of infinity}
 % \lil{ω : pSet} is defined to be the collection of all finite von Neumann ordinals (via induction on $\mathbb{N}$), and we define \lil{ω : bSet 𝔹} as \(\widecheck{\omega}\).
 % Now \lil{ω} is the $\subseteq$-least set that contains $\varnothing$ and is closed under the successor operation $x \mapsto x \cup \{x\}$.
@@ -720,7 +716,6 @@ def ordinal.mk : ordinal → pSet
             -- i.e. (mk ξ ∪ {mk ξ})
 | is_limit ξ := ⋃ η < ξ, (ordinal.mk η)
 \end{lstlisting}
-
 Working internally to any model \(M\) of \(\ZFC\), we can define the class \(\operatorname{Ord}(M)\) as the collection of transitive sets which are well-ordered by their membership relation. While \lil{ordinal.mk} actually induces an order-isomorphism of \lil{pSet}'s ordinals with Lean's ordinals, \lil{check ∘ ordinal.mk : ordinal → bSet 𝔹} generally fails to surject onto \lil{bSet 𝔹}'s ordinals (in general, these are mixtures of checked ordinals).
 % To define ordinals, we can define a map \lil{ordinal.mk : ordinal → pSet} by transfinite recursion.
 % If we compose this map with \lil{check} we get the ordinals in \lil{bSet 𝔹}.
@@ -1092,31 +1087,25 @@ Implementing this argument was one of the most technical parts of our formalizat
 After verifying that the (shallow) interpretations of \(\mathsf{CH}\) and \(\neg \mathsf{CH}\) are \(\top\) in \lil{bSet 𝔹_collapse} and \lil{bSet 𝔹_cohen}, we construct deeply-embedded Boolean-valued \lil{L_ZFC}-structures \lil{V 𝔹_collapse} and \lil{V 𝔹_cohen} on top of \lil{bSet 𝔹_collapse} and \lil{bSet 𝔹_cohen}. Completing the fundamental theorem of forcing is merely a matter of checking that the deeply-embedded first-order formulas for the axioms of \(\ZFC\) are correctly interpreted as their shallow counterparts, which were proven separately to be \(\top\). Finally, we verify that the deeply-embedded interpretations of \lil{CH_formula} coincide with the shallow interpretations of \(\mathsf{CH}\).
 
 As we have already observed, an easy consequence of Boolean-valued soundness is that a formula is unprovable if its negation has a model. Thus, we have:
-
 \begin{lstlisting}
 lemma unprovable_of_model_neg {T : Theory L} {f : sentence L} (S : bStructure L 𝔹)
   (H_model : ⊤ ⊩[S] T) [H_nonempty : nonempty S]
   {Γ : 𝔹} (H_nonzero : (⊥ : 𝔹) < Γ) (H : Γ ⊩[S] ∼f) : ¬ (T ⊢' f)
 
-lemma V_𝔹_cohen_models_neg_CH : ⊤ ⊩[V 𝔹_cohen] ∼CH_formula
-
-lemma V_𝔹_collapse_models_CH : ⊤ ⊩[V 𝔹_collapse] CH_formula
+lemma V_𝔹_cohen_models_neg_CH :
+  ⊤ ⊩[V 𝔹_cohen] ∼CH_formula
+lemma V_𝔹_collapse_models_CH :
+  ⊤ ⊩[V 𝔹_collapse] CH_formula
 \end{lstlisting}
-
 \noindent Combining these results yields
-
 \begin{lstlisting}
 theorem CH_unprv : ¬ (ZFC ⊢' CH_formula)
-
 theorem neg_CH_unprv : ¬ (ZFC ⊢' ∼CH_formula)
 \end{lstlisting}
-
 \noindent and the independence of CH follows.
-
 \begin{lstlisting}
-def independent {L : Language} (T : Theory L)
-  (f : sentence L) : Prop := ¬ T ⊢' f ∧ ¬ T ⊢' ∼f
-
+def independent (T : Theory L) (f : sentence L) : Prop :=
+¬ T ⊢' f ∧ ¬ T ⊢' ∼f
 theorem independence_of_CH : independent ZFC CH_f :=
 by finish [independent, CH_unprv, neg_CH_unprv]
 \end{lstlisting}
@@ -1135,7 +1124,6 @@ by finish [independent, CH_unprv, neg_CH_unprv]
 % theorem independence_of_CH : independent ZFC' CH_sentence :=
 % by finish[independent, CH_unprovable_from_ZFC, neg_CH_unprovable_from_ZFC]
 % \end{lstlisting}
-
 % \paragraph{Concluding remarks}
 
 
@@ -1162,7 +1150,8 @@ similarly, given an indexed family \lil{a : I → 𝔹}, the equivalence \lstinl
 
 Difficulties arise when the statements to be proved become only slightly more complicated. Consider the following example, which should be  ``\lil{by assumption}'':
 \begin{lstlisting}
-  ∀ a b c d e f g: 𝔹, (d ⊓ e) ⊓ (f ⊓ g ⊓ ((b ⊓ a) ⊓ c)) ≤ a
+  ∀ a b c d e f g: 𝔹,
+    (d ⊓ e) ⊓ (f ⊓ g ⊓ ((b ⊓ a) ⊓ c)) ≤ a
 \end{lstlisting}
 or slightly less trivially, the following example where the goal is attainable by ``implication introduction and \emph{modus ponens}''
 \begin{lstlisting}
@@ -1173,12 +1162,13 @@ Our solution is to piggyback on top of the tactic monad's AC-invariant handling 
 \label{poset-yoneda}
 \begin{lstlisting}
 lemma poset_yoneda {β} [partial_order β] {a b : β}
-(H : ∀ Γ : β, Γ ≤ a → Γ ≤ b) : a ≤ b
+  (H : ∀ Γ : β, Γ ≤ a → Γ ≤ b) : a ≤ b
 \end{lstlisting}
 With a little custom automation, our first example nearly becomes ``\lil{by assumption}''
 \begin{lstlisting}
-example {a b c d e f g : 𝔹} : (d ⊓ e) ⊓ (f ⊓ g ⊓((b ⊓ a)⊓ c)) ≤ a :=
-by {tidy_context, assumption}
+example {a b c d e f g : 𝔹} :
+  (d ⊓ e) ⊓ (f ⊓ g ⊓((b ⊓ a)⊓ c)) ≤ a :=
+by { tidy_context, assumption }
 /-  Goal state before `assumption`:
   [...]
   H_right_right_left_left : Γ ≤ b,
@@ -1191,18 +1181,20 @@ With more custom tactics and coercions to simulate natural deduction proof steps
 example {𝔹} [complete_boolean_algebra 𝔹]
  {a b c : 𝔹} :
  ( a ⟹ b ) ⊓ ( b ⟹ c ) ≤ a ⟹ c :=
-  by {tidy_context, bv_imp_intro Ha,
-      exact a_1_right (a_1_left Ha)}
+  by { tidy_context, bv_imp_intro Ha,
+       exact a_1_right (a_1_left Ha) }
 \end{lstlisting}
 Compare this with a more conventional proof, where we even have the deduction theorem and modus ponens available as lemmas:
 \begin{lstlisting}
-example {β : Type*} [complete_boolean_algebra β] {a b c : β} :
+example {β : Type*} [complete_boolean_algebra β]
+  {a b c : β} :
  ( a ⟹ b ) ⊓ ( b ⟹ c ) ≤ a ⟹ c :=
 begin
   rw [ ← deduction, inf_comm, ← inf_assoc ],
   transitivity b ⊓ (b ⟹ c),
     { refine le_inf _ _,
-      { apply inf_le_left_of_le, rw inf_comm, apply mp },
+      { apply inf_le_left_of_le, rw inf_comm,
+        apply mp },
       { apply inf_le_right_of_le, refl }},
     { rw inf_comm, apply mp }
 end
@@ -1251,19 +1243,20 @@ lemma bv_rw {x y : bSet 𝔹} {Γ : 𝔹}
 \end{lstlisting}
 We alias the type of \lil{h_congr}, and add a database of \lil{@[simp]} lemmas expressing that congruence lemmas are preserved by first-order logical operations:
 \begin{lstlisting}
-def B_ext (ϕ : bSet 𝔹 → 𝔹) : Prop := ∀ x y, x =ᴮ y ⊓ ϕ x ≤ ϕ y
-@[simp]lemma B_ext_infi {ι} {ϕ : ι → (bSet 𝔹 → 𝔹)} {h : ∀ i, B_ext (ϕ i)} : B_ext (λ x, ⨅i, ϕ i x)
+def B_ext (ϕ : bSet 𝔹 → 𝔹) : Prop :=
+∀ x y, x =ᴮ y ⊓ ϕ x ≤ ϕ y
+@[simp] lemma B_ext_infi {ι} {ϕ : ι → (bSet 𝔹 → 𝔹)}
+  {h : ∀ i, B_ext (ϕ i)} : B_ext (λ x, ⨅i, ϕ i x)
 \end{lstlisting}
 Surprisingly, \lil{simp} is able to handle recursive applications of these lemmas on its own, allowing most congruence lemma proof obligations to be automatically discharged:
 \begin{lstlisting}
-example {w : bSet 𝔹} : (let ϕ :=
-  λ x, ⨅ z, z ∈ᴮ w ⊓ z ⊆ᴮ x ⊓ x ⊆ᴮ z
+example {w : bSet 𝔹} :
+  (let ϕ := λ x, ⨅ z, z ∈ᴮ w ⊓ z ⊆ᴮ x ⊓ x ⊆ᴮ z
   in B_ext ϕ) := by simp
 \end{lstlisting}
 % \section{Related Work}
 % \label{sect:related-work}
 % Compare with other formalization on the consistency of CH. % do there exist any?
-
 \section{Conclusions and future work}
 \label{sect:conclusions}
 % This paper describes a successful completion of the Flypitch project, giving the first formalization of the independence of the continuum hypothesis.
@@ -1286,7 +1279,7 @@ While our custom automation saved a considerable amount of work, much of it is o
 
 
 
-% Similarly, although we know that \(\Delta_0\) properties are preserved by \lil{check}, we do not handle this uniformly and only prove instances of this theorem by hand. However, a human mathematician proves this with a single ``tactic'' which reifies a \(\mathbb{B}\)-valued goal to a first-order formula, and then computes that all quantifiers are bounded. 
+% Similarly, although we know that \(\Delta_0\) properties are preserved by \lil{check}, we do not handle this uniformly and only prove instances of this theorem by hand. However, a human mathematician proves this with a single ``tactic'' which reifies a \(\mathbb{B}\)-valued goal to a first-order formula, and then computes that all quantifiers are bounded.
 % For example, a human mathematician would provide the congruence lemmas automatically discharged in \Cref{subsect:B-ext} by reifying a \(\mathbb{B}\)-valued goal to a first-order formula and applying a theorem
 
 % \subsection{Future Work}
@@ -1311,7 +1304,7 @@ Our work only marks the beginning of an integration of formal methods with moder
 
 
 
-% such as the independence of Suslin's hypothesis \cite{foo}, Solovay's theorem on measurable subsets of \(\mathbb{R}\) \cite{bar}, 
+% such as the independence of Suslin's hypothesis \cite{foo}, Solovay's theorem on measurable subsets of \(\mathbb{R}\) \cite{bar},
 
 %% Acknowledgments
 \begin{acks}                            %% acks environment is optional
@@ -1321,7 +1314,7 @@ Our work only marks the beginning of an integration of formal methods with moder
   %% acknowledge financial support and will be used by metadata
   %% extraction tools.
   We thank the members of the CMU-Pitt Lean group, particularly Simon Hudon, Jeremy Avigad, Mario Carneiro, Reid Barton, and Tom Hales for their feedback and suggestions; we are also grateful to Dana Scott and John Bell for their advice and correspondence.
-  
+
   The authors gratefully acknowlege the support by the
   \grantsponsor{GS100000001}{Alfred P. Sloan Foundation}{https://doi.org/10.1038/201765d0}, Grant
   No.~\grantnum{GS100000001}{G-2018-10067}.
