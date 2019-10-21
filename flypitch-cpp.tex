@@ -368,7 +368,7 @@ If applied to \lil{n} terms, it becomes a term.
 We define the type of well-formed terms \lil{term L} to be \lil{preterm L 0}.
 
 % cut?
-There are other methods to define well-typed terms, for example using a nested inductive type with a constructor (replacing the second and third constructor in our definition) 
+There are other methods to define well-typed terms, for example using a nested inductive type with a constructor (replacing the second and third constructor in our definition)
 \begin{lstlisting}
 | app : ∀ {l : ℕ}, L.functions l →
     vector term l → term
@@ -1070,11 +1070,13 @@ f ∈ᴮ functions ω y̌
   As with Cohen forcing, we will reflect a Boolean-valued \(\forall\)-\(\exists\) statement into the metatheory, and then use a combinatorial property of \lil{𝔹_collapse} to strengthen it.
   The following lemma is true for general \(\mathbb{B}\):
 \begin{lstlisting}
-lemma AE_of_check_func_check (x y : pSet.{u}) {f : bSet 𝔹} {Γ : 𝔹}
+lemma AE_of_check_func_check (x y : pSet.{u})
+  {f : bSet 𝔹} {Γ : 𝔹}
   (H : Γ ≤ is_func' x̌ y̌ f) (H_nonzero : ⊥ < Γ) :
-  Π (i : x.type),
-    ∃ (j : y.type ) (Γ' : 𝔹) (H_nonzero' : ⊥ < Γ') (H_le : Γ' ≤ Γ),
-      Γ' ≤ (is_func' x̌ y̌ f) ∧ Γ' ≤ (pair (x.func i)̌  (y.func j)̌ ) ∈ᴮ f :=
+  Π (i : x.type), ∃ (j : y.type) (Γ' : 𝔹)
+  (H_nonzero' : ⊥ < Γ') (H_le : Γ' ≤ Γ),
+  Γ' ≤ (is_func' x̌ y̌ f) ∧
+  Γ' ≤ (pair (x.func i)̌  (y.func j)̌ ) ∈ᴮ f
 \end{lstlisting}
 Recursively applying this lemma, we obtain \(g_0, \dots, g_n, \dots\) such that
 
@@ -1208,9 +1210,9 @@ One use-case where automation is crucial is context specialization.
 For example, suppose that after preprocessing with \lstinline{poset_yoneda}, the goal is \lstinline{Γ ≤ (a ⟹ b)}, and one would like to apply implication introduction,
 adding \lstinline{Γ ≤ a} to the context and reducing the goal to \lstinline{Γ ≤ b}. However, the deduction theorem only lets us rewrite the goal to \lstinline{Γ ⊓ a ≤ b}, and we can only add \lstinline{Γ ⊓ a ≤ a} to the context.
 So we can introduce the implication after all, but at the cost of specializing the context \lstinline{Γ} to the smaller context \lstinline{Γ' := Γ ⊓ a}.
-But now, in order for the user to continue the pretense that they are merely doing first-order logic, this change of variables must be propagated to the rest of the assumptions % which may still be of the form \lstinline{Γ ≤ _}
+But now, in order for the user to continue the pretense that they are merely doing first-order logic, this change of variables must be propagated to the rest of the assumptions% which may still be of the form \lstinline{Γ ≤ _}
 ---which is extremely tedious to do by hand, but easy to automate.
-This is done by the tactic \lil{bv_imp_intro}:
+This is done by the tactic \lil{bv_imp_intro}:, as in the following example.
 \begin{lstlisting}
 example {a b c : 𝔹} :
   (a ⟹ b) ⊓ (b ⟹ c) ≤ a ⟹ c :=
@@ -1227,13 +1229,13 @@ However, we felt the benefits of doing so in our formalization would have been m
 
 \paragraph{Congruence closure on quotient types} \label{subsect:bv-cc}
 Another benefit of applying \hyperref[poset-yoneda]{\lstinline{poset_yoneda}} and using context variables \(\Gamma\) throughout the formalization is that this approach exposes a canonical family of setoids on \lil{bSet 𝔹} induced by \lil{𝔹}-valued equality:
-for every \(\Gamma : \mathbb{B}\), \(\lambda\; x \; y, \Gamma \leq x =^{\mathbb{B}} y\) is an equivalence relation on \lil{bSet 𝔹} (the larger \(\Gamma\) is, the finer the equivalence relation).
+for every \(\Gamma : \mathbb{B}\) the relation \(\lambda\; x \; y, \Gamma \leq x =^{\mathbb{B}} y\) is an equivalence relation on \lil{bSet 𝔹} (the larger \(\Gamma\) is, the finer the equivalence relation).
 
 Since Lean natively supports quotient types, then as soon as e.g. all (Boolean-valued) existentials have been split and the only task remaining is to perform equality reasoning,
 we can quotient by the appropriate setoid and simply call \lil{cc};
 this is easy to automate with a custom tactic \lil{bv_cc}: % cut?
 \begin{lstlisting}
-example {x y z x₁ y₁ z₁: bSet 𝔹} {Γ : 𝔹}
+example {x y z x₁ y₁ z₁ : bSet 𝔹} {Γ : 𝔹}
   (H1 : Γ ≤ x =ᴮ y) (H2 : Γ ≤ y =ᴮ z)
   (H3 : Γ ≤ z =ᴮ z₁) (H4 : Γ ≤ z₁ =ᴮ y₁)
   (H5 : Γ ≤ y₁ =ᴮ x₁) : Γ ≤ x =ᴮ x₁ := by bv_cc
