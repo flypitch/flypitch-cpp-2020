@@ -367,14 +367,14 @@ A member of \lil{preterm n} is a partially applied term.
 If applied to \lil{n} terms, it becomes a term.
 We define the type of well-formed terms \lil{term L} to be \lil{preterm L 0}.
 
-% cut?
-There are other methods to define well-typed terms, for example using a nested inductive type with a constructor (replacing the second and third constructor in our definition)
-\begin{lstlisting}
-| app : ∀ {l : ℕ}, L.functions l →
-    vector term l → term
-\end{lstlisting}
-Here \lil{vector term l} is a $l$-tuple of terms.
-Lean has limited support for nested inductive types, but defining definitions by recursion on a nested inductive type is inconvenient.
+% % cut?
+% There are other methods to define well-typed terms, for example using a nested inductive type with a constructor (replacing the second and third constructor in our definition) 
+% \begin{lstlisting}
+% | app : ∀ {l : ℕ}, L.functions l →
+%     vector term l → term
+% \end{lstlisting}
+% Here \lil{vector term l} is a $l$-tuple of terms.
+% Lean has limited support for nested inductive types, but defining definitions by recursion on a nested inductive type is inconvenient.
 
 The type of \textbf{preformulas} is defined similarly:
 \begin{lstlisting}
@@ -391,23 +391,23 @@ inductive preformula (L : Language.{u}) :
 | all : preformula 0 → preformula 0
     -- notation ∀'
 \end{lstlisting}
-A member of \lil{preformula n} is a partially applied formula.
-If applied to \lil{n} terms, it becomes a formula.
+We choose this definition of \lil{preformula} to mimic \lil{preterm}.
+A member of \lil{preformula n} is a partially applied formula, and if applied to \lil{n} terms, it becomes a formula.
 The type of well-formed formulas \lil{formula L} is defined to be \lil{preterm L 0}.
 Implication is the only primitive binary connective and universal quantification is the only primitive quantifier. Since we use classical logic, we can define the other connectives and quantifiers from these.
 In particular, we define negation \lil{∼ f} to be \lil{f ⟹ ⊥} and existential quantification \lil{∃' f} to be \lil{∼ ∀' ∼ f}.
 Note that implication and the universal quantifier cannot be applied to preformulas that are not fully applied.
+% We could also define an inductive type where the constructors \lil{rel} and \lil{apprel} were replaced by the single constructor % cut? this paragraph
+% \begin{lstlisting}
+% | rel {l : ℕ} : L.relations l →
+%     vector term l → formula
+% \end{lstlisting}
+% This would not even result in a nested inductive type.
+% However, we found it more convenient to adapt operations and proofs from \lil{preterm} to \lil{preformula} using our definition.
+% Using vectors results in some extra proof steps for reasoning about vectors.
+% Our approach also results in some extra proof steps, but they are the same as the steps in the corresponding proofs for preterms.
 
-We choose this definition of \lil{preformula} to mimic \lil{preterm}.
-We could also define an inductive type where the constructors \lil{rel} and \lil{apprel} were replaced by the single constructor % cut? this paragraph
-\begin{lstlisting}
-| rel {l : ℕ} : L.relations l →
-    vector term l → formula
-\end{lstlisting}
-This would not even result in a nested inductive type.
-However, we found it more convenient to adapt operations and proofs from \lil{preterm} to \lil{preformula} using our definition.
-Using vectors results in some extra proof steps for reasoning about vectors.
-Our approach also results in some extra proof steps, but they are the same as the steps in the corresponding proofs for preterms.
+It is also possible to define well-typed terms and formulas using vectors of terms and nested inductive types. However, we avoided these kinds of definitions because Lean has limited support for nested inductive types. In the case of formulas, this would not even result in a nested inductive type, but we found it more convenient to adapt operations and proofs from \lil{preterm} to \lil{preformula} using our definition.
 
 We use de Bruijn indices to avoid variable shadowing. This means that the variable \lil{&m} under \lil{k} is bound if $m<k$ and otherwise represents the $(m-k)$-th free variable.
 We define the usual operations of lifting and substitution for terms and formulas, needed when using de Bruijn variables.
@@ -736,9 +736,7 @@ check (ordinal.mk (aleph 1)) = check (ℵ₁) = ℵ₁̌
 %     % & \text{\lstinline{Type u}} & &
 %   \end{tikzcd}
 % \]
-We will freely conflate Lean ordinals and cardinals with their representatives in \lil{Type u}.
-Since in general, \(\widecheck{\aleph_1}\) is \emph{not} what \lil{bSet 𝔹} thinks is \(\aleph_1\), we will use a superscript, e.g. \(\aleph_k^{\mathbb{B}}\), to denote the internal alephs of \lil{bSet 𝔹}.
-
+We will freely conflate \lil{pSet} ordinals with their underlying types, so e.g. \(\nu : \aleph_2\) means \lil{\nu : \aleph_2.type}. (It is always true that the cardinality of \lil{(ordinal.mk κ).type} is \lil{κ}.) Since in general, \(\widecheck{\aleph_1}\) is \emph{not} what \lil{bSet 𝔹} thinks is \(\aleph_1\), we will use a superscript, e.g. \(\aleph_k^{\mathbb{B}}\), to denote the internal alephs of \lil{bSet 𝔹}.
 
 % TODO(jesse): add a note in the introduction on how Dana Scott was the first one to point out that the names could be taken at face value as a model of ZFC if one was willing to shift to a many-valued logic instead.
 
@@ -788,7 +786,7 @@ We say that \(\B\) is \textbf{\(\sigma\)-closed} if there exists a dense suborde
 \subsection{Cohen forcing}
 
 As we have already seen in \Cref{def:powerset}, we construct the powerset of a \lil{𝔹}-valued set \lstinline{u : bSet 𝔹} using \lil{𝔹}-valued indicator functions \lil{χ : u.type → 𝔹}.
-The basic strategy of Cohen forcing is to choose \lil{𝔹} such that for every \lil{ν : aleph 2}, there is a canonical indicator function (a ``Cohen real'') \(\chi_{\nu} : \N \to \mathbb{B}\).
+The basic strategy of Cohen forcing is to choose \lil{𝔹} such that for every \lil{ν : ℵ₂.type}, there is a canonical indicator function (a ``Cohen real'') \(\chi_{\nu} : \N \to \mathbb{B}\).
 This is an external function (a member of a function type of \lstinline{Type u}) which descends to an injective function \(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\) in \lil{bSet 𝔹}.
 
 To show that the injection \(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\)  suffices to negate \(\CH\), we will show that if \lil{𝔹} has the CCC, then \(\omega \prec \widecheck{\aleph_1} \prec \widecheck{\aleph_2}\), where $x\prec y$ means that there is no surjection from a subset of $x$ to $y$. We then ensure that \lil{𝔹} has this property by applying a powerful combinatorial argument called the \emph{\(\Delta\)-system lemma}.
@@ -832,7 +830,7 @@ This is essentially because the image of $\iota : \mathbb{P}_{\mathsf{cohen}} \t
 Our chosen encoding of the Cohen poset also made it easier to perform this identification.
 
 \begin{defn}\label{def:cohen-real}
-  Let $\nu : \aleph_2$. For any $n : \N$, the collection of all subsets of $\aleph_2 \times \N$ which contain $(\nu, n)$ is a regular open of $2^{\aleph_2 \times \N}$, denoted $\mathbf{P}_{(\nu, n)}$.
+  Let \(\nu : \aleph_2\). For any $n : \N$, the collection of all subsets of $\aleph_2 \times \N$ which contain $(\nu, n)$ is a regular open of $2^{\aleph_2 \times \N}$, denoted $\mathbf{P}_{(\nu, n)}$.
 Thus, we associate to $\nu$ the $\B$-valued indicator function $\chi_{\nu} : \N \to \B$ defined by $\chi_{\nu}(n) := \mathbf{P}_{(\nu, n)}$.
   By \Cref{def:powerset}, each \(\chi_{\nu}\) induces a new $\B$-valued subset $\widetilde{\chi_{\nu}} \subseteq \widecheck{\N}$. We call $\widetilde{\chi_{\nu}}$ a \textbf{Cohen real}.
 \end{defn}
