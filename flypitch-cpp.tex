@@ -1103,7 +1103,8 @@ We now verify that the deeply-embedded interpretations of \lil{CH_formula} coinc
 
 As we have already observed, an easy consequence of Boolean-valued soundness is that a formula is unprovable if its negation has a model. Thus, we have:
 \begin{lstlisting}
-lemma unprovable_of_model_neg {C : Theory L} {f : sentence L} (S : bStructure L 𝔹)
+lemma unprovable_of_model_neg {C : Theory L}
+  {f : sentence L} (S : bStructure L 𝔹)
   (H_model : ⊤ ⊩[S] C) [H_nonempty : nonempty S]
   {Γ : 𝔹} (H_nonzero : (⊥ : 𝔹) < Γ)
   (H : Γ ⊩[S] ∼f) : ¬ (C ⊢' f)
