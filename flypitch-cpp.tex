@@ -989,17 +989,8 @@ There are two major obstacles. The first is that to even formally state the latt
 While the operation \lil{bv_powerset} (\Cref{def:powerset}) gives a construction of the internal powerset of any \lil{x : bSet 𝔹} (using \lil{𝔹}-valued indicator functions, for any \lil{𝔹}), \(\aleph_1^{\mathbb{B}}\) is only specified as the least ordinal greater than \(\omega\), and does not admit as direct a a construction.
 We describe our construction of \(\aleph_1^{\mathbb{B}}\) (as the Hartogs number of \(\omega\)) in \Cref{subsect:forcing:aleph-1}.
 
-Now we must ensure that no new countable ordinals are added to \(\aleph_1\) and that no new subsets of \(\omega\) are added to \(\mathcal{P}(\omega)\) in the passage via \lil{check} from \lil{pSet} to \lil{bSet}. The second obstacle is reducing both statements to, and proving, the following lemma.
-
-\begin{lemma}\label{lemma:function-reflect-suffices}
-  Let \(\mathbb{B}\) be a complete Boolean algebra, and suppose that for every \lil{y : pSet} and \lil{f : bSet 𝔹} such that \lil{bSet 𝔹} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\), there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹} models that \(\widecheck{g} = f\).
-  Then \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\).
-\end{lemma}
-
-We describe our solution to this in \Cref{subsect:function-reflection}.
-
-
-
+Now we must ensure that no new countable ordinals are added to \(\aleph_1\) and that no new subsets of \(\omega\) are added to \(\mathcal{P}(\omega)\) in the passage via \lil{check} from \lil{pSet} to \lil{bSet 𝔹}.
+We show this in \Cref{subsect:function-reflection} by proving that we can reflect functions with domain \(\omega\) from \lil{bSet 𝔹} to \lil{pSet}.
 
 % As with Cohen forcing, we will proceed by using \(\forall\)-\(\exists\) reflection to reflect functions from \(\omega\) to check-names back into \lil{pSet}, and then showing that the two required equalities follow from this.
 
@@ -1032,7 +1023,14 @@ Our implementation differs from the usual construction of Hartogs numbers by \em
 
 \subsection{Function reflection} \label{subsect:function-reflection}
 
-\begin{proof}[Proof of \Cref{lemma:function-reflect-suffices}.]
+Suppose given \lil{y : pSet} and \lil{f : bSet 𝔹} such that \lil{bSet 𝔹} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\).
+We say that \lil{bSet 𝔹} \textbf{reflects \lil{f}} if there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹} models that \(\widecheck{g} = f\).
+We say that \lil{bSet 𝔹} \textbf{reflects countable functions} if it reflects all such \lil{f}.
+\begin{lemma}\label{lemma:function-reflect-suffices}
+  Let \(\mathbb{B}\) be a complete Boolean algebra, and suppose that \lil{bSet 𝔹} reflects countable functions.
+  Then \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\).
+\end{lemma}
+\begin{proof}
   % Observe that by definition of \(\aleph_1\), we have that for every ordinal \(\eta\), \(\eta < \aleph_1\) if and only if there exists a surjection \(\omega \twoheadrightarrow \eta\) (equivalently, there is an injection \(\eta \hookrightarrow \omega\)). Also, \(\mathcal{P}(\omega) \simeq \widecheck{2}^{\widecheck{\omega}}\) (in \(\mathsf{ZF}\)).
 
   To see that \(\widecheck{\aleph_1} \subseteq \aleph_1^{\mathbb{B}}\), let \(x\) be an arbitrary element of \(\widecheck{\aleph_1}\).
@@ -1055,8 +1053,7 @@ Our implementation differs from the usual construction of Hartogs numbers by \em
 It remains to show that \(\mathbb{B}_{\mathsf{collapse}}\) fulfills the assumptions of \Cref{lemma:function-reflect-suffices}.
 
 \begin{lemma}\label{lemma:function-reflect}
-  For every \(y : \text{\lil{pSet}}\) and \(f : \text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\) such that \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\) models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\),
-  there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\) models that \(\widecheck{g} = f\).
+  \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\) reflects countable functions.
 \end{lemma}
 
 % \subsection{Reflecting Boolean-valued \(\forall\)-\(\exists\) statements into the metatheory} \label{subsect:reflect}
