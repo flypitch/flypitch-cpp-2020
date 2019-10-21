@@ -928,7 +928,7 @@ From \Cref{thm:product-ccc} and the observation that $2^J$ has the CCC if $J$ is
 \subsection{Collapse forcing} \label{subsect:collapse}
 % note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
 
-Whereas Cohen forcing creates a new injection \(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\), we can use \emph{collapse forcing} to create a new surjection \(F : \aleph_1^{\mathbb{B}} \twoheadrightarrow \mathcal{P}(\omega)\).
+Whereas Cohen forcing creates a new injection \(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\), we can use \emph{collapse forcing} to create a new surjection \(F : \aleph_1^{\mathbb{B}} \twoheadrightarrow \mathcal{P}(\omega)\), where \(\aleph_1^{\mathbb{B}}\) denotes the ordinal that \lil{bSet 𝔹} thinks is $\aleph_1$.
 Similarly to Cohen forcing, the strategy is to pick \lil{𝔹} such that there is a canonical \lil{𝔹}-valued indicator function on \(\widecheck{\aleph_1} \times \widecheck{\mathcal{P}(\omega)}\) representing the graph of a surjection \(\widetilde{F}\).
 To show that \(\widetilde{F}\) suffices to force \(\CH\), we must verify that our choice of \(\mathbb{B}\) is \(\sigma\)-closed.
 %
@@ -984,15 +984,15 @@ Surjectivity is equivalent to \lil{⨅ j, (⨆ i, af i j) = ⊤}, totality is eq
 \end{lstlisting}
 Both surjectivity and totality of \(\chi_{\pi}\) require \emph{density arguments}, where the definition of indexed supremum (\(\bigsqcup x_i\)) in the regular open algebra as the regularization \(((\bigcup x_i)^\perp)^\perp\) of the set-theoretic union plays a key role: the union of the truth values is not the entire space, but is only a dense open whose regularization is the entire space. In particular, the density argument for surjectivity crucially uses that \(\aleph_1\) is uncountable while \(\omega\) is countable.
 
-To finish demonstrating that \(\CH\) is true in \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\), it remains to check that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1\).
+To finish demonstrating that \(\CH\) is true in \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\), it remains to check that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\).
 There are two major obstacles. The first is that to even formally state the latter equality, we must construct \(\aleph_1^{\mathbb{B}}\) in \lil{bSet 𝔹}.
-(While the operation \lil{bv_powerset} (\Cref{def:powerset}) gives a construction of the internal powerset of any \lil{x : bSet 𝔹} (using \lil{𝔹}-valued indicator functions, for any \lil{𝔹}), \(\aleph_1^{\mathbb{B}}\) is only specified as the least ordinal greater than \(\omega\), and does not admit as direct a a construction.)
+While the operation \lil{bv_powerset} (\Cref{def:powerset}) gives a construction of the internal powerset of any \lil{x : bSet 𝔹} (using \lil{𝔹}-valued indicator functions, for any \lil{𝔹}), \(\aleph_1^{\mathbb{B}}\) is only specified as the least ordinal greater than \(\omega\), and does not admit as direct a a construction.
 We describe our construction of \(\aleph_1^{\mathbb{B}}\) (as the Hartogs number of \(\omega\)) in \Cref{subsect:forcing:aleph-1}.
 
-Now we must ensure that no new countable ordinals are added to \(\aleph_1\) and that no new subsets of \(\omega\) are added to \(\mathcal{P}(\omega)\) in the passage via \lil{check} from \lil{pSet} to \lil{bSet}. The second obstacle is reducing both statements to, and proving, the following lemma:
+Now we must ensure that no new countable ordinals are added to \(\aleph_1\) and that no new subsets of \(\omega\) are added to \(\mathcal{P}(\omega)\) in the passage via \lil{check} from \lil{pSet} to \lil{bSet}. The second obstacle is reducing both statements to, and proving, the following lemma.
 
 \begin{lemma}\label{lemma:function-reflect-suffices}
-  Let \(\mathbb{B}\) be a complete Boolean algebra, and suppose that for every \lil{y : pSet}, and every \lil{f : bSet 𝔹} such that \lil{bSet 𝔹} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\), there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹} models that \(\widecheck{g} = f\).
+  Let \(\mathbb{B}\) be a complete Boolean algebra, and suppose that for every \lil{y : pSet} and \lil{f : bSet 𝔹} such that \lil{bSet 𝔹} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\), there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹} models that \(\widecheck{g} = f\).
   Then \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\).
 \end{lemma}
 
@@ -1024,7 +1024,7 @@ That \(A\) surjects onto countable ordinals reduces to the fact that order-isomo
 In the formalization, this strategy is implemented in three stages.
 First, the axiom of comprehension (\Cref{def:comprehension}) is applied to \(\mathcal{P}(\omega \times \omega)\) to produce (what \lil{bSet 𝔹} thinks is) the collection of all relations \(R\) on \(\omega\) such that there exists an ordinal \(\eta\) and an injection \(f : \eta \hookrightarrow \omega\) such that \(R\) is the image of \(\eta\)'s membership relation under \(f\).
 This combines steps \(1\) and \(2\) and produces a set \lil{a1'_aux}. Then we \emph{modify} the indexing function \lil{a1'_aux.func} (by using the maximum principle, as described in step \(3\)) to point from \(R\) to a chosen witness \(\eta_R\) for \(R\), producing \lil{a1'}.
-Finally, since the ordinals \(0\) and \(1\) both have empty membership relations, it is unprovable in Lean whether \lil{a1'} contains one or the other, so we add both manually, producing \lil{a1 :=} \(\aleph_1^{\mathbb{B}}\).
+Finally, since the ordinals \(0\) and \(1\) both have empty membership relations, it is unprovable in Lean whether \lil{a1'} contains one or the other, so we add both manually, producing \(\aleph_1^{\mathbb{B}}\).
 
 Our implementation differs from the usual construction of Hartogs numbers by \emph{starting} with the sub-well-orders of \(\omega\), rather than taking the class of countable ordinals and showing this is actually a set by identification with sub-well-orders of \(\omega\). In this way we avoided performing a smallness argument, at the cost of using the axiom of choice to select witnesses. We remark that our construction does not use specific properties of \(\omega\) and easily generalizes to construct the successor cardinal of any infinite set. Instead of using membership \((<)\), we could have used subset \((\leq)\) instead, which would avoid the intermediate \lil{a1'}, but this would have made other parts of the proof more complex.
 
@@ -1039,14 +1039,14 @@ Our implementation differs from the usual construction of Hartogs numbers by \em
   By definition \(x\) is equal to \(\widecheck{\eta}\) for some \(\eta < \aleph_1\) in \lil{pSet}.
   Since the ordinals and cardinals of \lil{pSet} are isomorphic to Lean's ordinals and cardinals for \lil{Type u}, \(\eta\) injects into \(\omega\) (in \lil{pSet}, and also at the level of indexing types).
   Since being an injective function is \(\Delta_0\), it is absolute for \lil{check}, so \(x = \widecheck{\eta}\) injects into \(\omega\).
-  Then, by definition of \(\aleph_1^{\mathbb{B}}\), \(x \in \aleph_1^{\mathbb{B}}\).\footnote{Note that this did not use our assumption, and holds for general \(\mathbb{B}\).
+  Then, by definition of \(\aleph_1^{\mathbb{B}}\) we have \(x \in \aleph_1^{\mathbb{B}}\).\footnote{Note that this did not use our assumption, and holds for general \(\mathbb{B}\).
   For a conventional proof in a set-theoretic metatheory, see e.g. \cite{bell2011set}}
 
   To see that \(\aleph_1^{\mathbb{B}} \subseteq \widecheck{\aleph_1}\), suppose towards a contradiction that this is not true; since the ordinals are well-ordered,
   this means that \(\widecheck{\aleph_1} < \aleph_1^{\mathbb{B}}\), so by definition of \(\aleph_1^{\mathbb{B}}\), there is a surjection \(f : \omega \to \widecheck{\aleph_1}\).
   By assumption, this surjection can be lifted to a function \(g : \omega \to \aleph_1\) in \lil{pSet}, which can again be checked to be surjective, a contradiction.
 
-  Similarly, it is true for general \(\mathbb{B}\) that for any \lil{x : pSet}, \(\widecheck{\mathcal{P}(x)} \subseteq \mathcal{P}(\widecheck{x})\),
+  Similarly, it is true for general \(\mathbb{B}\) and any \lil{x : pSet} that \(\widecheck{\mathcal{P}(x)} \subseteq \mathcal{P}(\widecheck{x})\),
   because indicator functions into \lil{bool} naturally induce indicator functions to \(\mathbb{B}\) (by composing with the canonical inclusion \lil{bool → 𝔹}).
   Conversely, to show that \(\mathcal{P}(\omega) \subseteq \widecheck{\mathcal{P}(\omega)}\), use the isomorphism \(\mathcal{P}(\omega) \simeq \widecheck{2}^{\widecheck{\omega}}\) to reduce this to showing that \(\widecheck{2}^{\widecheck{\omega}} \subseteq \widecheck{2^{\omega}}\),
   and then apply the assumption to an arbitrary element of \(\widecheck{2}^{\widecheck{\omega}}\).
@@ -1055,7 +1055,7 @@ Our implementation differs from the usual construction of Hartogs numbers by \em
 It remains to show that \(\mathbb{B}_{\mathsf{collapse}}\) fulfills the assumptions of \Cref{lemma:function-reflect-suffices}.
 
 \begin{lemma}\label{lemma:function-reflect}
-  For every \(y : \text{\lil{pSet}}\), and every \(f : \text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\) such that \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\) models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\),
+  For every \(y : \text{\lil{pSet}}\) and \(f : \text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\) such that \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\) models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\),
   there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\) models that \(\widecheck{g} = f\).
 \end{lemma}
 
@@ -1076,7 +1076,7 @@ f ∈ᴮ functions ω y̌
   As with Cohen forcing, we will reflect a Boolean-valued \(\forall\)-\(\exists\) statement into the metatheory, and then use a combinatorial property of \(\mathbb{B}_{\mathsf{collapse}}\) to strengthen it.
   The following lemma is true for general \(\mathbb{B}\):
 \begin{lstlisting}
-lemma AE_of_check_func_check (x y : pSet.{u})
+lemma AE_of_check_func_check (x y : pSet)
   {f : bSet 𝔹} {Γ : 𝔹}
   (H : Γ ≤ is_func' x̌ y̌ f) (H_nonzero : ⊥ < Γ) :
   Π (i : x.type), ∃ (j : y.type) (Γ' : 𝔹)
@@ -1086,7 +1086,7 @@ lemma AE_of_check_func_check (x y : pSet.{u})
 \end{lstlisting}
 Recursively applying this lemma, we obtain \(g_0, \dots, g_n, \dots\) such that
 
-\[\bot < \dots < D \sqcap \left(\bigsqcap_{k \leq n} ((k, g_k) \in^{\mathbb{B}} f)\right) < \cdots < D \sqcap (0 , g_0) \in^{\mathbb{B}} f\]
+\[D \sqcap (0 , g_0) \in^{\mathbb{B}} f > \cdots > D \sqcap \left(\bigsqcap_{k \leq n} ((k, g_k) \in^{\mathbb{B}} f)\right) > \cdots > \bot. \]
 
 The intersection of this chain implies that \(g := \{(k, g_k)\}_{k \in \omega}\) is the required lift of \(f\). For general \(\mathbb{B}\), this intersection might be \(\bot\), but because \(\mathbb{B}_{\mathsf{collapse}}\) is \(\sigma\)-closed, we can shrink each term of the above chain into a dense suborder \(\mathcal{D}\) such that all downward \(\omega\)-indexed chains in \(\mathcal{D}\) have nonzero intersection, so the intersection of the chain is indeed nonzero.
 \end{proof}
@@ -1240,7 +1240,7 @@ def B_ext (ϕ : bSet 𝔹 → 𝔹) : Prop :=
 @[simp] lemma B_ext_infi {ι} {ϕ : ι → (bSet 𝔹 → 𝔹)}
   {h : ∀ i, B_ext (ϕ i)} : B_ext (λ x, ⨅i, ϕ i x)
 \end{lstlisting}
-Surprisingly, \lil{simp} is able to handle recursive applications of these lemmas on its own, allowing most congruence lemma proof obligations to be automatically discharged:
+Furthermore, \lil{simp} is able to handle recursive applications of these lemmas on its own, allowing most congruence lemma proof obligations to be automatically discharged:
 \begin{lstlisting}
 example {w : bSet 𝔹} :
   (let ϕ := λ x, ⨅ z, z ∈ᴮ w ⊓ z ⊆ᴮ x ⊓ x ⊆ᴮ z
