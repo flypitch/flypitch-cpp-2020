@@ -368,7 +368,7 @@ If applied to \lil{n} terms, it becomes a term.
 We define the type of well-formed terms \lil{term L} to be \lil{preterm L 0}.
 
 % % cut?
-% There are other methods to define well-typed terms, for example using a nested inductive type with a constructor (replacing the second and third constructor in our definition) 
+% There are other methods to define well-typed terms, for example using a nested inductive type with a constructor (replacing the second and third constructor in our definition)
 % \begin{lstlisting}
 % | app : ∀ {l : ℕ}, L.functions l →
 %     vector term l → term
@@ -478,7 +478,7 @@ Our formulation of \(\CH\) states that there is no ordinal between \(\omega\) an
 \[\CH:=\forall x, \Ord(x) \Rightarrow x \le \omega \vee \mathcal{P}(\omega) \le x,\]
 where \(\Ord(x)\) means ``\(x\) is an ordinal'' and \(x \le y\) means that there is a surjection from a subset of \(y\) to \(x\). In code, we have:
 \begin{lstlisting}
-def CH_formula : formula L_ZFC' :=
+def CH_formula : formula L_ZFC :=
 ∀' (is_ordinal ⟹
   leq_f[omega_t//1] ⊔ leq_f[Powerset_t omega_t//0])
 \end{lstlisting}
@@ -658,14 +658,6 @@ lemma mem_comprehend_iff : ∀ {z} {Γ},
 
 lemma bSet_axiom_of_comprehension {Γ : 𝔹} : Γ ≤ ⨆ y, y ⊆ᴮ x ⊓ ⨅ z, z ∈ᴮ y ⇔ (z ∈ᴮ x ⊓ ϕ z)
 \end{lstlisting}
-% \subparagraph*{The axiom of infinity}
-% \lil{ω : pSet} is defined to be the collection of all finite von Neumann ordinals (via induction on $\mathbb{N}$), and we define \lil{ω : bSet 𝔹} as \(\widecheck{\omega}\).
-% Now \lil{ω} is the $\subseteq$-least set that contains $\varnothing$ and is closed under the successor operation $x \mapsto x \cup \{x\}$.
-% More generally, we define a map \lil{ordinal.mk : ordinal → pSet} by transfinite recursion.
-
-% \subparagraph*{The axiom of powerset}
-
-% \subparagraph*{The axiom of choice}
 Following Bell, we verify Zorn's lemma in \lil{bSet 𝔹}.
 As is the case with \lil{pSet}, establishing Zorn's lemma requires the use of a choice principle from the metatheory.
 This was the most involved part of our verification of the fundamental theorem of forcing, and relies on the technical tool of \emph{mixtures}, which allow sequences of $\B$-valued sets to be ``averaged'' into new ones. Using mixtures, one derives the \emph{maximum principle}, which allows existentially quantified statements to be instantiated without changing their truth-value (so is essentially the axiom of choice):
@@ -677,11 +669,16 @@ For example, if \lil{x : bSet 𝔹} and \lil{ϕ} is a \lil{𝔹}-valued predicat
 
  % TODO: expand, if we have room
 
+After we verify the (shallow) statements of all the axioms in \lil{bSet 𝔹}, the last step is to prove that the deeply embedded statements correspond to the shallowly embedded statements. This is trivial for the axioms, since it is true by reflexivity, but it takes a little bit of work for the axiom scheme of collection. This proves the following theorem.
+
+\begin{thm}[Fundamental Theorem of Forcing]
+  For any complete Boolean algebra $\B$ the model $M = \text{\lil{bSet 𝔹}}$ models $\ZFC$, i.e.\ $\llbracket \ZFC \rrbracket_M=\top$.
+\end{thm}
 % \subparagraph*{The smallness of \ $\B$}
 % We end this section by remarking that the ``smallness'' of $\B$ (or more precisely, the fact that $\B$ lives in the same universe of types out of which \lil{bSet 𝔹} is being built) is essential in making \lstinline{bSet 𝔹} a model of $\ZFC$.
 % It is required for extracting the witness needed for the maximum principle, and is also required to even define the powerset operation, because the underlying type of the powerset is the function type of all maps into \lstinline{𝔹}.
 
-% \subparagraph*{Check-names}
+\subsection{Ordinals}
 \begin{defn}\label{def:check}
   We define the canonical map \lil{check : pSet → bSet 𝔹} by
   \begin{lstlisting}
@@ -695,7 +692,7 @@ def check : pSet → bSet 𝔹
 
 In general, $\widecheck{x}$ might have different properties than $x$, but \(\Delta_0\) properties (i.e. those definable with only bounded quantification) are always preserved. Importantly, \lil{bSet 𝔹} thinks $\widecheck{\omega}$ is $\omega$. Notably, \lil{ω : pSet} is defined separately from \lil{ordinal.mk omega} (see below) to be the collection of all finite von Neumann ordinals indexed by recursion on $\mathbb{N}$, so the underlying types of \lil{ω : pSet} and \lil{ω : bSet 𝔹} are definitionally equal to \(\mathbb{N}\).
 
-\paragraph{Ordinals in \lil{bSet 𝔹}}\label{subpara:ordinals}
+% \paragraph{Ordinals in \lil{bSet 𝔹}}\label{subpara:ordinals}
 The treatment of ordinals in \lil{mathlib} associates a class of ordinals to every type universe, defined as isomorphism classes of well-ordered types. Lean's ordinals may be represented inside \lil{pSet} by defining a map \lil{ordinal.mk : ordinal → pSet} via transfinite recursion (indexing the von Neumann construction of ordinals). In pseudocode,
 \begin{lstlisting}
 def ordinal.mk : ordinal → pSet
@@ -939,7 +936,7 @@ However, to force \(\CH\), the quantifiers are flipped and now we must exclude \
 % this will follow from ensuring our choice of \(\mathbb{B}\) is \(\sigma\)-closed (\Cref{def:sigma-closed}).
 
 \begin{defn}\label{def:collapse-poset}
-  We define \lstinline{ℙ_collapse} to be the poset of countable partial functions \(\aleph_1 \to \mathcal{P}(\omega)\).
+  We define \(\mathbb{P}_{\mathsf{collapse}}\) to be the poset of countable partial functions \(\aleph_1 \to \mathcal{P}(\omega)\).
   The principal open sets
   \[D_p := \{g : \aleph_1 \to \mathcal{P}(\omega) \hspace{2mm} | \hspace{2mm} g \text{ extends } p\} , \hspace{3mm} p \in \mathbb{P}_{\mathsf{collapse}}\]
   form the basis of a topology \(\tau\) (finer than the product topology) on the function set \(\mathcal{P}(\omega)^{\aleph_1}\).
@@ -960,14 +957,14 @@ However, to force \(\CH\), the quantifiers are flipped and now we must exclude \
 \end{proof}
 
 \begin{remark}
-  As an implementation detail, in the formalization we \emph{define} \lil{ℙ_collapse} to be the countable partial functions (in \lil{Type u}) between \lil{(ordinal.mk (aleph one) : pSet).type} and \lil{(powerset omega : pSet).type}, so that \\
-  \lil{𝔹_collapse}-valued indicator functions on
+  As an implementation detail, in the formalization we \emph{define} \(\mathbb{P}_{\mathsf{collapse}}\) to be the countable partial functions (in \lil{Type u}) between \lil{(ordinal.mk (aleph one) : pSet).type} and \lil{(powerset omega : pSet).type}, so that \\
+  \(\mathbb{B}_{\mathsf{collapse}}\)-valued indicator functions on
   \lil{ordinal.mk (aleph one) : pSet).type × (powerset omega : pSet).type}
-  are definitionally equal to \lil{𝔹_collapse}-valued indicator functions on the underlying types of \lil{check (ordinal.mk (aleph one))} and \lil{check (powerset omega)}.
+  are definitionally equal to \(\mathbb{B}_{\mathsf{collapse}}\)-valued indicator functions on the underlying types of \lil{check (ordinal.mk (aleph one))} and \lil{check (powerset omega)}.
 \end{remark}
 
 To specify the surjection \(\widecheck{\aleph_1} \twoheadrightarrow \widecheck{\mathcal{P}(\omega)}\), we specify a subset (the graph of the function) of the powerset \(\mathcal{P}(\widecheck{\aleph_1} \times \widecheck{\mathcal{P}(\omega)})\).
-In \lil{bSet 𝔹_collapse}, we can do this by specifying the indicator function \(\chi_{\pi}\) of the graph of a function \(\pi : \widecheck{\aleph_1} \to \widecheck{\mathcal{P}(\omega)}\) as follows: to an \(\eta < \aleph_1\) and a subset \(S \subseteq \mathcal{P}(\omega)\) (in \lil{pSet}), we attach the \emph{principal open} (comprising functions extending the singleton countable partial function \(\{(\eta, S)\}\)):
+In \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\), we can do this by specifying the indicator function \(\chi_{\pi}\) of the graph of a function \(\pi : \widecheck{\aleph_1} \to \widecheck{\mathcal{P}(\omega)}\) as follows: to an \(\eta < \aleph_1\) and a subset \(S \subseteq \mathcal{P}(\omega)\) (in \lil{pSet}), we attach the \emph{principal open} (comprising functions extending the singleton countable partial function \(\{(\eta, S)\}\)):
 \[
   \chi_\pi (\eta, S) := D_{\{(\eta, S)\}} = \{g : \aleph_1 \to \mathcal{P}(\omega) \operatorname{|} g (\eta) = S\}.
 \]
@@ -981,7 +978,7 @@ Surjectivity is equivalent to \lil{⨅ j, (⨆ i, af i j) = ⊤}, totality is eq
 \end{lstlisting}
 Both surjectivity and totality of \(\chi_{\pi}\) require \emph{density arguments}, where the definition of indexed supremum (\(\bigsqcup x_i\)) in the regular open algebra as the regularization \(((\bigcup x_i)^\perp)^\perp\) of the set-theoretic union plays a key role: the union of the truth values is not the entire space, but is only a dense open whose regularization is the entire space. In particular, the density argument for surjectivity crucially uses that \(\aleph_1\) is uncountable while \(\omega\) is countable.
 
-To finish demonstrating that \(\CH\) is true in \lil{bSet 𝔹_collapse}, it remains to check that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1\).
+To finish demonstrating that \(\CH\) is true in \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\), it remains to check that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1\).
 There are two major obstacles. The first is that to even formally state the latter equality, we must construct \(\aleph_1^{\mathbb{B}}\) in \lil{bSet 𝔹}.
 (While the operation \lil{bv_powerset} (\Cref{def:powerset}) gives a construction of the internal powerset of any \lil{x : bSet 𝔹} (using \lil{𝔹}-valued indicator functions, for any \lil{𝔹}), \(\aleph_1^{\mathbb{B}}\) is only specified as the least ordinal greater than \(\omega\), and does not admit as direct a a construction.)
 We describe our construction of \(\aleph_1^{\mathbb{B}}\) (as the Hartogs number of \(\omega\)) in \Cref{subsect:forcing:aleph-1}.
@@ -1049,11 +1046,11 @@ Our implementation differs from the usual construction of Hartogs numbers by \em
   and then apply the assumption to an arbitrary element of \(\widecheck{2}^{\widecheck{\omega}}\).
 \end{proof}
 
-It remains to show that \lil{𝔹_collapse} fulfills the assumptions of \Cref{lemma:function-reflect-suffices}.
+It remains to show that \(\mathbb{B}_{\mathsf{collapse}}\) fulfills the assumptions of \Cref{lemma:function-reflect-suffices}.
 
 \begin{lemma}\label{lemma:function-reflect}
-  For every \lil{ y : pSet}, and every \lil{f : bSet 𝔹_collapse} such that \lil{bSet 𝔹_collapse} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\),
-  there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹_collapse} models that \(\widecheck{g} = f\).
+  For every \(y : \text{\lil{pSet}}\), and every \(f : \text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\) such that \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\) models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\),
+  there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\) models that \(\widecheck{g} = f\).
 \end{lemma}
 
 % \subsection{Reflecting Boolean-valued \(\forall\)-\(\exists\) statements into the metatheory} \label{subsect:reflect}
@@ -1070,7 +1067,7 @@ f ∈ᴮ functions ω y̌
 ⊥ < (⋃ g, D ⊓ g ∈ᴮ (functions omega y)̌  ⊓ g =ᴮ f)
 \end{lstlisting}
   It suffices to construct a single function \(g : \omega \to y\) such that \(\bot < D \sqcap \widecheck{g} = f\).
-  As with Cohen forcing, we will reflect a Boolean-valued \(\forall\)-\(\exists\) statement into the metatheory, and then use a combinatorial property of \lil{𝔹_collapse} to strengthen it.
+  As with Cohen forcing, we will reflect a Boolean-valued \(\forall\)-\(\exists\) statement into the metatheory, and then use a combinatorial property of \(\mathbb{B}_{\mathsf{collapse}}\) to strengthen it.
   The following lemma is true for general \(\mathbb{B}\):
 \begin{lstlisting}
 lemma AE_of_check_func_check (x y : pSet.{u})
@@ -1085,7 +1082,7 @@ Recursively applying this lemma, we obtain \(g_0, \dots, g_n, \dots\) such that
 
 \[\bot < \dots < D \sqcap \left(\bigsqcap_{k \leq n} ((k, g_k) \in^{\mathbb{B}} f)\right) < \cdots < D \sqcap (0 , g_0) \in^{\mathbb{B}} f\]
 
-The intersection of this chain implies that \(g := \{(k, g_k)\}_{k \in \omega}\) is the required lift of \(f\). For general \(\mathbb{B}\), this intersection might be \(\bot\), but because \lil{𝔹_collapse} is \(\sigma\)-closed, we can shrink each term of the above chain into a dense suborder \(\mathcal{D}\) such that all downward \(\omega\)-indexed chains in \(\mathcal{D}\) have nonzero intersection, so the intersection of the chain is indeed nonzero.
+The intersection of this chain implies that \(g := \{(k, g_k)\}_{k \in \omega}\) is the required lift of \(f\). For general \(\mathbb{B}\), this intersection might be \(\bot\), but because \(\mathbb{B}_{\mathsf{collapse}}\) is \(\sigma\)-closed, we can shrink each term of the above chain into a dense suborder \(\mathcal{D}\) such that all downward \(\omega\)-indexed chains in \(\mathcal{D}\) have nonzero intersection, so the intersection of the chain is indeed nonzero.
 \end{proof}
 
 Implementing this argument was one of the most technical parts of our formalization. At each step of the construction of the downwards chain, we must recursively apply a \(\forall\)-\(\exists\) statement and use the axiom of choice to select two witnesses (with four side conditions), which are then used to simultaneously construct the downwards chain and the function \lstinline{g : pSet}. This was implemented as a monolithic recursive function defined using Lean's equation compiler, with the required parts separated afterwards.
@@ -1096,13 +1093,10 @@ Implementing this argument was one of the most technical parts of our formalizat
 
 \subsection{The independence of CH} \label{subsect:forcing:independence}
 
-% % TODO: describe our verification of the fundamental theorem of forcing
-
-% \paragraph{The fundamental theorem of forcing}
-% % TODO
-
-% \paragraph{The independence of CH}
-After verifying that the (shallow) interpretations of \(\mathsf{CH}\) and \(\neg \mathsf{CH}\) are \(\top\) in \lil{bSet 𝔹_collapse} and \lil{bSet 𝔹_cohen}, we construct deeply-embedded Boolean-valued \lil{L_ZFC}-structures \lil{V 𝔹_collapse} and \lil{V 𝔹_cohen} on top of \lil{bSet 𝔹_collapse} and \lil{bSet 𝔹_cohen}. Completing the fundamental theorem of forcing is merely a matter of checking that the deeply-embedded first-order formulas for the axioms of \(\ZFC\) are correctly interpreted as their shallow counterparts, which were proven separately to be \(\top\). Finally, we verify that the deeply-embedded interpretations of \lil{CH_formula} coincide with the shallow interpretations of \(\mathsf{CH}\).
+In \Cref{subsect:bset:fundamental-thm} we showed that \lil{bSet 𝔹} is a model \lil{ZFC},
+which means that we can interpret the deeply-embedded statement of \lil{CH_formula} into
+\lil{bSet 𝔹}.
+We now verify that the deeply-embedded interpretations of \lil{CH_formula} coincide with the shallow interpretations of \(\mathsf{CH}\).
 
 As we have already observed, an easy consequence of Boolean-valued soundness is that a formula is unprovable if its negation has a model. Thus, we have:
 \begin{lstlisting}
