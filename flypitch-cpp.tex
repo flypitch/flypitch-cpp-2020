@@ -1073,7 +1073,7 @@ f ∈ᴮ functions ω y̌
 lemma AE_of_check_func_check (x y : pSet)
   {f : bSet 𝔹} {Γ : 𝔹}
   (H : Γ ≤ is_func' x̌ y̌ f) (H_nonzero : ⊥ < Γ) :
-  Π (i : x.type), ∃ (j : y.type) (Γ' : 𝔹)
+  ∀ (i : x.type), ∃ (j : y.type) (Γ' : 𝔹)
   (H_nonzero' : ⊥ < Γ') (H_le : Γ' ≤ Γ),
   Γ' ≤ (is_func' x̌ y̌ f) ∧
   Γ' ≤ (pair (x.func i)̌  (y.func j)̌ ) ∈ᴮ f
@@ -1188,7 +1188,8 @@ adding \lstinline{Γ ≤ a} to the context and reducing the goal to \lstinline{�
 So we can introduce the implication after all, but at the cost of specializing the context \lstinline{Γ} to the smaller context \lstinline{Γ' := Γ ⊓ a}.
 But now, in order for the user to continue the pretense that they are merely doing first-order logic, this change of variables must be propagated to the rest of the assumptions% which may still be of the form \lstinline{Γ ≤ _}
 ---which is extremely tedious to do by hand, but easy to automate.
-This is done by the tactic \lil{bv_imp_intro}, as in the following example (note also the use of custom coercions to turn \(\B\)-valued implications into \lil{Π}-types).
+This is done by the tactic \lil{bv_imp_intro}, as in the following example.
+We also use a custom coercion to turn \(\B\)-valued implications into functions.
 \begin{lstlisting}
 example {a b c : 𝔹} :
   (a ⟹ b) ⊓ (b ⟹ c) ≤ a ⟹ c :=
