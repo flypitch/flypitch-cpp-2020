@@ -477,15 +477,25 @@ Finally, the axiom schema of collection we use states that for every formula \(\
 (\forall y \in B, \exists x \in A, \varphi(x,y,p)).
 \end{gather*}
 
-Our formulation of \(\CH\) states that there is no ordinal between \(\omega\) and \(\mathcal{P}(\omega)\). It is defined to be the sentence
+Our formulation of \(\CH\) states that there is no ordinal between \(\omega\) and \(\mathcal{P}(\omega)\). We define an ordinal using the following definitions:
+\begin{lstlisting}
+eps_transitive z := ∀ x, x ∈ z ⟹ x ⊆ z
+eps_trichotomy z := ∀ x y ∈ z, x = y ∨ x ∈ y ∨ y ∈ x
+eps_wellfounded z := ∀ x, x ⊆ z ⟹ x ≠ ∅ ⟹
+  ∃ y ∈ x, ∀ w ∈ x, w ∉ y
+Ord(z) := eps_trichotomy z ∧ eps_wellfounded z ∧
+  eps_transitive z
+\end{lstlisting}
+these are not formulated the same in Lean, where we use de Bruijn variables, and note that \lstinline{epsilon_wellfounded} follows for every set from the axiom of regularity, but we add it for completeness.
+Now \(\CH\) is defined to be the sentence
 \[\CH:=\forall x, \Ord(x) \Rightarrow x \le \omega \vee \mathcal{P}(\omega) \le x,\]
-where \(\Ord(x)\) means ``\(x\) is an ordinal'' and \(x \le y\) means that there is a surjection from a subset of \(y\) to \(x\). In code, we have:
+where \(x \le y\) means that there is a surjection from a subset of \(y\) to \(x\). In code, we have:
 \begin{lstlisting}
 def CH_formula : formula L_ZFC :=
 ∀' (is_ordinal ⟹
   leq_f[omega_t//1] ⊔ leq_f[Powerset_t omega_t//0])
 \end{lstlisting}
-The substitution ensures that the inequality \lil{leq_f} is applied to the correct arguments, and \lil{⊔} is notation for disjunction.
+The substitutions ensure that the formulas are applied to the correct arguments, and \lil{⊔} is notation for disjunction.
 
 \section{Boolean-valued semantics}
 \label{sect:boolean-semantics}

@@ -25,7 +25,7 @@ program. I only didn't give a strong accept because of two concerns:
   can trust Lean to check the details).
 
 * The paper has some textual overlap with the predecessor paper from ITP'19, which
-  established the impossibility of proving CH in ZFC&mdash;the according to the
+  established the impossibility of proving CH in ZFC -- the according to the
   authors of this paper more difficult half of the result. The overlap is acknowledged
   by the authors ("we reproduce some of that material here"), and in some places I
   think necessary (e.g., definition of terms and formulas). In other places, I feel
@@ -40,25 +40,6 @@ The paper is well-written. The author try to explain the proof in detail, which 
 always successful, due to the complexity of the matter. Section 5 is particularly
 dense.
 
-As for the main result, the author show the statement as
-
-```
-CH := forall x. Ord(x) ==> x <= omega | Pow(omega) <= x
-```
-
-and the formal counterpart of this statement. What they do not show are the
-definitions of Ord or even <=. Of course, the formalization is available, and after
-staring at de Bruijn indices for some time one arrives at this fairly standard
-formulation of what it means to be an ordinal:
-
-```
-is_transitive(z) = ∀x. x ∈ z ⟹ x ⊆ z
-epsilon_wellfounded(z) = ∀x. x ⊆ z ⟹ NOT x ≃ ∅ ⟹ ∃y ∈ x. ∀y ∈ z. NOT y ∈ x
-epsilon_trichotomy(z) = ∀x ∈ z. ∀y ∈ z. x ≃ y OR x ∈ y OR y ∈ x
-ewo_f(z) = epsilon_trichotomy(z) AND epsilon_wellfounded(z)
-Ord(z) = ewo_f(z) AND is_transitive(z)
-```
-
 It would be nice if the paper would show us this definition in meta-notation to
 reassure the reader that CH is really the continuum hypothesis. The same applies to
 all axioms of ZFC, in particular axiom_of_powerset and axiom_of_infinity, which
@@ -66,8 +47,6 @@ characterize ZFC function symbols that occur in CH's statement.
 
 The formalization overview summary.lean is helpful to get to the definition of the
 main concepts of the sizable formalization (23000 lines of proofs).
-
-I am happy to hear that the author think beyond ZFC in their future work. It would be interesting to use the formalization to distill features of ZFC, which are sufficient and necessary for the result. This would for example allow to answer question like "what is the weakest reasonable set theory, for which CH is independent?" or "is CH independent from Lean's or Coq's dependent type theory?".
 
 Minor remarks:
 
@@ -83,9 +62,6 @@ inductive types in Lean due to recent work by Avigad et al. [ITP'19].
 embedded sentence using de Bruijn (at least for one example).
 
 372: "l" is easy to misparse as "1"
-
-The formalization summary.lean contains a loose reference to axiom_pairing.
-If one comments this out the file is processed as expected.
 
 Review #36C
 ===========================================================================
