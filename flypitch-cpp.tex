@@ -223,7 +223,7 @@
 \label{sect:intro}
 The continuum hypothesis ($\mathsf{CH}$) states that there is no cardinality between $\omega$, the smallest infinite cardinal and $\mathfrak{c}$, the cardinality of the continuum.
 It was introduced by Cantor \cite{cantor1878beitrag} in 1878 and was the first problem on Hilbert's list of twenty-three outstanding problems in mathematics.
-G\"odel \cite{godel1938consistency} proved in 1938 that $\mathsf{CH}$ was consistent with $\ZFC$, and later conjectured that $\mathsf{CH}$ is independent of $\ZFC$, i.e. neither provable nor disprovable from the $\ZFC$ axioms.
+G\"odel \cite{godel1938consistency} proved in 1938 that $\mathsf{CH}$ was consistent with Zermelo–Fraenkel set theory ($\ZFC$), and later conjectured that $\mathsf{CH}$ is independent of $\ZFC$, i.e. neither provable nor disprovable from the $\ZFC$ axioms.
 In 1963, Paul Cohen developed \emph{forcing} \cite{cohen-the-independence-of-the-continuum-hypothesis-1,cohen1964independence2}, which allowed him to prove the consistency of $\neg \mathsf{CH}$, and therefore complete the independence proof.
 For this work, which marked the beginning of modern set theory, he was awarded a Fields medal---the only one to ever be awarded for a work in mathematical logic.
 
@@ -395,7 +395,7 @@ inductive preformula (L : Language.{u}) :
 \end{lstlisting}
 We choose this definition of \lil{preformula} to mimic \lil{preterm}.
 A member of \lil{preformula n} is a partially applied formula, and if applied to \lil{n} terms, it becomes a formula.
-The type of well-formed formulas \lil{formula L} is defined to be \lil{preterm L 0}.
+The type of well-formed formulas \lil{formula L} is defined to be \lil{preformula L 0}.
 Implication is the only primitive binary connective and universal quantification is the only primitive quantifier. Since we use classical logic, we can define the other connectives and quantifiers from these.
 % In particular, we define negation \lil{∼ f} to be \lil{f ⟹ ⊥} and existential quantification \lil{∃' f} to be \lil{∼ ∀' ∼ f}.
 Note that implication and the universal quantifier cannot be applied to preformulas that are not fully applied.
@@ -465,11 +465,11 @@ This gives a conservative extension of the regular theory of ZFC, because these 
 
 What we call \(\ZFC\) comprises the axioms of extensionality and regularity, Zorn's lemma, the strong axiom of collection, and axioms characterizing the new symbols (\(\varnothing\), \((-,-)\), \(\omega\), \(\mathcal{P}(-)\), \(\bigcup(-)\)). We will explain some of these axioms in more detail here.
 
-We don't uniquely characterize ordered pairs, but specify the equality on ordered pairs:
+We do not uniquely characterize ordered pairs, but specify the equality on ordered pairs:
 \[\forall x\ y\ z\ w, (x,y)=(z,w) \leftrightarrow x = z \wedge y = w.\]
-We don't have the usual axiom of pairing, but this axiom is derivable from the other axioms.
+We do not have the usual axiom of pairing, but this axiom is derivable from the other axioms.
 Our version of the axiom of infinity states that $\omega$ is the least limit ordinal.
-Our version of Zorn's lemma is states that any non-empty collection of sets closed under unions of $\in$-chains has a maximal element.
+Our version of Zorn's lemma states that any non-empty collection of sets closed under unions of $\in$-chains has a maximal element.
 Finally, the axiom schema of collection we use states that for every formula \(\varphi(x,y,\vec p)\) we have the axiom stating that if \(\varphi(x,y,\vec p)\) is a total relation with parameters \(\vec p\), then its image is a set:
 \begin{gather*}
 \forall \vec p\; A, (\forall x \in A, \exists y, \varphi(x,y,p)) \Rightarrow \exists B, \\
@@ -509,14 +509,14 @@ To do this conveniently with de Bruijn variables, we say that a (pre)term \lil{t
 Given \lil{t : preterm n} which is bounded by \lil{l}, and a realization \lil{v : vector M l} of the free variables, we define the realization $\llbracket t \rrbracket_M^v : M^n \to M$ by structural recursion on $t$.
 
 For a formula $\varphi$ we do the same: we define bounded (pre)formulas, and define an realization $\llbracket \varphi \rrbracket_M^v : M^n \to \B$ by structural recursion.
-If $\varphi$ is a sentence, the realization in a structure is just a element of the Boolean algebra: $\llbracket \varphi \rrbracket_M : \B$.
+If $\varphi$ is a sentence, the realization in a structure is just an element of the Boolean algebra: $\llbracket \varphi \rrbracket_M : \B$.
 
 Since the truth values in a Boolean-valued model live inside the Boolean algebra $\B$ instead of just being true or false, we have to take a little care when stating the soundness theorem for Boolean-valued models.
 Usually, a soundness theorem states something like ``if $\varphi$ is provable from hypotheses in $C$ then in every model where $C$ holds, $\varphi$ also holds.''
 With Boolean truth-values, this is instead stated as an inequality of truth values. % This motivates the following definition
 \begin{defn}
 For $\Gamma : \B$ and a $\B$-valued structure $M$ we say that
-\textbf{$\Gamma$ forces a sentence $\varphi$ in $M$}, written $\Gamma \Vdash_M \varphi$ if
+\textbf{$\Gamma$ forces a sentence $\varphi$ in $M$}, written $\Gamma \Vdash_M \varphi$, if
 $\Gamma \le \llbracket \varphi \rrbracket_M$.
 We say that a set of sentences $C$ \textbf{models} $\varphi$, written $C \models_{\B}\varphi$, if for all non-empty $\B$-valued structures $M$ we have $\big(\bigsqcap_{\psi\in C}\big \llbracket \psi \rrbracket_M)\Vdash_M \varphi$.
 \end{defn}
@@ -879,7 +879,7 @@ In our formalization, we actually prove a more general version of this argument,
 
 \paragraph{CCC and the \(\Delta\)-system lemma}
 To show that \(\B_{\mathsf{cohen}}\) has the CCC, we formalize and then apply a general result in transfinite combinatorics called the \emph{$\Delta$-system lemma}.
-Though only briefly mentioned in \cite{DBLP:conf/itp/HanD19}, this was one of the most involved parts of our formalization of Cohen forcing, as it was a technical result in infinitary combinatorics.% , highlighting the robust library of cardinals and ordinals \texttt{mathlib}.
+Though only briefly mentioned in \cite{DBLP:conf/itp/HanD19}, this was one of the most involved parts of our formalization of Cohen forcing, as it was a technical result in infinitary combinatorics. % , highlighting the robust library of cardinals and ordinals \texttt{mathlib}.
 The details of the full argument are too technical to give here, so we omit the proofs in this section.
 % Instead, we first give an elementary proof that \(\B_{\mathsf{cohen}}\) has the CCC, the key ideas of which are vastly generalized by the \(\Delta\)-system lemma (\Cref{lemma:delta-system-lemma:general}).
 
@@ -908,7 +908,7 @@ The reason is that the original proof heavily uses sets of ordinals, and taking 
 Instead, we frequently work with well-orders of a given order type, instead sets of ordinals, to do all computations in \lstinline"ordinal.{u}".
 
 Lastly, one must take care to formulate the $\Delta$-system so that $\{A_i\}_i$ is an indexed families, instead of a collections of sets.
-\Cref{thm:product-ccc} below doesn't follow conveniently from the $\Delta$-system lemma if it is formulated with a collection of sets.
+\Cref{thm:product-ccc} below does not follow conveniently from the $\Delta$-system lemma if it is formulated with a collection of sets.
 \cite{kunen2014set} is somewhat ambiguous which version is used.
 
 Setting \(\kappa = \omega\) and \(\theta = \aleph_1\) in \Cref{lemma:delta-system-lemma:general} yields:
@@ -935,7 +935,7 @@ To show that \(\widetilde{F}\) suffices to force \(\CH\), we must verify that ou
 
 The formalization of collapse forcing is actually much more involved than the formalization of Cohen forcing. In Cohen forcing, we have to do relatively little work inside of \lil{bSet 𝔹} itself besides proving basic properties of functions. The difficulty is concentrated in proving and applying the CCC, which mostly happens in the metatheory. Moreover, constructing the new function (and the rest of the argument) required no density arguments at all. This is because in order to force \(\neg \CH\), we only had to ensure there was \emph{some} infinite cardinality between \(\omega\) and \(\mathcal{P}(\omega)\) (we did not determine exactly which internal aleph number \(\widecheck{\aleph_1}\) was in \lil{bSet 𝔹}).
 
-However, to force \(\CH\), the quantifiers are flipped and now we must exclude \emph{all} cardinalities between \(\omega\) and \(\mathcal{P}(\omega)\). From cleverly choosing \(\mathbb{B}\), the best we can do is to construct a surjection \(\pi : \widecheck{\aleph_1} \twoheadrightarrow \widecheck{\mathcal{P}(\omega)}\), and we are forced to prove that \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\) and \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\). This means we must define and construct \(\aleph_1^{\mathbb{B}}\), entailing, for example, the development of the theory of ordinals internal to \lstinline{bSet 𝔹}. For comparison, our library on on set theory in \lstinline{bSet 𝔹} totalled 2723 LOC when we forced \(\neg \CH\), and grew to 7020 LOC after forcing \(\CH\).
+However, to force \(\CH\), the quantifiers are flipped and now we must exclude \emph{all} cardinalities between \(\omega\) and \(\mathcal{P}(\omega)\). From cleverly choosing \(\mathbb{B}\), the best we can do is to construct a surjection \(\pi : \widecheck{\aleph_1} \twoheadrightarrow \widecheck{\mathcal{P}(\omega)}\), and we are forced to prove that \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\) and \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\). This means we must define and construct \(\aleph_1^{\mathbb{B}}\), entailing, for example, the development of the theory of ordinals internal to \lstinline{bSet 𝔹}. For comparison, our library on set theory in \lstinline{bSet 𝔹} totalled 2723 LOC when we forced \(\neg \CH\), and grew to 7020 LOC after forcing \(\CH\).
 
 % \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\), and that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega).\)
 % Both equalities follow from being able to lift functions \(\omega \to \widecheck{y}\) to functions \(\omega \to y\);
@@ -988,7 +988,7 @@ Both surjectivity and totality of \(\chi_{\pi}\) require \emph{density arguments
 
 To finish demonstrating that \(\CH\) is true in \(\text{\lil{bSet}}\ \mathbb{B}_{\mathsf{collapse}}\), it remains to check that \(\widecheck{\mathcal{P}(\omega)} = \mathcal{P}(\omega)\) and \(\widecheck{\aleph_1} = \aleph_1^{\mathbb{B}}\).
 There are two major obstacles. The first is that to even formally state the latter equality, we must construct \(\aleph_1^{\mathbb{B}}\) in \lil{bSet 𝔹}.
-While the operation \lil{bv_powerset} (\Cref{def:powerset}) gives a construction of the internal powerset of any \lil{x : bSet 𝔹} (using \lil{𝔹}-valued indicator functions, for any \lil{𝔹}), \(\aleph_1^{\mathbb{B}}\) is only specified as the least ordinal greater than \(\omega\), and does not admit as direct a a construction.
+While the operation \lil{bv_powerset} (\Cref{def:powerset}) gives a construction of the internal powerset of any \lil{x : bSet 𝔹} (using \lil{𝔹}-valued indicator functions, for any \lil{𝔹}), \(\aleph_1^{\mathbb{B}}\) is only specified as the least ordinal greater than \(\omega\), and does not admit as direct of a construction.
 We describe our construction of \(\aleph_1^{\mathbb{B}}\) (as the Hartogs number of \(\omega\)) in \Cref{subsect:forcing:aleph-1}.
 
 Now we must ensure that no new countable ordinals are added to \(\aleph_1\) and that no new subsets of \(\omega\) are added to \(\mathcal{P}(\omega)\) in the passage via \lil{check} from \lil{pSet} to \lil{bSet 𝔹}.
@@ -1102,7 +1102,7 @@ Implementing this argument was one of the most technical parts of our formalizat
 
 \subsection{The independence of \(\CH\)} \label{subsect:forcing:independence}
 
-In \Cref{subsect:bset:fundamental-thm} we showed that \lil{bSet 𝔹} is a model \lil{ZFC},
+In \Cref{subsect:bset:fundamental-thm} we showed that \lil{bSet 𝔹} is a model of \lil{ZFC},
 which means that we can interpret the deeply-embedded statement of \lil{CH_formula} into
 \lil{bSet 𝔹}.
 We now verify that the deeply-embedded interpretations of \lil{CH_formula} coincide with the shallow interpretations of \(\mathsf{CH}\).
