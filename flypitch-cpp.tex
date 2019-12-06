@@ -462,31 +462,53 @@ Usually, the language of set theory has one binary relation symbol and no functi
 To make the language easier to work with, and to concisely formulate the continuum hypothesis, we conservatively extend \(\ZFC\) with the following function symbols: the empty set \(\varnothing\), ordered pairing \(({-},{-})\), the natural numbers \(\omega\), power set \(\mathcal{P}({-})\) and union \(\bigcup({-})\).
 This gives a conservative extension of the regular theory of ZFC, because these function symbols are all definable.
 % As part of our future work, we want to formalize these facts, so that we actually prove the independence of the continuum hypothesis in a language with only one non-logical symbol. % move to future work
+\begin{figure*}
+  \begin{center}
+  \begin{minipage}{0.84\textwidth}
+  \begin{lstlisting}
+  axiom_of_emptyset := ∀ x, x ∉ ∅
+  axiom_of_ordered_pairs := ∀ x y z w, (x, y) = (z, w) ↔ x = z ∧ y = w
+  axiom_of_extensionality := ∀ x y, (∀ z, (z ∈ x ↔ z ∈ y)) → x = y
+  axiom_of_union := ∀ u x, x ∈ ⋃ u ↔ ∃ y ∈ u, x ∈ y
+  axiom_of_powerset := ∀ z y, y ∈ P(z) ↔ ∀ x ∈ y, x ∈ z
+  axiom_of_infinity := ∅ ∈ ω ∧ (∀ x ∈ ω, ∃ y ∈ ω, x ∈ y) ∧ (∃ α, Ord(α) ∧ ω = α) ∧
+    ∀ α, Ord(α) → (∅ ∈ α ∧ ∀ x ∈ α, ∃ y ∈ α, x ∈ y) → ω ⊆ α
+  axiom_of_regularity := ∀ x, x ≠ ∅ → ∃ y ∈ x, ∀ z ∈ x, z ∉ y
+  zorns_lemma := ∀ z, z ≠ ∅ → (∀ y, (y ⊆ z ∧ ∀ x₁ x₂ ∈ y, x₁ ⊆ x₂ ∨ x₂ ⊆ x₁) → (⋃y) ∈ z) →
+    ∃ m ∈ x, ∀ x ∈ z, m ⊆ x → m = x
+  axiom_of_collection(ϕ) := ∀ p ∀ A, (∀ x ∈ A, ∃ y, ϕ(x,y,p)) →
+    (∃ B, (∀ x ∈ A, ∃ y ∈ B, ϕ(x,y,p)) ∧ ∀ y ∈ B, ∃ x ∈ A, ϕ(x,y,p))
 
-What we call \(\ZFC\) comprises the axioms of extensionality and regularity, Zorn's lemma, the strong axiom of collection, and axioms characterizing the new symbols (\(\varnothing\), \((-,-)\), \(\omega\), \(\mathcal{P}(-)\), \(\bigcup(-)\)). We will explain some of these axioms in more detail here.
+  epsilon_transitive(z) := ∀ x, x ∈ z ⟹ x ⊆ z
+  epsilon_trichotomy(z) := ∀ x y ∈ z, x = y ∨ x ∈ y ∨ y ∈ x
+  epsilon_wellfounded(z) := ∀ x, x ⊆ z ⟹ x ≠ ∅ → ∃ y ∈ x, ∀ w ∈ x, w ∉ y
+  Ord(z) := epsilon_trichotomy(z) ∧ epsilon_wellfounded(z) ∧ epsilon_transitive(z)
+  \end{lstlisting}
+  \end{minipage}
+  \caption{Our formulation of ZFC.}
+  \label{figure:ZFC}
+  \end{center}
+\end{figure*}
 
-We do not uniquely characterize ordered pairs, but specify the equality on ordered pairs:
-\[\forall x\ y\ z\ w, (x,y)=(z,w) \leftrightarrow x = z \wedge y = w.\]
-We do not have the usual axiom of pairing, but this axiom is derivable from the other axioms.
-Our version of the axiom of infinity states that $\omega$ is the least limit ordinal.
-Our version of Zorn's lemma states that any non-empty collection of sets closed under unions of $\in$-chains has a maximal element.
-Finally, the axiom schema of collection we use states that for every formula \(\varphi(x,y,\vec p)\) we have the axiom stating that if \(\varphi(x,y,\vec p)\) is a total relation with parameters \(\vec p\), then its image is a set:
-\begin{gather*}
-\forall \vec p\; A, (\forall x \in A, \exists y, \varphi(x,y,p)) \Rightarrow \exists B, \\
-(\forall x \in A, \exists y \in B, \varphi(x,y,p)) \wedge
-(\forall y \in B, \exists x \in A, \varphi(x,y,p)).
-\end{gather*}
+In Figure~\ref{figure:ZFC} we have listed all the axioms of \(\ZFC\) written using names variables (the formalization uses de Bruijn variables). We also include the definition of ordinal, which is used in the axiom of infinity. Note that \lstinline{epsilon_wellfounded} follows for every set from the axiom of regularity, but we add it for the sake of completeness. The only axiom scheme is \lstinline{axiom_of_collection} which ranges over all formulas \lstinline{ϕ(x,y,p)} with (at most) \lstinline{n+2} free variables, where \lstinline{p} is a vector of length \lstinline{n}.
 
-Our formulation of \(\CH\) states that there is no ordinal between \(\omega\) and \(\mathcal{P}(\omega)\). We define an ordinal using the following definitions:
-\begin{lstlisting}
-eps_transitive z := ∀ x, x ∈ z ⟹ x ⊆ z
-eps_trichotomy z := ∀ x y ∈ z, x = y ∨ x ∈ y ∨ y ∈ x
-eps_wellfounded z := ∀ x, x ⊆ z ⟹ x ≠ ∅ ⟹
-  ∃ y ∈ x, ∀ w ∈ x, w ∉ y
-Ord(z) := eps_trichotomy z ∧ eps_wellfounded z ∧
-  eps_transitive z
-\end{lstlisting}
-these are not formulated the same in Lean, where we use de Bruijn variables, and note that \lstinline{epsilon_wellfounded} follows for every set from the axiom of regularity, but we add it for completeness.
+% What we call \(\ZFC\) comprises the axioms of extensionality and regularity, Zorn's lemma, the strong axiom of collection, and axioms characterizing the new symbols (\(\varnothing\), \((-,-)\), \(\omega\), \(\mathcal{P}(-)\), \(\bigcup(-)\)).
+
+% We will explain some of these axioms in more detail here.
+
+% We do not uniquely characterize ordered pairs, but specify the equality on ordered pairs:
+% \[\forall x\ y\ z\ w, (x,y)=(z,w) \leftrightarrow x = z \wedge y = w.\]
+% We do not have the usual axiom of pairing, but this axiom is derivable from the other axioms.
+% Our version of the axiom of infinity states that $\omega$ is the least limit ordinal.
+% Our version of Zorn's lemma states that any non-empty collection of sets closed under unions of $\in$-chains has a maximal element.
+% Finally, the axiom schema of collection we use states that for every formula \(\varphi(x,y,\vec p)\) we have the axiom stating that if \(\varphi(x,y,\vec p)\) is a total relation with parameters \(\vec p\), then its image is a set:
+% \begin{gather*}
+% \forall \vec p\; A, (\forall x \in A, \exists y, \varphi(x,y,p)) \Rightarrow \exists B, \\
+% (\forall x \in A, \exists y \in B, \varphi(x,y,p)) \wedge
+% (\forall y \in B, \exists x \in A, \varphi(x,y,p)).
+% \end{gather*}
+
+
 Now \(\CH\) is defined to be the sentence
 \[\CH:=\forall x, \Ord(x) \Rightarrow x \le \omega \vee \mathcal{P}(\omega) \le x,\]
 where \(x \le y\) means that there is a surjection from a subset of \(y\) to \(x\). In code, we have:

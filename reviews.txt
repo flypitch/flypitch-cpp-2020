@@ -40,14 +40,6 @@ The paper is well-written. The author try to explain the proof in detail, which 
 always successful, due to the complexity of the matter. Section 5 is particularly
 dense.
 
-It would be nice if the paper would show us this definition in meta-notation to
-reassure the reader that CH is really the continuum hypothesis. The same applies to
-all axioms of ZFC, in particular axiom_of_powerset and axiom_of_infinity, which
-characterize ZFC function symbols that occur in CH's statement.
-
-The formalization overview summary.lean is helpful to get to the definition of the
-main concepts of the sizable formalization (23000 lines of proofs).
-
 Minor remarks:
 
 256: The usage of two different fonts for m and k is confusing. This applies also more
@@ -76,10 +68,6 @@ Reviewer expertise
 
 Detailed review
 ---------------
-First, regarding the novelty of the formalization, I am fairly sure I have already seen models of ¬CH in Coq privately circulating around, but attributing them to somebody in particular would be too much for my deficient memory (conceivably someone from the classical realizability community). Nonetheless, I am equally convinced I had never seen a formalization of a model for CH, so this part seems new to me. This is not unexpected, judging the fact that it is easier to disprove CH than to force it, as explained by the authors.
-
-The proof outline for ¬CH is standard, yet I was enlightened by the definition of ℙ-names as a variant of Aczel's set encoding where inhabitants carry an additional truth value. This seems obvious in retrospective, but I find this realization to be the major selling point of this paper. It makes a lot of set-theoretic mumbo-jumbo that is commonly found in explanations of forcing completely outdated when explained type-theoretically.
-
 I was not aware that CH could be showed consistent using the same forcing technique though, but this is most likely due to my lack of knowledge about set-theory. Indeed, as observed, usually one uses the constructible universe of sets to prove this. It is not very clear from the article whether this forcing formulation is new or if it is a known, non-typical (pun intended) model of CH. In any case, the forcing conditions used are not surprising, it is natural, but clearly technical issues get in the way.
 
 Section 4.1: what is even the point of defining pSets? Clearly bSets are a generalization of the latter, where pSets can be recovered by taking the Boolean algebra of booleans. Even moreso given that the authors complain about code duplication!
