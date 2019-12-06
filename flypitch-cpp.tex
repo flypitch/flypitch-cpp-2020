@@ -222,21 +222,20 @@
 \section{Introduction}
 \label{sect:intro}
 The continuum hypothesis ($\mathsf{CH}$) states that there is no cardinality between $\omega$, the smallest infinite cardinal and $\mathfrak{c}$, the cardinality of the continuum.
-It was introduced by Cantor \cite{cantor1878beitrag} in 1878 and was the first problem on Hilbert's list of twenty-three outstanding problems in mathematics.
-G\"odel \cite{godel1938consistency} proved in 1938 that $\mathsf{CH}$ was consistent with Zermelo–Fraenkel set theory ($\ZFC$), and later conjectured that $\mathsf{CH}$ is independent of $\ZFC$, i.e. neither provable nor disprovable from the $\ZFC$ axioms.
-In 1963, Paul Cohen developed \emph{forcing} \cite{cohen-the-independence-of-the-continuum-hypothesis-1,cohen1964independence2}, which allowed him to prove the consistency of $\neg \mathsf{CH}$, and therefore complete the independence proof.
-For this work, which marked the beginning of modern set theory, he was awarded a Fields medal---the only one to ever be awarded for a work in mathematical logic.
+It was posed by Cantor \cite{cantor1878beitrag} in 1878 and was the first problem on Hilbert's list of twenty-three unsolved problems in mathematics.
+G\"odel \cite{godel1938consistency} proved in 1938 that $\mathsf{CH}$ was consistent with Zermelo-Fraenkel set theory with the axiom of choice ($\ZFC$). He conjectured that \(\mathsf{CH}\) was independent, i.e. neither provable nor disprovable, from \(\ZFC\). This remained an open problem until 1963, when Paul Cohen developed \emph{forcing} \cite{cohen-the-independence-of-the-continuum-hypothesis-1,cohen1964independence2} and used it to prove the consistency of $\neg \mathsf{CH}$ with \(\ZFC\), completing the independence proof. This work started modern set theory, and for his invention of forcing, Cohen was awarded a Fields medal.
+% For this work, which marked the beginning of modern set theory, he was awarded a Fields medal---the only one to ever be awarded for work in mathematical logic.
 
 The independence of \(\CH\) has also been an open formalization problem. Since 2005, Freek Wiedijk has maintained a list (\emph{Formalizing 100 theorems}~\cite{wiedijk100theorems}) of one hundred problems for formalized mathematics, with the independence of \(\CH\) as the 24th. As of 2019, it was one of the six remaining problems.
 
 In this paper we describe the successful completion of the Flypitch project\footnote{\url{https://flypitch.github.io}} (\textbf{F}ormal\textbf{ly} \textbf{p}roving the \textbf{i}ndependence of \textbf{t}he \textbf{c}ontinuum \textbf{h}ypothesis).
-We formalize forcing with Boolean-valued models, and use Cohen forcing to construct a Boolean-valued model of \(\ZFC\) where \(\CH\) is false, and a \(\sigma\)-closed forcing to construct a Boolean-valued model of \(\ZFC\) where \(\CH\) is true. We then combine this with a deep embedding of first-order logic, including a proof system and the axioms of \(\ZFC\), to verify that \(\CH\) is neither provable nor disprovable from \(\ZFC\).
+We formalize forcing with Boolean-valued models. We use Cohen forcing to construct a Boolean-valued model of \(\ZFC\) where \(\CH\) is false, and a \(\sigma\)-closed forcing to construct a Boolean-valued model of \(\ZFC\) where \(\CH\) is true. We then combine this with a deep embedding of first-order logic, including a proof system and the axioms of \(\ZFC\), to verify that \(\CH\) is neither provable nor disprovable from \(\ZFC\).
 
 Our formalization\footnote{\url{https://github.com/flypitch/flypitch}} uses the Lean 3 theorem prover, building on top of \textsf{mathlib}~\cite{mathlib}. % TODO(after review): update reference
-Lean is an interactive proof assistant under active development at Microsoft Research~\cite{de2015lean, ullrich2019counting}.
-It implements the Calculus of Inductive Constructions and has a similar metatheory to Coq, adding definitional proof irrelevance, quotient types, and a noncomputable choice principle.
+Lean is an interactive proof assistant under active development at Microsoft Research~\cite{de2015lean, ullrich2019counting}. It has a similar metatheory to Coq, adding definitional proof irrelevance, quotient types, and a noncomputable choice principle.
+% It implements the Calculus of Inductive Constructions and has a similar metatheory to Coq, adding definitional proof irrelevance, quotient types, and a noncomputable choice principle.
 Our formalization makes as much use of the expressiveness of Lean's dependent type theory as possible, using constructions which are impossible or unwieldy to encode in HOL, let alone ZF.
-The types of cardinals and ordinals in \textsf{mathlib}, which are defined as equivalence classes of (well-ordered) types, live one universe level higher than the types used to construct them, and our models of set theory require as input an entire universe of types. Our encoding of first-order logic also uses parameterized inductive types which ensure that type-correctness implies well-formedness, eliminating the need for separate well-formedness proofs.
+The types of cardinals and ordinals in \textsf{mathlib}, which are defined as proper equivalence classes of (well-ordered) types, live one universe level higher than the types used to construct them, and our models of set theory require as input an entire universe of types. Our encoding of first-order logic also uses parameterized inductive types which ensure that type-correctness implies well-formedness, eliminating the need for separate well-formedness proofs.
 
 % This forcing argument to show that $\mathsf{CH}$ is consistent is not the proof that G\"odel gave in 1938, who instead used the constructible universe $L$, where $\mathsf{CH}$ holds. We decided to formalize this proof so that we used an forcing argument for both parts of the independence.
 
@@ -319,8 +318,9 @@ This reveals another advantage of working in a proof assistant: the bookkeeping 
 \paragraph{Contributions}
 An earlier paper \cite{DBLP:conf/itp/HanD19} describes a formalization of Cohen forcing and the unprovability of \(\CH\). In order to keep our presentation self-contained, % , some of the material discussed in \cite{DBLP:conf/itp/HanD19}
 % is reproduced here.
-we reproduce some of that material here.
-Our main contribution is a formalization of collapse forcing and the unprovability of \(\neg \CH\), thereby providing the first formalization of the independence of \(\CH\) in a single theorem prover. For reasons we will see in \Cref{sect:forcing}, the forcing argument for \(\CH\) requires far more set theory and is harder to formalize than the forcing argument for \(\neg \CH\). Moreover, we elaborate on parts of the formalization which were omitted from \cite{DBLP:conf/itp/HanD19}, including expanded discussions of our implementation of the \(\ZFC\) axioms and our formalization of the \(\Delta\)-system lemma.%  We unify and streamline the presentation of both forcing arguments in \Cref{sect:forcing}% , and include an extensive discussion of our forcing argument for \(\CH\) in \Cref{subsect:collapse},
+we reproduce some of that material here, incorporating it into our discussions of our deep embedding of first-order logic/Boolean-valued semantics, usage of metaprogramming, and the Cohen forcing argument.
+Our main novel contribution is a formalization of collapse forcing and the unprovability of \(\neg \CH\), thereby providing the first formalization of the independence of \(\CH\) in a single theorem prover. For reasons we will see in \Cref{sect:forcing}, the forcing argument for \(\CH\) requires far more set theory and is harder to formalize than the forcing argument for \(\neg \CH\). Moreover, we elaborate on parts of the formalization which were omitted from \cite{DBLP:conf/itp/HanD19}, including expanded discussions of our implementation of the \(\ZFC\) axioms and our formalization of the \(\Delta\)-system lemma.
+% We unify and streamline the presentation of both forcing arguments in \Cref{sect:forcing}% , and include an extensive discussion of our forcing argument for \(\CH\) in \Cref{subsect:collapse},
 % and expand our discussion of the formalization of the \(\Delta\)-system lemma \Cref{lemma:delta-system-lemma:general}.
 % TODO: maybe uncomment this last sentence after the paper is finalized
 
@@ -1135,26 +1135,16 @@ by finish [independent, CH_unprv, neg_CH_unprv]
 \label{sect:metaprogramming}
 
 A key feature of Lean is that it is its own metalanguage \cite{Ebner:2017:MFF:3136534.3110278}, allowing for seamless in-line definitions of custom tactics (and modifications of existing ones).
-This feature was an invaluable asset, as it allowed the rapid development of a custom tactic library for simulating natural-deduction style proofs in complete Boolean algebras (\Cref{subsect:natded}) and automating equality reasoning in those proofs (\Cref{subsect:bv-cc}).
+This was an invaluable asset, we were able to rapidly develop a custom tactic library for simulating natural-deduction style proofs in complete Boolean algebras (\Cref{subsect:natded}) and automating equality reasoning in those proofs (\Cref{subsect:bv-cc}).
 
-\subsection{Simulating natural deduction proofs in \texorpdfstring{\(\mathbb{B}\)}{B}} \label{subsect:natded}
+\subsection{Simulating natural deduction proofs in complete Boolean algebras} \label{subsect:natded}
 As stressed by Scott \cite{scott2008algebraic}, ``A main point ... is that the well-known algebraic characterizations of [complete Heyting algebras] and [complete Boolean algebras] exactly mimic the rules of deduction in the respective logics.''
-Indeed, that is really why the Boolean-valued soundness theorem (see \Cref{boolean-soundness}) is true. One thinks of the \lil{≤} symbol in an inequality of Boolean truth-values as a turnstile in a proof state:
-the conjuncts on the left as a list of assumptions in context, and the quantity on the right as the goal.
-For example, given \lil{a b : 𝔹}, the identity $(a \Rightarrow b) \sqcap a \leq b$ could be proven by unfolding the definition of material implication, but it is really just modus ponens;
-similarly, given an indexed family \lil{a : I → 𝔹}, the equivalence \lstinline{(⨆i, a i ≤ b) ↔ ∀ i, a i ≤ b} is just $\exists$-elimination.
-
-Difficulties arise when the statements to be proved become only slightly more complicated. Consider the following example, which should be  ``\lil{by assumption}'':
+Indeed, that is really why the Boolean-valued soundness theorem (see \Cref{boolean-soundness}) is true: one can just replay natural deduction proofs in arbitrary complete Boolean algebras, not just \lil{Prop}. We use Lean's metaprogramming to expose natural deduction-style tactics to the user for the purpose of proving inequalities in complete Boolean algebras. (One thinks of the \lil{≤} symbol in an inequality of Boolean truth-values as a turnstile in a proof state). An immediate challenge which arises is being able to reason about assumptions (to the left of the turnstile) modulo associativity and commutativity. For example, the natural-deduction version of this statement should simply be \lil{by assumption}:
 \begin{lstlisting}
 ∀ a b c d e f g : 𝔹,
   (d ⊓ e) ⊓ (f ⊓ g ⊓ ((b ⊓ a) ⊓ c)) ≤ a
 \end{lstlisting}
-or slightly less trivially, a goal that is just ``implication introduction and \emph{modus ponens}''
-\begin{lstlisting}
-(a ⟹ b) ⊓ (b ⟹ c) ≤ a ⟹ c
-\end{lstlisting}
-In this last example, even if one has a lemma which concludes \lil{a ⟹ b ⊓ a ≤ b}, one must perform tedious reasoning modulo the associativity and commutativity of \(\sqcap\) to apply it.
-Our solution is to piggyback on the tactic monad's AC-invariant handling of hypotheses in the tactic state, by applying the \textbf{Yoneda lemma} for posets:
+but with a naiive approach, one must manually unwrap and permute the arguments of the nested \(\sqcap\)s. Our solution is to piggyback on the tactic monad's AC-invariant handling of hypotheses in the tactic state, by applying the \emph{Yoneda lemma} for posets:
 \label{poset-yoneda}
 \begin{lstlisting}
 lemma poset_yoneda {β} [partial_order β] {a b : β}
@@ -1172,34 +1162,66 @@ by { tidy_context, assumption }
   ⊢ Γ ≤ a  -/
 \end{lstlisting}
 In this example, \lil{tidy_context} combines an application of \lil{poset_yoneda} with a call to the simplifier to split hypotheses of the form \lstinline{Γ ≤ a₁ ⊓ a₂ ⊓ ... aₙ} into \lstinline{Γ ≤ a₁, Γ ≤ a₂, ..., Γ ≤ aₙ}.
-% Compare this with a more conventional proof, where we even have the deduction theorem and modus ponens available as lemmas: % cut?
+% One thinks of the \lil{≤} symbol in an inequality of Boolean truth-values as a turnstile in a proof state:
+% the conjuncts on the left as a list of assumptions in context, and the quantity on the right as the goal.
+% For example, given \lil{a b : 𝔹}, the identity $(a \Rightarrow b) \sqcap a \leq b$ could be proven by unfolding the definition of material implication, but it is really just modus ponens;
+% similarly, given an indexed family \lil{a : I → 𝔹}, the equivalence \lstinline{(⨆i, a i ≤ b) ↔ ∀ i, a i ≤ b} is just $\exists$-elimination.
+
+% Difficulties arise when the statements to be proved become only slightly more complicated. Consider the following example, which should be  ``\lil{by assumption}'':
 % \begin{lstlisting}
-% example {β : Type*} [complete_boolean_algebra β]
-%   {a b c : β} :
-%  ( a ⟹ b ) ⊓ ( b ⟹ c ) ≤ a ⟹ c :=
-% begin
-%   rw [ ← deduction, inf_comm, ← inf_assoc ],
-%   transitivity b ⊓ (b ⟹ c),
-%     { refine le_inf _ _,
-%       { apply inf_le_left_of_le, rw inf_comm,
-%         apply mp },
-%       { apply inf_le_right_of_le, refl }},
-%     { rw inf_comm, apply mp }
-% end
+% ∀ a b c d e f g : 𝔹,
+%   (d ⊓ e) ⊓ (f ⊓ g ⊓ ((b ⊓ a) ⊓ c)) ≤ a
 % \end{lstlisting}
-One use-case where automation is crucial is context specialization.
-For example, suppose that after preprocessing with \lstinline{poset_yoneda}, the goal is \lstinline{Γ ≤ (a ⟹ b)}, and one would like to apply implication introduction,
-adding \lstinline{Γ ≤ a} to the context and reducing the goal to \lstinline{Γ ≤ b}. However, the deduction theorem only lets us rewrite the goal to \lstinline{Γ ⊓ a ≤ b}, and we can only add \lstinline{Γ ⊓ a ≤ a} to the context.
-So we can introduce the implication after all, but at the cost of specializing the context \lstinline{Γ} to the smaller context \lstinline{Γ' := Γ ⊓ a}.
-In order for the user to continue the pretense that they are merely doing first-order logic, this change of variables must be propagated to the rest of the assumptions% which may still be of the form \lstinline{Γ ≤ _}
----which is extremely tedious to do by hand, but easy to automate.
-This is done by the tactic \lil{bv_imp_intro}, as in the following example.
-We also use a custom coercion to turn \(\B\)-valued implications into functions.
+% or slightly less trivially, a goal that is just ``implication introduction and \emph{modus ponens}''
+% \begin{lstlisting}
+% (a ⟹ b) ⊓ (b ⟹ c) ≤ a ⟹ c
+% \end{lstlisting}
+% In this last example, even if one has a lemma which concludes \lil{a ⟹ b ⊓ a ≤ b}, one must perform tedious reasoning modulo the associativity and commutativity of \(\sqcap\) to apply it.
+% Our solution is to piggyback on the tactic monad's AC-invariant handling of hypotheses in the tactic state, by applying the \textbf{Yoneda lemma} for posets:
+% \label{poset-yoneda}
+% \begin{lstlisting}
+% lemma poset_yoneda {β} [partial_order β] {a b : β}
+%   (H : ∀ Γ : β, Γ ≤ a → Γ ≤ b) : a ≤ b
+% \end{lstlisting}
+% With a little custom automation, our first example nearly becomes ``\lil{by assumption}''
+% \begin{lstlisting}
+% example {a b c d e f g : 𝔹} :
+%   (d ⊓ e) ⊓ (f ⊓ g ⊓ ((b ⊓ a) ⊓ c)) ≤ a :=
+% by { tidy_context, assumption }
+% /-  Goal state before `assumption`:
+%   [...]
+%   H_right_right_left_left : Γ ≤ b,
+%   H_right_right_left_right : Γ ≤ a
+%   ⊢ Γ ≤ a  -/
+% \end{lstlisting}
+% In this example, \lil{tidy_context} combines an application of \lil{poset_yoneda} with a call to the simplifier to split hypotheses of the form \lstinline{Γ ≤ a₁ ⊓ a₂ ⊓ ... aₙ} into \lstinline{Γ ≤ a₁, Γ ≤ a₂, ..., Γ ≤ aₙ}.
+% One use-case where automation is crucial is context specialization.
+% For example, suppose that after preprocessing with \lstinline{poset_yoneda}, the goal is \lstinline{Γ ≤ (a ⟹ b)}, and one would like to apply implication introduction,
+% adding \lstinline{Γ ≤ a} to the context and reducing the goal to \lstinline{Γ ≤ b}. However, the deduction theorem only lets us rewrite the goal to \lstinline{Γ ⊓ a ≤ b}, and we can only add \lstinline{Γ ⊓ a ≤ a} to the context.
+% So we can introduce the implication after all, but at the cost of specializing the context \lstinline{Γ} to the smaller context \lstinline{Γ' := Γ ⊓ a}.
+% In order for the user to continue the pretense that they are merely doing first-order logic, this change of variables must be propagated to the rest of the assumptions% which may still be of the form \lstinline{Γ ≤ _}
+% ---which is extremely tedious to do by hand, but easy to automate.
+% This is done by the tactic \lil{bv_imp_intro}, as in the following example---note also the use of custom coercions to treat \(\B\)-valued implications as functions.
+With more sophisticated tricks, such as coercing assumptions of the form \lil{(Γ ≤ a ⟹ b)} to functions \lil{Γ ≤ a → Γ ≤ b}, automated propagation of change-of-variables (``context-specialization'', see \cite{DBLP:conf/itp/HanD19} for more details), and automatically casing on disjunctions \lil{Γ ≤ a ⊔ b}, it is even possible to write a Boolean-valued tableaux prover \lil{bv_tauto}:
 \begin{lstlisting}
 example {a b c : 𝔹} :
   (a ⟹ b) ⊓ (b ⟹ c) ≤ a ⟹ c :=
-  by { tidy_context, bv_imp_intro Ha,
-        exact a_1_right (a_1_left Ha) }
+  by { tidy_context, bv_tauto }
+\end{lstlisting}
+Compare this with a more conventional proof, where we even have the deduction theorem and modus ponens available as lemmas: % cut?
+\begin{lstlisting}
+example {β : Type*} [complete_boolean_algebra β]
+  {a b c : β} :
+ ( a ⟹ b ) ⊓ ( b ⟹ c ) ≤ a ⟹ c :=
+begin
+  rw [ ← deduction, inf_comm, ← inf_assoc ],
+  transitivity b ⊓ (b ⟹ c),
+    { refine le_inf _ _,
+      { apply inf_le_left_of_le, rw inf_comm,
+        apply mp },
+      { apply inf_le_right_of_le, refl }},
+    { rw inf_comm, apply mp }
+end
 \end{lstlisting}
 
 It would have been possible to go further and even write a custom tactic state,
