@@ -1,0 +1,198 @@
+
+Review #36A
+===========================================================================
+
+Overall merit
+-------------
+4. Accept
+
+Reviewer expertise
+------------------
+3. Knowledgeable
+
+Paper summary
+-------------
+The paper presents a major formalization results: the proof of the independence of the
+continuum hypothesis (CH) from Zermelo-Fraenkel set theory + choice (ZFC). The proof
+is carried out in the Lean proof assistant and follows the "forcing with
+Boolean-valued models" approach.
+
+Global assessment
+-----------------
+The paper's achievement is the first complete formalization of this deep and complex
+result in set theory and mathematical logic. As such it will fit perfectly in CPP's
+program. I only didn't give a strong accept because of two concerns:
+
+* The authors chose to present the proof in quite some detail, while sacrificing some
+  explanations of the theorem statement (or rather its ingredients). I would have
+  preferred to have the full details of the theorem statement in the paper (since this
+  is what we need to understand in order to trust the result), and only have the proof
+  details sketched (since regardless how detailed, they are sketched even now, but we
+  can trust Lean to check the details).
+
+* The paper has some textual overlap with the predecessor paper from ITP'19, which
+  established the impossibility of proving CH in ZFC&mdash;the according to the
+  authors of this paper more difficult half of the result. The overlap is acknowledged
+  by the authors ("we reproduce some of that material here"), and in some places I
+  think necessary (e.g., definition of terms and formulas). In other places, I feel
+  that a reference to the ITP paper would suffice. For example, Section 6.1 from this
+  paper fully reproduces Section 3.1 from the ITP paper. This section showcases the
+  used meta programming features of Lean, however, 6.2, should in principle be enough
+  to demonstrate that.
+
+Detailed review
+---------------
+The paper is well-written. The author try to explain the proof in detail, which is not
+always successful, due to the complexity of the matter. Section 5 is particularly
+dense.
+
+As for the main result, the author show the statement as
+
+```
+CH := forall x. Ord(x) ==> x <= omega | Pow(omega) <= x
+```
+
+and the formal counterpart of this statement. What they do not show are the
+definitions of Ord or even <=. Of course, the formalization is available, and after
+staring at de Bruijn indices for some time one arrives at this fairly standard
+formulation of what it means to be an ordinal:
+
+```
+is_transitive(z) = ∀x. x ∈ z ⟹ x ⊆ z
+epsilon_wellfounded(z) = ∀x. x ⊆ z ⟹ NOT x ≃ ∅ ⟹ ∃y ∈ x. ∀y ∈ z. NOT y ∈ x
+epsilon_trichotomy(z) = ∀x ∈ z. ∀y ∈ z. x ≃ y OR x ∈ y OR y ∈ x
+ewo_f(z) = epsilon_trichotomy(z) AND epsilon_wellfounded(z)
+Ord(z) = ewo_f(z) AND is_transitive(z)
+```
+
+It would be nice if the paper would show us this definition in meta-notation to
+reassure the reader that CH is really the continuum hypothesis. The same applies to
+all axioms of ZFC, in particular axiom_of_powerset and axiom_of_infinity, which
+characterize ZFC function symbols that occur in CH's statement.
+
+The formalization overview summary.lean is helpful to get to the definition of the
+main concepts of the sizable formalization (23000 lines of proofs).
+
+I am happy to hear that the author think beyond ZFC in their future work. It would be interesting to use the formalization to distill features of ZFC, which are sufficient and necessary for the result. This would for example allow to answer question like "what is the weakest reasonable set theory, for which CH is independent?" or "is CH independent from Lean's or Coq's dependent type theory?".
+
+Minor remarks:
+
+24: Spell out ZFC on first usage
+
+241: "preterm" should be "preformula"
+
+256: The usage of two different fonts for m and k is confusing. This applies also more
+globally to other "inconsistencies" when moving from meta-notation to Lean-notation.
+E.g. "aleph_1_^{v}" (594) vs. the notation where the "v" is atop of "aleph_1" (599)
+
+248-254: I appreciate this honest paragraph which explains the slightly peculiar
+modeling of first-order terms. There is some hope for better support for nested
+inductive types in Lean due to recent work by Avigad et al. [ITP'19].
+
+319,323: "don't" should be "do not"
+
+321: Emphasize that this is meta notation. Maybe contrast this with the actual deeply
+embedded sentence using de Bruijn (at least for one example).
+
+326: "is states" should be "states"
+
+372: "l" is easy to misparse as "1"
+
+393: Add comma after "written Gamma ||-M phi"
+
+786 "combinatorics.The" lacks a space
+
+870 "on on"
+
+The formalization summary.lean contains a loose reference to axiom_pairing.
+If one comments this out the file is processed as expected.
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+Review #36B
+===========================================================================
+
+Overall merit
+-------------
+4. Accept
+
+Reviewer expertise
+------------------
+2. Some familiarity
+
+Paper summary
+-------------
+This paper describes an interesting formalisation in Lean of the independence of the Continuum Hypothesis CH, i.e., that neither CH nor \neg CH can be proved or disproved from the ZFC axioms. This proof was started by Goedel in the 1930’s, who proved that CH is consistent with ZFC, and concluded by Cohen in the 1960’s, who developed forcing to prove the consistence of \neg CH.
+
+Global assessment
+-----------------
+This is a well-written paper and the formalisation is of high significance. As far as I know this is the first complete formalisation of the independence of CH.
+
+Detailed review
+---------------
+Try to avoid as much as possible overlapping with ITP 2019 paper entitled “A Formalization of Forcing and the Unprovability of the CH”.
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+Review #36C
+===========================================================================
+
+Overall merit
+-------------
+4. Accept
+
+Reviewer expertise
+------------------
+3. Knowledgeable
+
+Paper summary
+-------------
+At a high level, this paper describes a Lean formalization of the independence of the Continuum Hypothesis from ZFC. This is achieved via the implementation of Boolean-valued models of ZFC in the Lean meta-theory, a proof of their soundness w.r.t. the derivation rules of first-order logic. By exhibiting two specific Boolean algebras in which CH is respectively negated (i.e. the algebra generated by Cohen forcing conditions) and satisfied (i.e. the algebra generated by collapse forcing), this entails independence of CH from ZFC. Across the article several practical design choices are discussed, as well as generic techniques leveraging the metalanguage facilities of the Lean proof assistant to discharge trivial facts automatically.
+
+Global assessment
+-----------------
+I would definitely recommend acceptance for several reasons. First, and most valuably for a CPP submission, the paper does quite a good work at explaining the companion formal development, with a reasonable amount of hints about the implementation and design choices, without dwelling too much on irrelevant details. Few papers are striking such a hard to attain balance between terseness and verbosity. Second, while the results implemented are closer to being fossilized than even folklore from a purely mathematical point of view, the formalization of the proof of the independence of CH from ZFC constitutes a major symbolical milestone, as witnessed by its presence in Freek Wiedijk's well-known list. Finally, even if the results are standard, the use of Lean as the meta-theory of the model unravels hidden (not to say obfuscated) whereabouts from the ZFC-targetting proofs from the book. Thus all of these facts together justify acceptance. I cannot raise it to a strong support bec
+ ause I am neither a expert in set theory, nor a Lean user. In particular it is hard for me to judge the reusability of the implementation as well as its compliance to the recommended practices from that community.
+
+Detailed review
+---------------
+First, regarding the novelty of the formalization, I am fairly sure I have already seen models of ¬CH in Coq privately circulating around, but attributing them to somebody in particular would be too much for my deficient memory (conceivably someone from the classical realizability community). Nonetheless, I am equally convinced I had never seen a formalization of a model for CH, so this part seems new to me. This is not unexpected, judging the fact that it is easier to disprove CH than to force it, as explained by the authors.
+
+The proof outline for ¬CH is standard, yet I was enlightened by the definition of ℙ-names as a variant of Aczel's set encoding where inhabitants carry an additional truth value. This seems obvious in retrospective, but I find this realization to be the major selling point of this paper. It makes a lot of set-theoretic mumbo-jumbo that is commonly found in explanations of forcing completely outdated when explained type-theoretically.
+
+I was not aware that CH could be showed consistent using the same forcing technique though, but this is most likely due to my lack of knowledge about set-theory. Indeed, as observed, usually one uses the constructible universe of sets to prove this. It is not very clear from the article whether this forcing formulation is new or if it is a known, non-typical (pun intended) model of CH. In any case, the forcing conditions used are not surprising, it is natural, but clearly technical issues get in the way.
+
+Section 4.1: what is even the point of defining pSets? Clearly bSets are a generalization of the latter, where pSets can be recovered by taking the Boolean algebra of booleans. Even moreso given that the authors complain about code duplication!
+
+I have to confess that my Lean-fu is not enough to fully grasp the minimal meta-theory needed to show that these generalized Aczel encodings are indeed modelling ZFC. Clearly, one needs classical logic at least in Prop, impredicativity for the replacement axiom (here a consequence of strong collection) and some form of choice, but it is not clear whether reasonable choice like `(Π x, nonempty (α x)) → nonempty (Π x, α x)` is enough or if you need to summon Santa Claus with `nonempty α → α` or classical logic in Type.
+
+Relatedly, the authors complain in the overview about the use of forcing conditions as a preorder rather than the corresponding induced boolean algebra. I know this is a design choice to embrace classical logic in Lean, but the crypto-hardcore intuitionist that lies dormant in my brain hisses every time somebody uses non-constructive principles as mere proof shortcuts. In particular, I may be wrong but I had the impression from Krivine realizability that defining forcing via a preorder allowed for a fundamentally intuitionist proof that it models set theory (at least without extensional choice). Krivine even goes to the extent of defining an intermediate intensional version of ZF called ZFε for that matter, allowing to get rid of explicit quotients, morally by defining a setoid translation of ZF into it. (As usual choice and quotients don't play well together.) I would have been even happier with a presentation pushing classical logic as far as possible on the boundaries rat
+ her than hardwiring it at the level of boolean algebras by doubly-negating everything on sight. I fully acknowledge this is irrelevant to the intended target which is, I assume, some kind of deluded Platonistic set theorist who makes your-cardinal-is-so-big jokes, but still.
+
+As for the implementation discussion, I find surprising that Lean doesn't provide some complete reflexive tactic for Boolean algebra (yet). Coq has "btauto" for instance. Relying on the Yoneda embedding is quite standard and relatively painless at first, but it has a tendency to generate big proof terms as you have to convert back and forth between these representations. This can be a burden in big proofs, or when there are a lot of hypotheses involved, but it seems you are still far from reaching that point in this development. Also, I know that this is a CPP submission, so you were morally compelled to write a section on practical matters, but definitely Section 6 is underwhelming compared to what precedes it. People who wrote Ltac cathedrals would probably smile at the contrast in technicality...
+
+Typos:
+381: is just "a" element
+942: "admit as direct a a construction"
+1084: "is a model ZFC"
+
+
+Comment @A1 by Reviewer B
+---------------------------------------------------------------------------
+Dear authors,
+
+during the PC discussion, the reasonable suggestion related with avoiding overlapping of parts of the paper with the ITP19 paper  (https://florisvandoorn.com/papers/flypitch-itp-2019.pdf) was given: "to drop  section 6.1 (and instead just to refer to the ITP paper) and use the space to describe the definitions involved in the formulation of CH in more/full detail."
+
+Also, try to avoid verbatim copies such as :
+
+"The first paragraphs of the two papers are the same, verbatim.
+
+The paragraph starting on l.43 is the same as the top of p.2 of the ITP19 paper.
+
+The first paragraph of section 6 is really close to one in the middle of p.9 in the ITP19 paper. Then 6.1, including the citation, is verbatim section 3.2 of ITP19."
+
+Also, reference with precision in the paper the material of [18] that you consider should be included for the sake of remaining self-contained.
