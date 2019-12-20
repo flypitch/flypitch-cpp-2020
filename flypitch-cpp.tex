@@ -5,12 +5,12 @@
 %% For single-blind review submission, w/o CCS and ACM Reference (max submission space)
 %\documentclass[sigplan,review]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
 %% For single-blind review submission, w/ CCS and ACM Reference
-%\documentclass[sigplan,review]{acmart}\settopmatter{printfolios=true}
+% \documentclass[sigplan,review]{acmart}\settopmatter{printfolios=true}
 %% For final camera-ready submission, w/ required CCS and ACM Reference
-\documentclass[sigplan, screen]{acmart}\settopmatter{}
+% \documentclass[sigplan, screen]{acmart}\settopmatter{}
+\documentclass[sigplan,screen]{acmart}
 
 % note(jesse, October 01 2019, 04:00 PM): I'm getting weird typesetting authors when the `anonymous' option is removed
-
 
 %%% The following is specific to CPP '20 and the paper
 %%% 'A Formal Proof of the Independence of the Continuum Hypothesis'
@@ -24,6 +24,7 @@
 \acmISBN{978-1-4503-7097-4/20/01}
 \acmConference[CPP '20]{Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs}{January 20--21, 2020}{New Orleans, LA, USA}
 \acmBooktitle{Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs (CPP '20), January 20--21, 2020, New Orleans, LA, USA}
+
 
 %% Bibliography style
 \bibliographystyle{ACM-Reference-Format}
@@ -176,31 +177,32 @@
 
 %% 2012 ACM Computing Classification System (CSS) concepts
 %% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+
 \begin{CCSXML}
-  <ccs2012>
-  <concept>
-  <concept_id>10003752.10003790</concept_id>
-  <concept_desc>Theory of computation~Logic</concept_desc>
-  <concept_significance>500</concept_significance>
-  </concept>
-  <concept>
-  <concept_id>10003752.10003790.10011740</concept_id>
-  <concept_desc>Theory of computation~Type theory</concept_desc>
-  <concept_significance>300</concept_significance>
-  </concept>
-  </ccs2012>
+<ccs2012>
+<concept>
+<concept_id>10003752.10003790.10002990</concept_id>
+<concept_desc>Theory of computation~Logic and verification</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10003752.10003790.10011740</concept_id>
+<concept_desc>Theory of computation~Type theory</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+</ccs2012>
 \end{CCSXML}
 
-\ccsdesc[500]{Theory of computation~Logic}
-\ccsdesc[300]{Theory of computation~Type theory}
+\ccsdesc[500]{Theory of computation~Logic and verification}
+\ccsdesc[500]{Theory of computation~Type theory}
+
 %% End of generated code
 
 %% Keywords
 %% comma separated list
-\keywords{continuum hypothesis, forcing, Lean, set theory, ZFC} %% \keywords are mandatory in final camera-ready submission
+\keywords{Interactive theorem proving, formal verification, continuum hypothesis, forcing, Lean, set theory, ZFC, Boolean-valued models} %% \keywords are mandatory in final camera-ready submission
 
 
-%% \maketitle
 %% Note: \maketitle command must come after title commands, author
 %% commands, abstract environment, Computing Classification System
 %% environment and commands, and keywords command.
@@ -318,7 +320,7 @@ For the $\Delta$-system lemma, which we use to verify that Cohen forcing is CCC,
 
 We were unable to find a reference for a purely Boolean-valued account of forcing \(\CH\). We loosely followed the conventional arguments given by Weaver (\cite{weaver2014forcing}, Chapter 12) and Moore (\cite{moore2019method}), and base our construction of \(\mathbb{B}_{\mathsf{collapse}}\) on the collapse algebras defined by Bell (\cite{bell2011set}, Exercise 2.18).
 
-\paragraph{Related work} Set theory and first-order logic are both common targets for formalization. Shankar \cite{shankar1997metamathematics} used a deep embedding of first-order logic for incompleteness theorems. Harrison gives a deeply-embedded implementation of first-order logic in HOL Light \cite{harrison1998formalizing} and a proof-search style account of the completeness theorem in \cite{harrison2009handbook}. Other formalizations of first-order logic can be found in Isabelle/HOL (\cite{Ridge2005AMV}, \cite{schlichtkrull2018formalization},\cite{FOL-Fitting-AFP}) and Coq (\cite{ilik2010constructive}, \cite{DBLP:conf/tphol/OConnor05}).
+\paragraph{Related Work} Set theory and first-order logic are both common targets for formalization. Shankar \cite{shankar1997metamathematics} used a deep embedding of first-order logic for incompleteness theorems. Harrison gives a deeply-embedded implementation of first-order logic in HOL Light \cite{harrison1998formalizing} and a proof-search style account of the completeness theorem in \cite{harrison2009handbook}. Other formalizations of first-order logic can be found in Isabelle/HOL (\cite{Ridge2005AMV}, \cite{schlichtkrull2018formalization},\cite{FOL-Fitting-AFP}) and Coq (\cite{ilik2010constructive}, \cite{DBLP:conf/tphol/OConnor05}).
 
 A large body of formalized set theory has been completed in Isabelle/ZF, led by Paulson and his collaborators \cite{paulson1996mechanizing, paulson1993set, paulson2002reflection}, including the relative consistency of \(\mathsf{AC}\) with $\mathsf{ZF}$ \cite{paulson2008relative}. Building on this, Gunther, Pagano, and Terraf have taken some first steps towards formalizing forcing \cite{gunther2018first, gunther2019mechanization}, by way of generic extensions of countable transitive models.
 
@@ -328,7 +330,7 @@ A large body of formalized set theory has been completed in Isabelle/ZF, led by 
 % \subparagraph*{Viewing the formalization}
 % The code blocks in this paper were taken directly from our formalization, but for the sake of readability, we sometimes omit or modify universe levels, type ascriptions, and casts. We refer the interested reader to our repository (see Supplemental Material on page 1) which contains a guide on compiling and navigating the source files of the project.
 
-\section{First-order logic}
+\section{First-Order Logic}
 \label{sect:fol}
 
 The starting point for first-order logic is a \emph{language} of relation and function symbols.
@@ -507,7 +509,7 @@ def CH_formula : formula L_ZFC :=
 \end{lstlisting}
 The substitutions ensure that the formulas are applied to the correct arguments, and \lil{⊔} is notation for disjunction.
 
-\section{Boolean-valued semantics}
+\section{Boolean-Valued Semantics}
 \label{sect:boolean-semantics}
 A \textbf{complete Boolean algebra} is a Boolean algebra $\B$ with additional operations infimum $(\bigsqcap)$ and supremum $(\bigsqcup)$ of any subset of $\B$.
 We use $\sqcap, \sqcup, \implies, \top$, and $\bot$ to denote meet, join, material implication, top, and bottom. For more details on complete Boolean algebras, we refer the reader to the textbook of Halmos-Givant~\cite{givant2008introduction}.
@@ -547,9 +549,9 @@ theorem boolean_soundness {Γ : set (sentence L)}
 \end{lstlisting}
 The proof is a straightforward structural induction.
 
-\section{Boolean-valued models of set theory}
+\section{Boolean-Valued Models of Set Theory}
 \label{sect:bset}
-\subsection{The Aczel encoding}
+\subsection{The Aczel Encoding}
 \label{subsect:bset:aczel}
 Our starting point is the Aczel encoding of \(\ZFC\) (\cite{aczel1978type, aczel1986type, aczel1982type}) into dependent type theory.
 This was implemented in Coq by Werner \cite{werner1997sets}, and in Lean's \textsf{mathlib} by Carneiro \cite{mario1}.
@@ -604,7 +606,7 @@ One can then define membership from equivalence and check that modulo extensiona
 % \end{lstlisting}
 % which we later verify is a \(\mathbb{B}\)-valued model of \(\ZFC\).
 
-\subsection{Boolean-valued sets}
+\subsection{Boolean-Valued Sets}
 \label{subsect:bset:bset}
 
 We now want to generalize \lil{pSet} to a Boolean-valued model of \(\ZFC\). We must give a
@@ -631,7 +633,7 @@ Reversing this observation, we can replace \(\mathbb{P}\) with a complete Boolea
 % \end{lstlisting}
 % Whatever is important in \lstinline{bvm}, \lstinline{bvm_extras}, \lstinline{bvm_extras2} for this argument.
 
-\paragraph{Boolean-valued equality and membership}
+\paragraph{Boolean-Valued Equality and Membership}
 We can define Boolean-valued equality and membership analogously to the definitions in \lil{pSet}.
 To do this, we translate quantifiers and connectives into operations on $\B$:
 \begin{lstlisting}
@@ -648,7 +650,7 @@ def mem : bSet 𝔹 → bSet 𝔹 → 𝔹
 \end{lstlisting}
 While standard treatments of Boolean-valued models of \(\ZFC\) mutually define equivalence and membership so that the axiom of extensionality follows definitionally (\cite{bell2011set}, \cite{hamkins2012well}), the induction principle given by the non-mutual definition is easier to work with in our formalization.
 
-\subsection{The fundamental theorem of forcing}
+\subsection{The Fundamental Theorem of Forcing}
 \label{subsect:bset:fundamental-thm}
 The fundamental theorem of forcing for Boolean-valued models~\cite{hamkins2012well} states that for any complete Boolean algebra \lil{𝔹}, the type \lil{bSet 𝔹} forms a Boolean-valued model of $\ZFC$.
 
@@ -788,7 +790,7 @@ To finish the forcing argument, we must show that it suffices to work with \(\wi
 This requires a careful study of how truth-values are calculated in \lil{bSet 𝔹},
 and ultimately reduces to an analysis of how truth-values of \(\forall\)-\(\exists\) statements in \lil{bSet 𝔹} can be \emph{reflected back} to \lil{Type u}, and a verification of a combinatorial condition on \lil{𝔹}.
 
-\subsection{Regular open algebras}
+\subsection{Regular Open Algebras}
 \begin{defn}\label{def:regular-open-algebra}
   Let $X$ be a topological space, and for any open set $U$, let $U^{\perp}$ denote the complement of the closure of $U$.
   The \textbf{regular open algebra} of a topological space $X$, written $\operatorname{RO}(X)$, is the collection of all open sets $U$ such that $U = (U^\perp)^\perp$, or equivalently such that
@@ -812,7 +814,7 @@ We say that $\B$ has the \textbf{countable chain condition} (CCC) if every antic
 We say that \(\B\) is \textbf{\(\sigma\)-closed} if there exists a dense suborder \(\mathbb{P}\) of \(\B\) such that every \(\omega\)-indexed downwards chain \(p_0 \geq \cdots \geq p_n \cdots\) in \(\mathbb{P}\) has a lower bound \(p_{\omega}\) in \(\mathbb{P}\).
 \end{defn}
 
-\subsection{Cohen forcing}
+\subsection{Cohen Forcing}
 
 As we have already seen in \Cref{def:powerset}, we construct the powerset of a \lil{𝔹}-valued set \lstinline{u : bSet 𝔹} using \lil{𝔹}-valued indicator functions \lil{χ : u.type → 𝔹}.
 The basic strategy of Cohen forcing is to choose \lil{𝔹} such that for every \lil{ν : ℵ₂}, there is a canonical indicator function (a ``Cohen real'') \(\chi_{\nu} : \N \to \mathbb{B}\).
@@ -945,7 +947,7 @@ From \Cref{thm:product-ccc} and the observation that $2^J$ has the CCC if $J$ is
   \(\B_{\mathsf{cohen}}\) has the CCC.
 \end{lemma}
 
-\subsection{Collapse forcing} \label{subsect:collapse}
+\subsection{Collapse Forcing} \label{subsect:collapse}
 % note(jesse, October 01 2019, 04:11 PM): i think levy collapse only involves the collapse of strongly inaccessible cardinals, and that the collapsing argument we use goes by the name of σ-closed, ω-closed, countably closed forcing or maybe just collapse forcing? we should clarify this.
 
 Whereas Cohen forcing creates a new injection \(\widecheck{\aleph_2} \hookrightarrow \mathcal{P}(\omega)\), we can use \emph{collapse forcing} to create a new surjection \(F : \aleph_1^{\mathbb{B}} \twoheadrightarrow \mathcal{P}(\omega)\).
@@ -1044,7 +1046,7 @@ Our implementation differs from the usual construction of Hartogs numbers by \em
 
 % TODO(jesse): maybe describe the interesting technical caveat about why external choice on the indexing types is not enough to finish the construction
 
-\subsection{Function reflection} \label{subsect:function-reflection}
+\subsection{Function Reflection} \label{subsect:function-reflection}
 
 Suppose given \lil{y : pSet} and \lil{f : bSet 𝔹} such that \lil{bSet 𝔹} models that \lil{f} is a function from \(\omega\) to \(\widecheck{y}\).
 We say that \lil{bSet 𝔹} \textbf{reflects \lil{f}} if there exists a \lil{g : pSet} such that \lil{g} is a function from \(\omega\) to \lil{y} in \lil{pSet}, and \lil{bSet 𝔹} models that \(\widecheck{g} = f\).
@@ -1120,7 +1122,7 @@ Implementing this argument was one of the most technical parts of our formalizat
 
 % Construction of $\aleph_1$.
 
-\subsection{The independence of \texorpdfstring{\(\CH\)}{CH}} \label{subsect:forcing:independence}
+\subsection{The Independence of \texorpdfstring{\(\CH\)}{CH}} \label{subsect:forcing:independence}
 
 In \Cref{subsect:bset:fundamental-thm} we showed that \lil{bSet 𝔹} is a model of \lil{ZFC},
 which means that we can interpret the deeply-embedded statement of \lil{CH_formula} into
@@ -1151,13 +1153,13 @@ def independent (T : Theory L) (f : sentence L) :=
 theorem independence_of_CH : independent ZFC CH_f :=
 by finish [independent, CH_unprv, neg_CH_unprv]
 \end{lstlisting}
-\section{Automation and metaprogramming}
+\section{Automation and Metaprogramming}
 \label{sect:metaprogramming}
 
 A key feature of Lean is that it is its own metalanguage \cite{Ebner:2017:MFF:3136534.3110278}, allowing for seamless in-line definitions of custom tactics (and modifications of existing ones).
 This was an invaluable asset, we were able to rapidly develop a custom tactic library for simulating natural-deduction style proofs in complete Boolean algebras (\Cref{subsect:natded}) and automating equality reasoning in those proofs (\Cref{subsect:bv-cc}).
 
-\subsection{Simulating natural deduction proofs in complete Boolean algebras} \label{subsect:natded}
+\subsection{Simulating Natural Deduction Proofs in Complete Boolean Algebras} \label{subsect:natded}
 As stressed by Scott \cite{scott2008algebraic}, ``A main point ... is that the well-known algebraic characterizations of [complete Heyting algebras] and [complete Boolean algebras] exactly mimic the rules of deduction in the respective logics.''
 Indeed, that is really why the Boolean-valued soundness theorem (see \Cref{boolean-soundness}) is true: one can just replay natural deduction proofs in arbitrary complete Boolean algebras, not just \lil{Prop}. We use Lean's metaprogramming to expose natural deduction-style tactics to the user for the purpose of proving inequalities in complete Boolean algebras. (One thinks of the \lil{≤} symbol in an inequality of Boolean truth-values as a turnstile in a proof state). An immediate challenge which arises is being able to reason about assumptions (to the left of the turnstile) modulo associativity and commutativity. For example, the natural-deduction version of this statement should simply be \lil{by assumption}:
 \begin{lstlisting}
@@ -1249,9 +1251,9 @@ as was done for temporal logic in Unit-B \cite{Hudon2015TheUM} or for Lean's SMT
 such that the machinery for handling the ambient context \(\Gamma\) is completely hidden. % and the Boolean-valued tactics receive their own namespace
 However, we judged the benefits of this to be mostly cosmetic, and we leave more sophisticated implementations for future work.
 
-\subsection{Boolean-valued equality reasoning}
+\subsection{Boolean-valued Equality Reasoning}
 
-\paragraph{Congruence closure on quotient types} \label{subsect:bv-cc}
+\paragraph{Congruence Closure on Quotient Types} \label{subsect:bv-cc}
 Another benefit of applying \hyperref[poset-yoneda]{\lstinline{poset_yoneda}} and using context variables \(\Gamma\) throughout the formalization is that this approach exposes a canonical poset of setoids on \lil{bSet 𝔹} induced by \lil{𝔹}-valued equality:
 for every \(\Gamma : \mathbb{B}\) the relation \(\lambda\; x \; y, \Gamma \leq x =^{\mathbb{B}} y\) is an equivalence relation on \lil{bSet 𝔹}. % (the larger \(\Gamma\) is, the finer the equivalence relation).
 
@@ -1272,7 +1274,7 @@ example {x₁ y₁ x₂ y₂ : bSet 𝔹} {Γ}
   (H₁ : Γ ≤ x₁ ∈ᴮ y₁) (H₂ : Γ ≤ x₁ =ᴮ x₂)
   (H₂ : Γ ≤ y₁ =ᴮ y₂) : Γ ≤ x₂ ∈ᴮ y₂ := by bv_cc
 \end{lstlisting}
-\paragraph{Discharging congruence lemmas} \label{subsect:B-ext}
+\paragraph{Discharging Congruence Lemmas} \label{subsect:B-ext}
 Rewriting along a \(\mathbb{B}\)-valued equality is the same as rewriting in the appropriate setoid parametrized by the current context \(\Gamma\), % cut? entire paragraph
 so that the motive must satisfy an appropriate \emph{congruence lemma} \lil{h_congr} with respect to the equivalence relation:
 \begin{lstlisting}
@@ -1297,7 +1299,7 @@ example {w : bSet 𝔹} :
 % \section{Related Work}
 % \label{sect:related-work}
 % Compare with other formalization on the consistency of CH. % do there exist any?
-\section{Conclusions and future work}
+\section{Conclusions and Future Work}
 \label{sect:conclusions}
 % This paper describes a successful completion of the Flypitch project, giving the first formalization of the independence of the continuum hypothesis.
 % This problem is problem 24 on Wiedijk's list ``Formalizing 100 theorems''~\cite{wiedijk100theorems},

@@ -37,7 +37,7 @@
 %%   Right brace   \}     Tilde         \~}
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{acmart}
-[2019/10/19 v1.65 Typesetting articles for the Association for Computing Machinery]
+[2019/12/18 v1.66 Typesetting articles for the Association for Computing Machinery]
 \def\@classname{acmart}
 \InputIfFileExists{acmart-preload-hook.tex}{%
   \ClassWarning{\@classname}{%
@@ -730,6 +730,11 @@
   \let\@vspacer\@vspacer@orig}
 \AtBeginEnvironment{table*}{\let\@vspace\@vspace@orig
   \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{algorithm}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+\AtBeginEnvironment{algorithm*}{\let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig}
+
 \RequirePackage{caption, float}
 \captionsetup[table]{position=top}
 \if@ACM@journal
@@ -1379,7 +1384,12 @@
 \def\terms#1{\ClassWarning{\@classname}{The command \string\terms{} is
     obsolete.  I am going to ignore it}}
 \def\keywords#1{\def\@keywords{#1}}
-\keywords{}
+\let\@keywords\@empty
+\AtEndDocument{\if@ACM@nonacm\else\ifx\@keywords\@empty
+  \ifnum\getrefnumber{TotPages}>2\relax
+  \ClassWarningNoLine{\@classname}{ACM keywords are mandatory
+    for papers over two pages}%
+  \fi\fi\fi}
 \renewenvironment{abstract}{\Collect@Body\@saveabstract}{}
 \long\def\@saveabstract#1{\if@ACM@maketitle@typeset
   \ClassError{\@classname}{Abstract must be defined before maketitle
@@ -1399,6 +1409,11 @@
   \else
     \ClassInfo{\@classname}{Suppressing bibformat}%
   \fi}{\ClassError{\@classname}{The option printacmref can be either true or false}}
+\AtEndDocument{\if@ACM@nonacm\else\if@ACM@printacmref\else
+  \ifnum\getrefnumber{TotPages}>1\relax
+  \ClassWarningNoLine{\@classname}{ACM reference format is mandatory
+    for papers over one page}%
+  \fi\fi\fi}
 \define@boolkey+{@ACM@topmatter@}[@ACM@]{printfolios}[true]{%
   \if@ACM@printfolios
     \ClassInfo{\@classname}{Printing folios}%
@@ -1468,6 +1483,11 @@
      #3\fi\fi\ifnum\value{@concepts}=0.\else; \fi}%
   \fi
 \ccsdesc@parse@finish}
+\AtEndDocument{\if@ACM@nonacm\else\ifx\@concepts\@empty\relax
+  \ifnum\getrefnumber{TotPages}>2\relax
+  \ClassWarningNoLine{\@classname}{CCS concepts are mandatory
+    for papers over two pages}%
+  \fi\fi\fi}
 \def\ccsdesc@parse@finish#1\ccsdesc@parse@end{}
 \newif\if@printcopyright
 \@printcopyrighttrue
@@ -1608,10 +1628,10 @@
    source.
   \or % usgovmixed
    ACM acknowledges that this contribution was authored or co-authored
-   by an employee, contractor, or affiliate of the United States government. As such,
-   the United States government retains a nonexclusive, royalty-free right to
-   publish or reproduce this article, or to allow others to do so, for
-   government purposes only.
+   by an employee, contractor, or affiliate of the United States
+   government. As such, the United States government retains a
+   nonexclusive, royalty-free right to publish or reproduce this
+   article, or to allow others to do so, for government purposes only.
   \or % cagov
    This article was authored by employees of the Government of Canada.
    As such, the Canadian government retains all interest in the
@@ -1834,6 +1854,9 @@
   \@afterheading
 }
 \def\@specialsection#1{%
+  \bgroup
+  \let\@vspace\@vspace@orig
+  \let\@vspacer\@vspacer@orig
   \ifcase\ACM@format@nr
   \relax % manuscript
     \par\medskip\small\noindent#1: %
@@ -1853,7 +1876,8 @@
     \section*{#1}%
   \or % sigchi-a
     \section*{#1}%
-    \fi}
+    \fi
+  \egroup}
 \def\@printtopmatter{%
   \ifx\@startPage\@empty
      \gdef\@startPage{1}%
@@ -2261,6 +2285,11 @@
   \def\email##1##2{\unskip, \nolinkurl{##2}}%
   \addresses
   \egroup}
+\AtEndDocument{\if@ACM@nonacm\else\if@ACM@journal
+  \ifx\@authorsaddresses\@empty
+  \ClassWarningNoLine{\@classname}{Authors'
+    addresses are mandatory for ACM journals}%
+  \fi\fi\fi}
 \def\@setaddresses{}
 \def\@authornotemark{\g@addto@macro\@currentauthors{\footnotemark\relax}}
 \def\@@authornotemark#1{\g@addto@macro\@currentauthors{\footnotemark[#1]}}
