@@ -601,7 +601,7 @@ One can then define membership from equivalence and check that modulo extensiona
 % def equiv₂ : ∀ (x y : bSet), bool
 % | ⟨α,A,A'⟩ ⟨β,B,B'⟩ := ⨅ a : α, A' a ⟹ ⨆ b : β, B' b ⊓ equiv₂ (A a) (B b) ⊓  ⨅ b : β, B' b ⟹ ⨆ a : α, A' a ⊓ equiv₂ (A a) (B b)
 % \end{lstlisting}
-% Since this definition only interfaces with the typeclass of complete Boolean algebras, we can replace \lstinline{bool} by an arbitrary complete Boolean algebra \lstinline{𝔹} throughout, yielding: % note(jesse, October 03 2019, 05:06 PM): maybe should emphasize definition of membership instead of equality to make it clear that these things are Boolean-valued models of ZFC
+% Since this definition only interfaces with the type class of complete Boolean algebras, we can replace \lstinline{bool} by an arbitrary complete Boolean algebra \lstinline{𝔹} throughout, yielding: % note(jesse, October 03 2019, 05:06 PM): maybe should emphasize definition of membership instead of equality to make it clear that these things are Boolean-valued models of ZFC
 % \begin{lstlisting}
 % inductive bSet (𝔹 : Type u) [complete_boolean_algebra 𝔹]: Type (u+1)
 % | mk (α : Type u) (A : α → bSet)
@@ -672,7 +672,7 @@ This gives a nice definition of powerset:
   \[\text{ \lstinline{set_of_indicator χ :=} }\langle \alpha \to \B, (\lambda\; \chi, \widetilde{\chi}),\ (\lambda\;\chi, \widetilde{\chi} \subseteq^B x)\rangle.\]
 \end{defn}
 
-In particular, this gives an easy implemention of the axiom of comprehension (not just for interpretations of formulas, but for any \(\mathbb{B}\)-valued predicate on \lil{bSet 𝔹} satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma): \label{def:comprehension} % TODO(jesse, October 21 2019, 02:20 PM): while cutting, maybe omit everything except variables and bSet_axiom_of_comprehension
+In particular, this gives an easy implementation of the axiom of comprehension (not just for interpretations of formulas, but for any \(\mathbb{B}\)-valued predicate on \lil{bSet 𝔹} satisfying an appropriate \(\mathbb{B}\)-valued congruence lemma): \label{def:comprehension} % TODO(jesse, October 21 2019, 02:20 PM): while cutting, maybe omit everything except variables and bSet_axiom_of_comprehension
 \begin{lstlisting}
 lemma bSet_axiom_of_comprehension (ϕ : bSet 𝔹 → 𝔹) (x : bSet 𝔹)
   (H_congr : B_ext ϕ) {Γ : 𝔹} :
@@ -1169,7 +1169,7 @@ Indeed, that is really why the Boolean-valued soundness theorem (see \Cref{boole
 ∀ a b c d e f g : 𝔹,
   (d ⊓ e) ⊓ (f ⊓ g ⊓ ((b ⊓ a) ⊓ c)) ≤ a
 \end{lstlisting}
-but with a naiive approach, one must manually unwrap and permute the arguments of the nested \(\sqcap\)s. Our solution is to piggyback on the tactic monad's AC-invariant handling of hypotheses in the tactic state, by applying the \emph{Yoneda lemma} for posets:
+but with a naive approach, one must manually unwrap and permute the arguments of the nested \(\sqcap\)s. Our solution is to piggyback on the tactic monad's AC-invariant handling of hypotheses in the tactic state, by applying the \emph{Yoneda lemma} for posets:
 \label{poset-yoneda}
 \begin{lstlisting}
 lemma poset_yoneda {β} [partial_order β] {a b : β}
@@ -1368,7 +1368,7 @@ As the next challenge to formalizers, we propose the classical result of Shelah 
   %% extraction tools.
   We thank the members of the CMU-Pitt Lean group, particularly Simon Hudon, Jeremy Avigad, Mario Carneiro, Reid Barton, and Tom Hales for their feedback and suggestions; we are also grateful to Dana Scott and John Bell for their advice and correspondence.
 
-  The authors gratefully acknowlege the support by the
+  The authors gratefully acknowledge the support by the
   \grantsponsor{GS100000001}{Alfred P. Sloan Foundation}{https://doi.org/10.1038/201765d0}, Grant
   No.~\grantnum{GS100000001}{G-2018-10067}.
 \end{acks}
