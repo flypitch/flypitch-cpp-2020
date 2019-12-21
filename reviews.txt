@@ -46,10 +46,6 @@ Minor remarks:
 globally to other "inconsistencies" when moving from meta-notation to Lean-notation.
 E.g. "aleph_1_^{v}" (594) vs. the notation where the "v" is atop of "aleph_1" (599)
 
-248-254: I appreciate this honest paragraph which explains the slightly peculiar
-modeling of first-order terms. There is some hope for better support for nested
-inductive types in Lean due to recent work by Avigad et al. [ITP'19].
-
 321: Emphasize that this is meta notation. Maybe contrast this with the actual deeply
 embedded sentence using de Bruijn (at least for one example).
 

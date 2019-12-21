@@ -357,7 +357,7 @@ inductive preterm (L : Language.{u}) :
 \end{lstlisting}
 A member of \lil{preterm n} is a partially applied term.
 If applied to \lil{n} terms, it becomes a term.
-We define the type of well-formed terms \lil{term L} to be \lil{preterm L 0}.
+We define the type of well-formed terms \lil{term L} to be \lil{preterm L 0}. This is a unconventional way to define terms, which we chose because of the limited support for nested inductive types in Lean, though recent progress~\cite{avigad2019datattypes} might add better support in the future.
 
 % % cut?
 % There are other methods to define well-typed terms, for example using a nested inductive type with a constructor (replacing the second and third constructor in our definition)
@@ -431,10 +431,13 @@ inductive prf :
 In \lil{allI} the notation \lil{(λ f, f ↑ 1) '' Γ} means lifting all free variables in \lil{Γ} by one.
 A term of type \lil{prf Γ A}, denoted \lil{Γ ⊢ A}, is a proof tree encoding a derivation of $A$ from $\Gamma$.
 We also define provability as the proposition stating that a proof tree exists.
+
+\noindent \begin{minipage}{\columnwidth} % avoid page break
 \begin{lstlisting}
 def provable (Γ : set (formula L))
   (f : formula L) : Prop := nonempty (prf Γ f)
 \end{lstlisting}
+\end{minipage}
 Our current formalization does not use the data of proof trees in an essential way, but we defined them so that we can define manipulations on proof trees (like detour elimination) in future projects.
 % maybe restore?
 % We prove various meta-theoretic properties about provability, like weakening and the substitution theorem.
@@ -454,7 +457,7 @@ This gives a conservative extension of the regular theory of ZFC, because these 
 % As part of our future work, we want to formalize these facts, so that we actually prove the independence of the continuum hypothesis in a language with only one non-logical symbol. % move to future work
 \begin{figure*}
   \begin{center}
-  \begin{minipage}{0.84\textwidth}
+  \begin{minipage}{0.86\textwidth}
   \begin{lstlisting}
   axiom_of_emptyset := ∀ x, x ∉ ∅
   axiom_of_ordered_pairs := ∀ x y z w, (x, y) = (z, w) ↔ x = z ∧ y = w
