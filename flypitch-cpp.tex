@@ -357,7 +357,8 @@ inductive preterm (L : Language.{u}) :
 \end{lstlisting}
 A member of \lil{preterm n} is a partially applied term.
 If applied to \lil{n} terms, it becomes a term.
-We define the type of well-formed terms \lil{term L} to be \lil{preterm L 0}. This is a unconventional way to define terms, which we chose because of the limited support for nested inductive types in Lean, though recent progress~\cite{avigad2019datattypes} might add better support in the future.
+We define the type of well-formed terms \lil{term L} to be \lil{preterm L 0}.
+%This is a unconventional way to define terms, which we chose because of the limited support for nested inductive types in Lean, though recent progress~\cite{avigad2019datattypes} might add better support in the future.
 
 % % cut?
 % There are other methods to define well-typed terms, for example using a nested inductive type with a constructor (replacing the second and third constructor in our definition)
