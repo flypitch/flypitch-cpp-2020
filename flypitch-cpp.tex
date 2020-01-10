@@ -935,9 +935,8 @@ In the formalization, the fact that the type of ordinals is a large type, i.e.\ 
 The reason is that the original proof heavily uses sets of ordinals, and taking their order types, but in Lean this would involve calculating in both \lstinline"ordinal.{u}" and \lstinline"ordinal.{u+1}".
 Instead, we frequently work with well-orders of a given order type, instead sets of ordinals, to do all computations in \lstinline"ordinal.{u}".
 
-Lastly, one must take care to formulate the $\Delta$-system so that $\{A_i\}_i$ is an indexed families, instead of a collections of sets.
-\Cref{thm:product-ccc} below does not follow conveniently from the $\Delta$-system lemma if it is formulated with a collection of sets.
-\cite{kunen2014set} is somewhat ambiguous which version is used.
+Lastly, one must take care to formulate the $\Delta$-system so that $\{A_i\}_i$ is an indexed family, instead of a collections of sets.
+\Cref{thm:product-ccc} below does not follow conveniently from the $\Delta$-system lemma if it is formulated with a collection of sets; \cite{kunen2014set} is somewhat ambiguous about which version is used.
 
 Setting \(\kappa = \omega\) and \(\theta = \aleph_1\) in \Cref{lemma:delta-system-lemma:general} yields:
 \begin{lemma}\label{lemma:delta-system-lemma:simple}
@@ -1132,8 +1131,7 @@ Implementing this argument was one of the most technical parts of our formalizat
 
 In \Cref{subsect:bset:fundamental-thm} we showed that \lil{bSet 𝔹} is a model of \lil{ZFC},
 which means that we can interpret the deeply-embedded statement of \lil{CH_formula} into
-\lil{bSet 𝔹}.
-We now verify that the deeply-embedded interpretations of \lil{CH_formula} coincide with the shallow interpretations of \(\mathsf{CH}\).
+\lil{bSet 𝔹}. It is easy to verify that the deeply-embedded interpretation of \lil{CH_formula} coincide with the shallow interpretations of \(\mathsf{CH}\).
 
 As we have already observed, an easy consequence of Boolean-valued soundness is that a formula is unprovable if its negation has a model. Thus, we have:
 \begin{lstlisting}
@@ -1163,7 +1161,7 @@ by finish [independent, CH_unprv, neg_CH_unprv]
 \label{sect:metaprogramming}
 
 A key feature of Lean is that it is its own metalanguage \cite{Ebner:2017:MFF:3136534.3110278}, allowing for seamless in-line definitions of custom tactics (and modifications of existing ones).
-This was an invaluable asset, we were able to rapidly develop a custom tactic library for simulating natural-deduction style proofs in complete Boolean algebras (\Cref{subsect:natded}) and automating equality reasoning in those proofs (\Cref{subsect:bv-cc}).
+This was an invaluable asset, allowing us to rapidly develop a custom tactic library for simulating natural-deduction style proofs in complete Boolean algebras (\Cref{subsect:natded}) and automating equality reasoning in those proofs (\Cref{subsect:bv-cc}).
 
 \subsection{Simulating Natural Deduction Proofs in Complete Boolean Algebras} \label{subsect:natded}
 As stressed by Scott \cite{scott2008algebraic}, ``A main point ... is that the well-known algebraic characterizations of [complete Heyting algebras] and [complete Boolean algebras] exactly mimic the rules of deduction in the respective logics.''
